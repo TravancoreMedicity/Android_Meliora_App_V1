@@ -106,7 +106,7 @@ const MainScreen = ({ navigation }) => {
         style={styles.TouchButton}
         onPress={() => navigation.navigate("Login")}
       >
-        <Text style={styles.TouchBtnText}>Let's Begin</Text>
+        <Text style={styles.TouchBtnText}  >Let's Begin</Text>
         <MaterialIcons
           name="arrow-forward-ios"
           size={24}

@@ -91,13 +91,13 @@ const CustomDrawer = (props) => {
                   {department?.toLowerCase()}
                 </Text>
               </View>
-              <View className="flex justify-center">
+              {/* <View className="flex justify-center">
                 <Image
                   source={require("../../assets/LogoMeliora.png")}
                   style={{ width: 35, height: 35 }}
                   className="flex"
                 />
-              </View>
+              </View> */}
             </View>
           </View>
 
@@ -106,7 +106,9 @@ const CustomDrawer = (props) => {
             contentOffset={{ x: 5, y: 5 }}
             showsVerticalScrollIndicator={false}
           >
+            {/* Drawer conetet goes here */}
             <DrawerItemList {...props} />
+            {/* Drawer contert ends here */}
           </ScrollView>
           <View className="flex flex-row bg-[#454762] h-12 rounded-t-full rounded-b-full justify-center items-center">
             <TouchableOpacity className="flex flex-row" onPress={logOut}>
@@ -118,7 +120,7 @@ const CustomDrawer = (props) => {
                   color: "white",
                 }}
               >
-                Logoutaaaa
+                Logout
               </Text>
               <View className="font-extrabold">
                 <PowerIcon size={22} color="white" />
