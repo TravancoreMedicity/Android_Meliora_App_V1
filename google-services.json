@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "21569391766",
+    "project_id": "admin-meliora-app",
+    "storage_bucket": "admin-meliora-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:21569391766:android:cb701e96236c28c7acc6b7",
+        "android_client_info": {
+          "package_name": "com.ajithajeesh.Meliora"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "21569391766-f0lammjsg85vk8g87ctc9f81ntadab02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT-j0hOsFr_T1swaSnE5Fy6kDjx54UGwY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "21569391766-f0lammjsg85vk8g87ctc9f81ntadab02.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
