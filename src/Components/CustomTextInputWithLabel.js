@@ -52,14 +52,14 @@ const CustomTextInputWithLabel = ({
 const styles = StyleSheet.create({
   textInputFeild: {
     flexDirection: "row",
-    borderBottomColor: "#ccc",
+    borderBottomColor: "rgb(124,81,161)",
     borderBottomWidth: 1,
     paddingBottom: 8,
     marginBottom: 25,
     alignItems: "center",
   },
   forgetText: {
-    color: colorTheme.mainColor,
+    color: "rgb(124,81,161)",
     fontWeight: "700",
   },
   textInput: {

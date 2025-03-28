@@ -1,15 +1,20 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer,DarkTheme,DefaultTheme } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, View,useColorScheme, } from "react-native";
 import { useSelector } from "react-redux";
 import { colorTheme } from "../Constant/Colors";
 import AppStack from "./AppStack";
 import AuthStack from "./AuthStack";
+import { PaperProvider , useTheme} from 'react-native-paper'
+import { CombinedDarkTheme, CombinedLightTheme } from "../theme/Theme";
+import useDarkThemeMode from "../Hooks/useDarkThemeMode";
 
 const AppNav = () => {
   const [userToken, setUserToken] = useState(null);
   const tokenId = useSelector((state) => state.loginFuntion.loginInfo.token);
+
+  const { isDarkTheme } = useDarkThemeMode()
 
   useEffect(() => {
     const getToken = async () => {
@@ -20,15 +25,21 @@ const AppNav = () => {
     getToken();
   }, [tokenId]);
 
+console.log(isDarkTheme)
+
+  const defTheme = isDarkTheme ? CombinedDarkTheme : CombinedLightTheme
+
   return (
-    <NavigationContainer>
+    <PaperProvider theme={defTheme} >
+    <NavigationContainer theme={defTheme}  >
       <StatusBar
         animated={true}
-        backgroundColor={colorTheme.mainBgColor}
+        // backgroundColor={colorTheme.mainBgColor}
         barStyle='dark-content'
       />
       {tokenId === null ? <AuthStack /> : <AppStack />}
     </NavigationContainer>
+    </PaperProvider>
   );
 };
 

@@ -8,15 +8,17 @@ import {
   ScrollView,
   ActivityIndicator,
   StatusBar,
+  Dimensions,
+  useColorScheme
 } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 import SvgLogo from "../../../assets/tmcsvg.svg";
 import CustomButtonL1 from "../../Components/CustomButtonL1";
 import CustomTextInput from "../../Components/CustomTextInput";
 import CustomTextInputWithLabel from "../../Components/CustomTextInputWithLabel";
 import { axiosApi } from "../../config/Axiox";
-import { colorTheme } from "../../Constant/Colors";
 import { useDispatch } from "react-redux";
 
 import CustomModal from "../../Components/CustomModal";
@@ -25,9 +27,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { loggedInfomration } from "../../Redux/ReduxSlice/LoginSLice"
 import OverLayLoading from "../Modules/ComplaintMgmnt/Components/OverLayLoading";
 
+const { height,width} = Dimensions.get("window")
+
 // create a component
 const Login = () => {
   const dispatch = useDispatch();
+  const colorScheme = useColorScheme()
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -68,7 +73,7 @@ const Login = () => {
         dispatch(loggedInfomration(result.data))
         setLoading(false)
       } else {
-        setModalMessage("User Code Or Passcode is Wrong !!");
+        setModalMessage("Invalid user code or passcode. Please try again.");
         setModalVisible(true);
         setLoading(false)
       }
@@ -82,37 +87,50 @@ const Login = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar
         animated={true}
-        backgroundColor={colorTheme.mainBgColor}
-        barStyle='dark-content'
+        backgroundColor='transparent'
+        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
       />
       {loading && <OverLayLoading />}
-      <ScrollView style={styles.rapperView} keyboardShouldPersistTaps="always">
+      <ScrollView 
+        style={styles.rapperView} 
+        keyboardShouldPersistTaps="always"
+        contentContainerStyle={{
+          flex : 1,
+          justifyContent :'space-evenly',
+        }}
+      >
         <CustomModal
-          setModal={setModalVisible}
-          modalState={modalVisible}
+          setModalVisible={setModalVisible}
+          modalVisible={modalVisible}
           modalMessage={modalMessage}
         />
         <View
           style={{
-            display: "flex",
+            flex:1,
             flexDirection: "column",
             justifyContent: "space-evenly",
           }}
         >
           <View style={styles.logoView}>
-            <SvgLogo height={300} width={300} />
+            <SvgLogo 
+              height={ height > 1000 ? 450 : 300} 
+              width={height > 1000 ? 450 : 300} 
+            />
           </View>
           {/* <ActivityIndicator /> */}
-          <View>
+          <View 
+              style={{ flex:1,
+
+          }} >
             <Text style={styles.textStyle}>Login</Text>
             {/* user code feild */}
             <CustomTextInput
               Icon={
-                <MaterialIcons
-                  name="perm-identity"
-                  size={20}
-                  color={colorTheme.mainColor}
-                  style={{ marginRight: 5 }}
+                <FontAwesome
+                  name="user-o"
+                  size={19}
+                  color="rgb(124,81,161)"
+                  style={{ marginRight: 5, marginLeft :3 }}
                 />
               }
               Placeholder="User Code"
@@ -124,10 +142,10 @@ const Login = () => {
             {/* passcode feild */}
             <CustomTextInputWithLabel
               Icon={
-                <MaterialIcons
-                  name="lock-outline"
-                  size={20}
-                  color={colorTheme.mainColor}
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={21}
+                  color="rgb(124,81,161)"
                   style={{ marginRight: 5 }}
                 />
               }
@@ -162,31 +180,31 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
   },
   logoView: {
+    flex:1,
     alignItems: "center",
   },
   textStyle: {
     fontFamily: "Roboto_500Medium",
     fontSize: 28,
-    color: colorTheme.mainColor,
+    color: "rgb(124,81,161)",
     marginBottom: 30,
   },
   rapperView: {
-    paddingHorizontal: 25,
+    paddingHorizontal: width > 450 ? 100 : 35,
   },
   contactText: {
     textAlign: "center",
     fontWeight: "900",
     fontSize: 10,
-    color: colorTheme.mainColor,
+    color: "rgb(124,81,161)",
   },
   ErrorText: {
     textAlign: "center",
     fontWeight: "900",
     fontSize: 12,
-    color: colorTheme.mainColor,
+    color: "rgb(124,81,161)",
   },
 });
 

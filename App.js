@@ -13,9 +13,7 @@ import { View ,Text} from "react-native";
 const App = () => {
   return (
     <Provider store={store}>
-      <PaperProvider >
         <AppNav />
-      </PaperProvider>
     </Provider>
   );
 };

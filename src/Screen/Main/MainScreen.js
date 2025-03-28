@@ -1,5 +1,6 @@
 //import liraries
 import React, { useCallback, useState } from "react";
+import { Dimensions } from "react-native"
 import {
   View,
   Text,
@@ -7,6 +8,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StatusBar,
+  useColorScheme,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import {
@@ -24,19 +26,25 @@ import {
   Roboto_900Black,
   Roboto_900Black_Italic,
 } from "@expo-google-fonts/roboto";
+import {
+  AkayaKanadaka_400Regular
+} from "@expo-google-fonts/akaya-kanadaka";
+
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 // import logo from "./assets/SvgIcon.png";
 // import logo from "../../../assets/SvgIcon.png";
 import SvgLogo from "../../../assets/tmcsvg.svg";
 import { bgColor, buttonColor, colorTheme, fontColor } from "../../Constant/Colors";
+const { height,width} = Dimensions.get('window')
 
-// import SvgLogo from "./src/Components/Svg/SVGComponent";
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 // create a component
 const MainScreen = ({ navigation }) => {
+
+  const colorScheme = useColorScheme()
   const [appIsReady, setAppIsReady] = useState(false);
 
   let [fontsLoaded] = useFonts({
@@ -52,26 +60,9 @@ const MainScreen = ({ navigation }) => {
     Roboto_700Bold_Italic,
     Roboto_900Black,
     Roboto_900Black_Italic,
+    AkayaKanadaka_400Regular
   });
 
-  // useEffect(() => {
-  //   async function prepare() {
-  //     try {
-  //       // Pre-load fonts, make any API calls you need to do here
-  //       // await Font.loadAsync(fontsLoaded);
-  //       // Artificially delay for two seconds to simulate a slow loading
-  //       // experience. Please remove this if you copy and paste the code!
-  //       // await new Promise((resolve) => setTimeout(resolve, 2000));
-  //     } catch (e) {
-  //       console.warn(e);
-  //     } finally {
-  //       // Tell the application to render
-  //       setAppIsReady(true);
-  //     }
-  //   }
-
-  //   prepare();
-  // }, [fontsLoaded]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -88,19 +79,20 @@ const MainScreen = ({ navigation }) => {
     return null;
   }
 
+
   return (
     <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
       <StatusBar
         animated={true}
         backgroundColor={colorTheme.mainBgColor}
-        barStyle='dark-content'
+        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
       />
       <View>
         <Text style={styles.textStyle}>Meliora</Text>
       </View>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         {/* <Image source={logo} /> */}
-        <SvgLogo width={300} height={300} />
+        <SvgLogo width={height > 1000 ? 400 : 300} height={height > 1000 ? 200 : 200} />
       </View>
       <TouchableOpacity
         style={styles.TouchButton}
@@ -122,31 +114,31 @@ const MainScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: colorTheme.mainBgColor,
     paddingTop: 24,
   },
   textStyle: {
-    fontSize: 30,
-    fontWeight: "bold",
-    color: "#20315f",
-    marginTop: 30,
+    fontSize: height > 1000 ? 80 : 40,
+    color: "rgb(124,81,161)",
+    fontFamily: "AkayaKanadaka_400Regular",
+    marginTop: height > 1000 ?  150 : 70,
   },
   TouchButton: {
-    backgroundColor: colorTheme.mainColor,
+    backgroundColor: "rgb(124,81,161)",
     padding: 20,
-    width: "90%",
+    width: "87%",
     borderRadius: 35,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 50,
+    marginBottom: 90,
   },
   TouchBtnText: {
     // fontWeight: "bold",
     fontSize: 18,
+    marginLeft: 20,
     color: fontColor.main,
-    fontFamily: "Roboto_500Medium_Italic",
+    fontFamily: "Roboto_500Medium",
   },
 });
 
