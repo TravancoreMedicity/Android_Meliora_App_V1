@@ -10,22 +10,31 @@ import SettingStack from "./SettingStack";
 import HomeScreen from "../Screen/Home/HomeScreen";
 import ChatStack from "./ChatStack";
 import Feather from "react-native-vector-icons/Feather";
+import { useTheme } from "react-native-paper";
+import { useWindowDimensions } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
 // create a component
 const TabNavigator = () => {
+  const theme = useTheme();
+  const { width } = useWindowDimensions();
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          // backgroundColor: bgColor.headerBar,
-          backgroundColor: colorTheme.mainColor,
+          backgroundColor: theme.colors.logoCol2,
+          borderRadius: 30,
+          position: "absolute",
+          bottom: 20,
+          marginHorizontal: width > 760 ? 110 : 20,
+          height: 63,
         },
         tabBarInactiveTintColor: "#fff",
-        tabBarActiveTintColor: colorTheme.iconColor,
+        tabBarActiveTintColor: theme.colors.logoCol4,
       }}
     >
       <Tab.Screen

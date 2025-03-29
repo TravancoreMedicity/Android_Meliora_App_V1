@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
   StatusBar,
   Dimensions,
-  useColorScheme
+  useColorScheme,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -24,15 +24,14 @@ import { useDispatch } from "react-redux";
 import CustomModal from "../../Components/CustomModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { loggedInfomration } from "../../Redux/ReduxSlice/LoginSLice"
+import { loggedInfomration } from "../../Redux/ReduxSlice/LoginSLice";
 import OverLayLoading from "../Modules/ComplaintMgmnt/Components/OverLayLoading";
 
-const { height,width} = Dimensions.get("window")
-
+const { height, width } = Dimensions.get("window");
 // create a component
 const Login = () => {
   const dispatch = useDispatch();
-  const colorScheme = useColorScheme()
+  const colorScheme = useColorScheme();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -40,7 +39,7 @@ const Login = () => {
   const [passCode, setPassCode] = useState("");
   const [errorMesg, setErrorMesg] = useState(false);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const IternalServerErr = () => {
     return (
@@ -54,7 +53,7 @@ const Login = () => {
   };
 
   const onSubmitFun = async (useCode, passCode) => {
-    setLoading(true)
+    setLoading(true);
     try {
       setErrorMesg(false);
       const loginCred = {
@@ -69,13 +68,13 @@ const Login = () => {
         const userInfo = await JSON.stringify(result.data);
         AsyncStorage.setItem("@token:", token);
         AsyncStorage.setItem("@userInfo:", userInfo);
-        // dispatch the login info 
-        dispatch(loggedInfomration(result.data))
-        setLoading(false)
+        // dispatch the login info
+        dispatch(loggedInfomration(result.data));
+        setLoading(false);
       } else {
         setModalMessage("Invalid user code or passcode. Please try again.");
         setModalVisible(true);
-        setLoading(false)
+        setLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -87,16 +86,16 @@ const Login = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar
         animated={true}
-        backgroundColor='transparent'
+        backgroundColor="#f0f1f5"
         barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
       />
       {loading && <OverLayLoading />}
-      <ScrollView 
-        style={styles.rapperView} 
+      <ScrollView
+        style={styles.rapperView}
         keyboardShouldPersistTaps="always"
         contentContainerStyle={{
-          flex : 1,
-          justifyContent :'space-evenly',
+          flex: 1,
+          justifyContent: "space-evenly",
         }}
       >
         <CustomModal
@@ -106,22 +105,19 @@ const Login = () => {
         />
         <View
           style={{
-            flex:1,
+            flex: 1,
             flexDirection: "column",
             justifyContent: "space-evenly",
           }}
         >
           <View style={styles.logoView}>
-            <SvgLogo 
-              height={ height > 1000 ? 450 : 300} 
-              width={height > 1000 ? 450 : 300} 
+            <SvgLogo
+              height={height > 1000 ? 450 : 300}
+              width={height > 1000 ? 450 : 300}
             />
           </View>
           {/* <ActivityIndicator /> */}
-          <View 
-              style={{ flex:1,
-
-          }} >
+          <View style={{ flex: 1 }}>
             <Text style={styles.textStyle}>Login</Text>
             {/* user code feild */}
             <CustomTextInput
@@ -130,7 +126,7 @@ const Login = () => {
                   name="user-o"
                   size={19}
                   color="rgb(124,81,161)"
-                  style={{ marginRight: 5, marginLeft :3 }}
+                  style={{ marginRight: 5, marginLeft: 3 }}
                 />
               }
               Placeholder="User Code"
@@ -180,9 +176,10 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f0f1f5",
   },
   logoView: {
-    flex:1,
+    flex: 1,
     alignItems: "center",
   },
   textStyle: {

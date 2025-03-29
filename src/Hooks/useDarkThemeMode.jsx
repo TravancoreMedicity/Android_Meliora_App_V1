@@ -1,11 +1,11 @@
-import { useState } from "react"
+import { useState } from "react";
 
 const useDarkThemeMode = () => {
-    const [isDarkTheme, setIsDarkTheme] = useState(false)
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
 
-    const toggleTheme = () => setIsDarkTheme(!isDarkTheme)
-   
-    return {isDarkTheme, toggleTheme}
-}
+  const toggleTheme = () => setIsDarkTheme(!isDarkTheme);
 
-export default useDarkThemeMode
+  return { isDarkTheme, toggleTheme };
+};
+
+export default useDarkThemeMode;

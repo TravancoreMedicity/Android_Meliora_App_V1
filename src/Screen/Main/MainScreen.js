@@ -1,6 +1,6 @@
 //import liraries
 import React, { useCallback, useState } from "react";
-import { Dimensions } from "react-native"
+import { Dimensions } from "react-native";
 import {
   View,
   Text,
@@ -26,25 +26,29 @@ import {
   Roboto_900Black,
   Roboto_900Black_Italic,
 } from "@expo-google-fonts/roboto";
-import {
-  AkayaKanadaka_400Regular
-} from "@expo-google-fonts/akaya-kanadaka";
+import { AkayaKanadaka_400Regular } from "@expo-google-fonts/akaya-kanadaka";
 
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 // import logo from "./assets/SvgIcon.png";
 // import logo from "../../../assets/SvgIcon.png";
 import SvgLogo from "../../../assets/tmcsvg.svg";
-import { bgColor, buttonColor, colorTheme, fontColor } from "../../Constant/Colors";
-const { height,width} = Dimensions.get('window')
+import {
+  bgColor,
+  buttonColor,
+  colorTheme,
+  fontColor,
+} from "../../Constant/Colors";
+import { useTheme } from "react-native-paper";
+const { height, width } = Dimensions.get("window");
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
-
 // create a component
-const MainScreen = ({ navigation }) => {
 
-  const colorScheme = useColorScheme()
+const MainScreen = ({ navigation }) => {
+  const theme = useTheme();
+  const colorScheme = useColorScheme();
   const [appIsReady, setAppIsReady] = useState(false);
 
   let [fontsLoaded] = useFonts({
@@ -60,9 +64,8 @@ const MainScreen = ({ navigation }) => {
     Roboto_700Bold_Italic,
     Roboto_900Black,
     Roboto_900Black_Italic,
-    AkayaKanadaka_400Regular
+    AkayaKanadaka_400Regular,
   });
-
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -79,26 +82,29 @@ const MainScreen = ({ navigation }) => {
     return null;
   }
 
-
   return (
     <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
       <StatusBar
         animated={true}
-        backgroundColor={colorTheme.mainBgColor}
-        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
+        showHideTransition="fade"
+        backgroundColor={theme.colors.mainScreenColor}
+        barStyle="dark-content"
       />
       <View>
         <Text style={styles.textStyle}>Meliora</Text>
       </View>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         {/* <Image source={logo} /> */}
-        <SvgLogo width={height > 1000 ? 400 : 300} height={height > 1000 ? 200 : 200} />
+        <SvgLogo
+          width={height > 1000 ? 400 : 300}
+          height={height > 1000 ? 200 : 200}
+        />
       </View>
       <TouchableOpacity
         style={styles.TouchButton}
         onPress={() => navigation.navigate("Login")}
       >
-        <Text style={styles.TouchBtnText}  >Let's Begin</Text>
+        <Text style={styles.TouchBtnText}>Let's Begin</Text>
         <MaterialIcons
           name="arrow-forward-ios"
           size={24}
@@ -122,7 +128,7 @@ const styles = StyleSheet.create({
     fontSize: height > 1000 ? 80 : 40,
     color: "rgb(124,81,161)",
     fontFamily: "AkayaKanadaka_400Regular",
-    marginTop: height > 1000 ?  150 : 70,
+    marginTop: height > 1000 ? 150 : 70,
   },
   TouchButton: {
     backgroundColor: "rgb(124,81,161)",

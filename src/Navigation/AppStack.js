@@ -40,6 +40,8 @@ import {
   Cog6ToothIcon,
   CloudArrowDownIcon,
 } from "react-native-heroicons/outline";
+import { useTheme } from "react-native-paper";
+import { View } from "react-native";
 
 // create a component
 const AppStack = () => {
@@ -58,20 +60,29 @@ const AppStack = () => {
     Roboto_900Black_Italic,
   });
 
+  const theme = useTheme();
   return (
     <Drawer.Navigator
+      initialRouteName="Home"
       drawerContent={(props) => <CustomDrawer {...props} />}
-      // useLegacyImplementation={true}
       screenOptions={{
         headerShown: false,
-        drawerActiveBackgroundColor: colorTheme.mainColor,
-        drawerActiveTintColor: "#fff",
-        drawerInactiveTintColor: colorTheme.mainColor,
+        drawerActiveBackgroundColor: theme.colors.logoCol2,
+        drawerActiveTintColor: "#ccc",
+        drawerInactiveTintColor: theme.colors.fontColor1,
+        lazy: true,
         drawerLabelStyle: {
-          marginLeft: -25,
+          marginLeft: -10,
           fontFamily: "Roboto_500Medium",
-          fontSize: 15,
         },
+        drawerItemStyle: {
+          flex: 1,
+          borderRadius: 20,
+          marginHorizontal: 20,
+          marginVertical: 4,
+          paddingHorizontal: 10,
+        },
+        drawerStatusBarAnimation: "slide",
       }}
     >
       <Drawer.Screen
