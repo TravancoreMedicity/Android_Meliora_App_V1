@@ -44,7 +44,7 @@ const CustomDrawer = (props) => {
     AsyncStorage.clear();
   };
 
-  const { width, height, scale, fontScale } = useWindowDimensions();
+  const { height } = useWindowDimensions();
 
   // theme shifging code here
   const { isDarkTheme, toggleTheme } = useContext(ThemeContext);
@@ -73,8 +73,8 @@ const CustomDrawer = (props) => {
               height < 620 && height > 100
                 ? 50
                 : height > 700 && height < 799
-                ? 60
-                : 70,
+                ? 70
+                : 80,
           }}
         >
           <View
@@ -88,7 +88,8 @@ const CustomDrawer = (props) => {
               style={{
                 alignItems: "center",
                 justifyContent: "flex-end",
-                paddingRight: 7,
+                paddingRight: 10,
+                paddingLeft: 5,
               }}
             >
               <Avatar.Icon

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import { colorTheme } from "../Constant/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -14,6 +15,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { clearLoggedInformation } from "../Redux/ReduxSlice/LoginSLice";
 import { useTheme } from "react-native-paper";
+
+import Octicons from "react-native-vector-icons/Octicons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+
 // create a component
 const HeaderMain = ({ navigation, name }) => {
   const dispatch = useDispatch();
@@ -24,7 +29,7 @@ const HeaderMain = ({ navigation, name }) => {
     AsyncStorage.clear();
   };
 
-  console.log(theme.dark);
+  const { height, width } = useWindowDimensions();
 
   return (
     <View>
@@ -33,28 +38,84 @@ const HeaderMain = ({ navigation, name }) => {
         backgroundColor={theme.colors.statusBarCol}
         barStyle={theme.dark ? "light-content" : "dark-content"}
       />
-      <View style={styles.headerStyleCmp}>
-        <TouchableOpacity onPress={() => navigation.openDrawer()}>
-          <MaterialIcons
-            name="reorder"
-            size={25}
-            color={colorTheme.mainColor}
-          />
-        </TouchableOpacity>
+      <View
+        style={{
+          flexDirection: "row",
+          // justifyContent: "center",
+          // paddingVertical: 20,
+          // alignItems: "center",
+          // backgroundColor: theme.colors.appBgInside,
+          // backgroundColor: "lightgreen",
+          height: height > 790 ? 100 : 75,
+        }}
+      >
+        {/* Open Drawer Menu Section Start here */}
         <View
           style={{
-            display: "flex",
-            flex: 1,
-            paddingLeft: 10,
+            justifyContent: "center",
+            alignItems: "center",
+            // paddingHorizontal: height > 760 ? 40 : 18,
             flexDirection: "row",
+            // backgroundColor: "red",
           }}
         >
-          {/* <Text>Login as : </Text> */}
-          <Text style={styles.userName}>{name}</Text>
+          <TouchableOpacity
+            onPress={() => navigation.openDrawer()}
+            style={{
+              // backgroundColor: "white",
+              paddingLeft: 30,
+              paddingRight: 10,
+            }}
+          >
+            <Ionicons
+              name="apps"
+              size={height > 760 ? 40 : 30}
+              color={theme.colors.avatarBgColor1}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={logOut}>
-          <PowerIcon color={colorTheme.mainColor} height={25} width={25} />
-        </TouchableOpacity>
+        {/* Open Drawer section menu end here */}
+
+        {/* Header Name Section Start here *************/}
+        <View
+          style={{
+            flex: 1,
+            // backgroundColor: "yellow",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            // alignItems: "center",
+            // paddingTop: 25,
+          }}
+        >
+          <Text
+            style={{
+              // marginTop: 10,
+              // justifyContent: "center",
+              fontFamily: "AkayaKanadaka_400Regular",
+              // color: colorTheme.mainColor,
+              // textTransform: "capitalize",
+              // backgroundColor: "blue",
+              // paddingTop: 20,
+              fontSize: height > 760 ? 35 : 28,
+            }}
+          >
+            {name}
+          </Text>
+        </View>
+        {/* Header Section Name end Here */}
+
+        {/* LOgout Button Section start here */}
+        <View
+          style={{
+            // backgroundColor: "orange",
+            paddingHorizontal: height > 760 ? 40 : 18,
+          }}
+        >
+          <TouchableOpacity onPress={logOut}>
+            <PowerIcon color={colorTheme.mainColor} height={25} width={25} />
+          </TouchableOpacity>
+        </View>
+        {/* Log out button end here */}
       </View>
     </View>
   );
@@ -66,19 +127,8 @@ const styles = StyleSheet.create({
     height: 35,
     width: 35,
   },
-  headerStyleCmp: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    height: 70,
-    padding: 20,
-    alignItems: "center",
-  },
-  userName: {
-    fontSize: 20,
-    fontFamily: "Roboto_500Medium",
-    color: colorTheme.mainColor,
-    textTransform: "capitalize",
-  },
+  headerStyleCmp: {},
+  userName: {},
 });
 
 //make this component available to the app
