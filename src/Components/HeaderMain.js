@@ -43,7 +43,6 @@ const HeaderMain = ({ navigation, name }) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          backgroundColor: "lightgreen",
           height: height > 790 ? 100 : 75,
         }}
       >
@@ -52,17 +51,13 @@ const HeaderMain = ({ navigation, name }) => {
           style={{
             flex: 1,
             height: "100%",
-            // justifyContent: "center",
             alignItems: "center",
-            // paddingHorizontal: height > 760 ? 40 : 18,
             flexDirection: "row",
-            backgroundColor: "red",
           }}
         >
           <TouchableOpacity
             onPress={() => navigation.openDrawer()}
             style={{
-              // backgroundColor: "white",
               paddingLeft: 30,
               paddingRight: 10,
             }}
@@ -70,7 +65,7 @@ const HeaderMain = ({ navigation, name }) => {
             <Ionicons
               name="apps"
               size={height > 760 ? 40 : 30}
-              color={theme.colors.avatarBgColor1}
+              color={theme.colors.logoCol2}
             />
           </TouchableOpacity>
         </View>
@@ -81,7 +76,6 @@ const HeaderMain = ({ navigation, name }) => {
           style={{
             flex: 3,
             height: "100%",
-            backgroundColor: "yellow",
             justifyContent: "center",
             alignItems: "flex-start",
           }}
@@ -89,6 +83,7 @@ const HeaderMain = ({ navigation, name }) => {
           <Text
             style={{
               textAlignVertical: "",
+              color: theme.colors.logoCol2,
               marginTop: Platform.OS === "ios" ? 0 : 20,
               fontFamily: "AkayaKanadaka_400Regular",
               fontSize: height > 760 ? 35 : 28,
@@ -107,7 +102,13 @@ const HeaderMain = ({ navigation, name }) => {
           }}
         >
           <TouchableOpacity onPress={logOut}>
-            <PowerIcon color={colorTheme.mainColor} height={25} width={25} />
+            <PowerIcon
+              color={theme.colors.logoCol1}
+              fontWeight="900"
+              fontSize="25"
+              height={26}
+              width={26}
+            />
           </TouchableOpacity>
         </View>
         {/* Log out button end here */}
