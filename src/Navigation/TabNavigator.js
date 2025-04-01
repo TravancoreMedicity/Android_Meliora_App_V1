@@ -31,7 +31,7 @@ const TabNavigator = () => {
           position: "absolute",
           bottom: Platform.OS === "ios" ? 40 : 20,
           paddingVertical: Platform.OS === "ios" ? 15 : 0,
-          marginHorizontal: width > 760 ? 110 : 20,
+          marginHorizontal: width > 760 ? 110 : 40,
           height: Platform.OS === "ios" ? 62 : 50,
         },
         tabBarInactiveTintColor: "#fff",

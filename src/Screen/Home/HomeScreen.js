@@ -1,5 +1,12 @@
 //import liraries
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, {
+  lazy,
+  memo,
+  Suspense,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import {
   View,
   Text,
@@ -54,6 +61,11 @@ import { getExpoPushToken } from "../../Redux/ReduxSlice/pushTokenSlice";
 import DeptStatistic from "../Dashboard/DeptStatistic";
 import DepartmentStat from "../Dashboard/DepartmentStat";
 import { useTheme } from "react-native-paper";
+import CustomActivityIndicator from "../../Components/CustomActivityIndicator";
+
+// lazy loading componets
+const PersonalinfoCard = lazy(() => import("./Components/PersonalinfoCard"));
+const ModuleMenus = lazy(() => import("./Components/ModuleMenus"));
 
 // create a component
 const HomeScreen = ({ navigation }) => {
@@ -216,8 +228,35 @@ const HomeScreen = ({ navigation }) => {
     >
       {/* Header Component */}
       <HeaderMain navigation={navigation} name="Meliora" />
-      <View className="flex">
-        <View>
+      <ScrollView
+        style={{
+          flex: 1,
+          paddingHorizontal: 13,
+          paddingTop: 5,
+        }}
+      >
+        <Suspense fallback={<CustomActivityIndicator />}>
+          <View style={{ height: 180 }}>
+            {/* Profile information */}
+            <PersonalinfoCard />
+          </View>
+          {/* Module Selection information   */}
+          <View
+            style={{
+              flexGrow: 1,
+              margin: 10,
+              backgroundColor: "green",
+              flexDirection: "row",
+              flexWrap: "wrap",
+            }}
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((val, index) => (
+              <ModuleMenus key={index} />
+            ))}
+          </View>
+        </Suspense>
+
+        {/* <View>
           <ScrollView
             showsHorizontalScrollIndicator={false}
             horizontal={true}
@@ -238,7 +277,7 @@ const HomeScreen = ({ navigation }) => {
               );
             })}
           </ScrollView>
-        </View>
+        </View> */}
 
         <ScrollView className="flex px-4">
           <View className="flex">
@@ -247,7 +286,7 @@ const HomeScreen = ({ navigation }) => {
             {/* <DepartmentStat /> */}
           </View>
         </ScrollView>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
