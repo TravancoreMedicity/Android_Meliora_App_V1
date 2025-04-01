@@ -11,7 +11,7 @@ import HomeScreen from "../Screen/Home/HomeScreen";
 import ChatStack from "./ChatStack";
 import Feather from "react-native-vector-icons/Feather";
 import { useTheme } from "react-native-paper";
-import { useWindowDimensions } from "react-native";
+import { Platform, useWindowDimensions } from "react-native";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,8 +30,8 @@ const TabNavigator = () => {
           borderRadius: 30,
           position: "absolute",
           bottom: 20,
+          paddingVertical: Platform.OS === "ios" ? 10 : 0,
           marginHorizontal: width > 760 ? 110 : 20,
-          height: 63,
         },
         tabBarInactiveTintColor: "#fff",
         tabBarActiveTintColor: theme.colors.logoCol4,
