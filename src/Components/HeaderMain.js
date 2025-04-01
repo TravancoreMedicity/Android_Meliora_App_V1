@@ -41,22 +41,21 @@ const HeaderMain = ({ navigation, name }) => {
       <View
         style={{
           flexDirection: "row",
-          // justifyContent: "center",
-          // paddingVertical: 20,
-          // alignItems: "center",
-          // backgroundColor: theme.colors.appBgInside,
-          // backgroundColor: "lightgreen",
+          alignItems: "center",
+          backgroundColor: "lightgreen",
           height: height > 790 ? 100 : 75,
         }}
       >
         {/* Open Drawer Menu Section Start here */}
         <View
           style={{
-            justifyContent: "center",
+            flex: 1,
+            height: "100%",
+            // justifyContent: "center",
             alignItems: "center",
             // paddingHorizontal: height > 760 ? 40 : 18,
             flexDirection: "row",
-            // backgroundColor: "red",
+            backgroundColor: "red",
           }}
         >
           <TouchableOpacity
@@ -79,27 +78,22 @@ const HeaderMain = ({ navigation, name }) => {
         {/* Header Name Section Start here *************/}
         <View
           style={{
-            flex: 1,
-            // backgroundColor: "yellow",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            // alignItems: "center",
-            // paddingTop: 25,
+            flex: 3,
+            height: "100%",
+            backgroundColor: "yellow",
+            justifyContent: "center",
+            alignItems: "flex-start",
           }}
         >
           <Text
             style={{
-              // marginTop: 10,
-              // justifyContent: "center",
+              textAlignVertical: "",
+              marginTop: 20,
               fontFamily: "AkayaKanadaka_400Regular",
-              // color: colorTheme.mainColor,
-              // textTransform: "capitalize",
-              // backgroundColor: "blue",
-              // paddingTop: 20,
               fontSize: height > 760 ? 35 : 28,
             }}
           >
-            {name}
+            Meliora
           </Text>
         </View>
         {/* Header Section Name end Here */}
@@ -107,7 +101,7 @@ const HeaderMain = ({ navigation, name }) => {
         {/* LOgout Button Section start here */}
         <View
           style={{
-            // backgroundColor: "orange",
+            flex: 0,
             paddingHorizontal: height > 760 ? 40 : 18,
           }}
         >
