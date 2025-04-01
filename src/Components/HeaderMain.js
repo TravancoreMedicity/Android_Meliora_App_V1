@@ -7,6 +7,7 @@ import {
   StatusBar,
   TouchableOpacity,
   useWindowDimensions,
+  Platform,
 } from "react-native";
 import { colorTheme } from "../Constant/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -88,7 +89,7 @@ const HeaderMain = ({ navigation, name }) => {
           <Text
             style={{
               textAlignVertical: "",
-              marginTop: 20,
+              marginTop: Platform.OS === "ios" ? 0 : 20,
               fontFamily: "AkayaKanadaka_400Regular",
               fontSize: height > 760 ? 35 : 28,
             }}
