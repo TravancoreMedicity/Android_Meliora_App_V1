@@ -34,7 +34,7 @@ export const DATA = [
   {
     id: 8,
     title: "Incident Management",
-    icon: "wb-incandescent",
+    icon: "report-problem",
     iconColor: "#fcfdf7",
     avatarColor: "#f60381",
     routeName: "Profile",

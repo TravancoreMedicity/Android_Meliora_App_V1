@@ -252,10 +252,14 @@ const HomeScreen = ({ navigation }) => {
             }}
           >
             {DATA.map((val) => (
-              <ModuleMenus icon={val.icon} key={val.id} name={val.title} />
+              <ModuleMenus
+                icon={val.icon}
+                key={val.id}
+                name={val.title}
+                routeName={val.routeName}
+              />
             ))}
           </View>
-          <CustomActivityIndicator />
         </Suspense>
 
         {/* <View>
