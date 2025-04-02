@@ -66,6 +66,7 @@ import CustomActivityIndicator from "../../Components/CustomActivityIndicator";
 // lazy loading componets
 const PersonalinfoCard = lazy(() => import("./Components/PersonalinfoCard"));
 const ModuleMenus = lazy(() => import("./Components/ModuleMenus"));
+const NotificationBoard = lazy(() => import("./Components/NotificationBoard"));
 
 // create a component
 const HomeScreen = ({ navigation }) => {
@@ -231,21 +232,34 @@ const HomeScreen = ({ navigation }) => {
       <ScrollView
         style={{
           flex: 1,
-          paddingHorizontal: 13,
+          // paddingHorizontal: 13,
           paddingTop: 5,
+          // marginBottom: 200,
         }}
       >
         <Suspense fallback={<CustomActivityIndicator />}>
-          <View style={{ height: 180 }}>
-            {/* Profile information */}
+          {/* Profile information Start*/}
+          <View style={{ height: 180, paddingHorizontal: 13 }}>
             <PersonalinfoCard />
           </View>
-          {/* Module Selection information   */}
+          {/* Profile information End*/}
+
+          {/* Notification Section Start */}
+          <View
+            style={{
+              flexGrow: 1,
+            }}
+          >
+            <NotificationBoard />
+          </View>
+          {/* Notification Section End */}
+
+          {/* Module Selection information Start Here  */}
           <View
             style={{
               flexGrow: 1,
               margin: 10,
-              // backgroundColor: "green",
+              paddingHorizontal: 13,
               flexDirection: "row",
               flexWrap: "wrap",
               justifyContent: "space-between",
@@ -260,38 +274,16 @@ const HomeScreen = ({ navigation }) => {
               />
             ))}
           </View>
+          {/* Module Selection information End Here  */}
         </Suspense>
-
-        {/* <View>
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}
-            fadingEdgeLength={10}
-            className="flex"
-          >
-            {DATA.map((val) => {
-              return (
-                <AvatarMenu
-                  mainTitle={val.title}
-                  icon={val.icon}
-                  iconColor={colorTheme.iconColor}
-                  avatarColor={colorTheme.secondaryBgColor}
-                  key={val.id}
-                  navigation={navigation}
-                  routeName={val.routeName}
-                />
-              );
-            })}
-          </ScrollView>
-        </View> */}
-
-        <ScrollView className="flex px-4">
-          <View className="flex">
-            {/* <MyTicketDash /> */}
-            {/* <DeptStatistic /> */}
-            {/* <DepartmentStat /> */}
-          </View>
-        </ScrollView>
+        <View style={{ height: 100 }}></View>
+        {/* <ScrollView className="flex px-4"> */}
+        {/* <View className="flex"> */}
+        {/* <MyTicketDash /> */}
+        {/* <DeptStatistic /> */}
+        {/* <DepartmentStat /> */}
+        {/* </View> */}
+        {/* </ScrollView> */}
       </ScrollView>
     </SafeAreaView>
   );

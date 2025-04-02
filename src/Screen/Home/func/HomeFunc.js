@@ -10,7 +10,7 @@ export const DATA = [
   {
     id: 5,
     title: "Room Management",
-    icon: "headset-mic",
+    icon: "room-preferences",
     iconColor: "#f2fff3",
     avatarColor: "#537186",
     routeName: "Profile",

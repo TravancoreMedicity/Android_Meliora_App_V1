@@ -1,19 +1,21 @@
 //import liraries
-import "./global.css"
-import "react-native-gesture-handler";
+import "./global.css";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import React from "react";
 import { Provider } from "react-redux";
-import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as PaperProvider } from "react-native-paper";
 
 import { store } from "./src/Redux/Store";
 import AppNav from "./src/Navigation/AppNav";
-import { View ,Text} from "react-native";
+import { View, Text } from "react-native";
 
 // create a component
 const App = () => {
   return (
     <Provider store={store}>
+      <GestureHandlerRootView>
         <AppNav />
+      </GestureHandlerRootView>
     </Provider>
   );
 };
