@@ -245,15 +245,17 @@ const HomeScreen = ({ navigation }) => {
             style={{
               flexGrow: 1,
               margin: 10,
-              backgroundColor: "green",
+              // backgroundColor: "green",
               flexDirection: "row",
               flexWrap: "wrap",
+              justifyContent: "space-between",
             }}
           >
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((val, index) => (
-              <ModuleMenus key={index} />
+            {DATA.map((val) => (
+              <ModuleMenus icon={val.icon} key={val.id} name={val.title} />
             ))}
           </View>
+          <CustomActivityIndicator />
         </Suspense>
 
         {/* <View>
