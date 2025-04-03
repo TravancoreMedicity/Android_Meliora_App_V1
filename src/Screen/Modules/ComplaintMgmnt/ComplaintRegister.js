@@ -41,9 +41,16 @@ import {
   getEmployeeDetlLoggedDeptWise,
 } from "../../../Redux/ReduxSlice/commonSlice";
 import { getComplaintPriority } from "../../../Redux/ReduxSlice/ComplaintPrioritySlice";
+import { useTheme } from "react-native-paper";
+import Skeleton from "../../../Components/Skeleton-Cmp/Skeleton";
+import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
+import NewTicketDash from "./Components/Version1/NewTicketDash";
+import DashAssistRequested from "./Components/Version1/DashAssistRequested";
 
 // create a component
 const ComplaintRegister = ({ navigation }) => {
+  const theme = useTheme();
+
   useEffect(() => {
     if (windowHeight > 750) {
       setCustomHeight(windowHeight - 280);
@@ -77,22 +84,44 @@ const ComplaintRegister = ({ navigation }) => {
   }, [emp_dept, count, emp_id, dispatch]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.appBgInside,
+      }}
+    >
       <ApiGetFun />
-      {/* Header Component */}
-      <HearderSecondary
-        navigation={navigation}
-        name="Ticket Management"
-        goBackButton={true}
-      />
-      <ScrollView style={styles.scrollView}>
+
+      {/* Header Component  Start*/}
+      <HearderSecondary navigation={navigation} name="Ticket Management" />
+      {/* Header Component  End*/}
+
+      <ScrollView
+        style={{
+          paddingHorizontal: 15,
+          paddingTop: 5,
+        }}
+      >
         {/* Dash Bord Veiw Start */}
-        <View style={styles.dashBord}>
-          <Suspense fallback={<ActivityIndicator />}>
-            <DashBoardView navigation={navigation} />
+
+        <View>
+          <Suspense fallback={<CustomActivityIndicator />}>
+            {/* New Ticket Container */}
+            <View>
+              <NewTicketDash />
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <DashAssistRequested />
+            </View>
+
+            <View style={{ marginTop: 10 }}>
+              <DashBoardView navigation={navigation} />
+            </View>
           </Suspense>
         </View>
         {/* Dash Bord View End  */}
+
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>My Ticket's Statistics</Text>
@@ -109,11 +138,11 @@ const ComplaintRegister = ({ navigation }) => {
 // define your styles
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colorTheme.mainBgColor,
-    height: windowHeight,
+    // backgroundColor: colorTheme.mainBgColor,
+    // height: windowHeight,
   },
   scrollView: {
-    padding: 8,
+    // padding: 8,
   },
   dashBord: {
     // flex: 1,

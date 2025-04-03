@@ -1,10 +1,12 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { View } from "react-native";
+import React, { memo } from "react";
 import SkeletonLoading from "expo-skeleton-loading";
+import { useTheme } from "react-native-paper";
 
-const DashBoardSkeleton = () => {
+const Skeleton = ({}) => {
+  const theme = useTheme();
   return (
-    <SkeletonLoading background={"#adadad"} highlight={"#ffffff"}>
+    <SkeletonLoading background={"#eae1f2"} highlight={"#f8f8fa"}>
       <View
         style={{
           flexDirection: "row",
@@ -16,7 +18,6 @@ const DashBoardSkeleton = () => {
           style={{
             width: 250,
             height: 90,
-            backgroundColor: "#adadad",
             borderRadius: 20,
           }}
         />
@@ -25,4 +26,4 @@ const DashBoardSkeleton = () => {
   );
 };
 
-export default DashBoardSkeleton;
+export default memo(Skeleton);

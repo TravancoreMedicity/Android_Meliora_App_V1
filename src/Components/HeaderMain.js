@@ -123,8 +123,6 @@ const styles = StyleSheet.create({
     height: 35,
     width: 35,
   },
-  headerStyleCmp: {},
-  userName: {},
 });
 
 //make this component available to the app
