@@ -248,6 +248,7 @@ const HomeScreen = ({ navigation }) => {
           <View
             style={{
               flexGrow: 1,
+              // backgroundColor: "red",
             }}
           >
             <NotificationBoard />

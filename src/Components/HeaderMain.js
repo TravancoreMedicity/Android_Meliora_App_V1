@@ -103,7 +103,7 @@ const HeaderMain = ({ navigation, name }) => {
         >
           <TouchableOpacity onPress={logOut}>
             <PowerIcon
-              color={theme.colors.logoCol1}
+              color={theme.colors.logoCol2}
               fontWeight="900"
               fontSize="25"
               height={26}
