@@ -34,6 +34,7 @@ const CombinedDarkTheme = {
     avatarIconColor: "rgb(124,81,161)",
     whiteFontColor: "#fff",
     cardBgColor: "rgb(178, 146, 202)",
+    cardBgSecond: "#303030",
   },
 };
 
@@ -56,6 +57,7 @@ const CombinedLightTheme = {
     avatarIconColor: "#fff",
     whiteFontColor: "#fff",
     cardBgColor: "rgb(178, 146, 202)",
+    cardBgSecond: "#fff",
   },
 };
 

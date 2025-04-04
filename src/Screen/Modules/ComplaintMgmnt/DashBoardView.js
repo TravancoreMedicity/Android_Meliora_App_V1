@@ -81,14 +81,13 @@ const DashBoardView = ({ navigation }) => {
     { id: 4, route: "OnHold", title: "On Hold", count: 456 },
     { id: 5, route: "Verify", title: "Rectified", count: 5 },
     { id: 6, route: "Completed", title: "Verified", count: 121 },
-    { id: 7, route: "Completed", title: "Super Visor Verified", count: 15 },
   ];
 
   return (
     <View
       style={{
         flexGrow: 1,
-        backgroundColor: theme.colors.background,
+        backgroundColor: theme.colors.cardBgSecond,
         borderRadius: 13,
         padding: 7,
         flexDirection: "row",
@@ -100,51 +99,13 @@ const DashBoardView = ({ navigation }) => {
         return (
           <DashCountTile
             key={val.id}
-            navigation={val.route}
-            escalated={0}
             id={1}
             name={val.title}
             count={val.count}
+            route={val.route}
           />
         );
       })}
-      {/* <DashCountTile
-        navigation={navigation}
-        escalated={0}
-        id={2}
-        name="Assigned"
-        count={0}
-      />
-      <DashCountTile
-        navigation={navigation}
-        escalated={0}
-        id={3}
-        name="Assistance"
-        count={0}
-      />
-      <DashCountTile
-        navigation={navigation}
-        escalated={0}
-        id={4}
-        name="OnHold"
-        count={0}
-      />
-
-      <DashCountTile
-        navigation={navigation}
-        escalated={0}
-        id={5}
-        name="For Verify"
-        count={0}
-      />
-
-      <DashCountTile
-        navigation={navigation}
-        escalated={0}
-        id={6}
-        name="On Progress"
-        count={0}
-      /> */}
     </View>
   );
 };

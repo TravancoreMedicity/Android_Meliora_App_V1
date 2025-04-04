@@ -12,10 +12,13 @@ import { windowHeight } from "../../../utils/Dimentions";
 import { MegaphoneIcon } from "react-native-heroicons/outline";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 // create a component
-const DashCountTile = ({ navigation, name, count, id, escalated }) => {
+const DashCountTile = ({ name, count, id, route }) => {
   const theme = useTheme();
-  const { width, height } = useWindowDimensions();
+  const { width } = useWindowDimensions();
+
+  const navigation = useNavigation();
   //dashboard api call count
   const dashCountUpdation = useCallback(() => {
     if (id === 2) {
@@ -33,12 +36,11 @@ const DashCountTile = ({ navigation, name, count, id, escalated }) => {
     }
   }, [navigation]);
 
-  const tileWidth = width > 450 ? (width - 80) / 3 : (width - 60) / 2;
+  const tileWidth = width > 450 ? (width - 120) / 3 : (width - 60) / 2;
 
   return (
     <View
       style={{
-        // backgroundColor: ,
         margin: 3,
         width: tileWidth,
         height: 70,
@@ -49,19 +51,13 @@ const DashCountTile = ({ navigation, name, count, id, escalated }) => {
       }}
     >
       <TouchableNativeFeedback
-        // onPress={() => dashCountUpdation()}
-        onPress={() => {}}
+        onPress={() => navigation.navigate(route)}
         useForeground={true}
-        // style={{ backgroundColor: "red", flex: 1 }}
       >
         <View
           style={{
             flex: 1,
-            // padding: 5,
             flexDirection: "column",
-            // backgroundColor: "green",
-            // justifyContent: "center",
-            // alignItems: "center",
           }}
         >
           <View
@@ -69,7 +65,6 @@ const DashCountTile = ({ navigation, name, count, id, escalated }) => {
               flex: 1,
               paddingLeft: 10,
               flexDirection: "row",
-              //   backgroundColor: "red",
               justifyContent: "flex-start",
               alignItems: "center",
             }}
@@ -84,7 +79,7 @@ const DashCountTile = ({ navigation, name, count, id, escalated }) => {
                 paddingLeft: 5,
                 fontFamily: "Roboto_500Medium",
                 fontWeight: "900",
-                color: theme.colors.logoCol2,
+                color: theme.colors.fontColor1,
               }}
             >
               20
@@ -107,7 +102,7 @@ const DashCountTile = ({ navigation, name, count, id, escalated }) => {
                 color: theme.colors.logoCol2,
               }}
             >
-              asdasd
+              {name}
             </Text>
           </View>
         </View>

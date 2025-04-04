@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { ActivityIndicator } from "react-native-paper";
+import CustomActivityIndicator from "../Components/CustomActivityIndicator";
 
 const TabNavigator = lazy(() => import("./TabNavigator"));
 const ComplaintRegister = lazy(() =>
@@ -33,7 +34,7 @@ const HomeStack = () => {
   const Stack = createNativeStackNavigator();
 
   return (
-    <Suspense fallback={<ActivityIndicator />}>
+    <Suspense fallback={<CustomActivityIndicator />}>
       <Stack.Navigator
         screenOptions={{
           headerShown: false,

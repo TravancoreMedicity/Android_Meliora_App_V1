@@ -1,9 +1,9 @@
 import { View, Text, useWindowDimensions } from "react-native";
-import React from "react";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import React, { memo } from "react";
 import { useTheme } from "react-native-paper";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
-const NewTicketDash = () => {
+const DashRoomCheckList = () => {
   const theme = useTheme();
   const { width } = useWindowDimensions();
 
@@ -11,10 +11,10 @@ const NewTicketDash = () => {
     <View
       style={{
         backgroundColor: theme.colors.cardBgColor,
-        height: 55,
         borderRadius: 15,
-        overflow: "hidden",
-        flexDirection: "row",
+        height: 50,
+        justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <View
@@ -30,7 +30,6 @@ const NewTicketDash = () => {
           style={{
             flex: 1,
             flexDirection: "row",
-            justifyContent: "center",
             alignItems: "center",
           }}
         >
@@ -49,32 +48,29 @@ const NewTicketDash = () => {
               color: theme.colors.logoCol2,
             }}
           >
-            New Tickets
+            Room Checklist
           </Text>
         </View>
-        <Text
+        <View
           style={{
-            flex: 0.4,
-            fontFamily: "Roboto_400Regular",
-            fontSize: 20,
-            fontWeight: "900",
-            color: theme.colors.logoCol2,
+            flex: 0.3,
+            flexDirection: "row",
           }}
         >
-          200
-        </Text>
-        <Ionicons
-          name="chevron-forward"
-          size={30}
-          style={{
-            flex: 0.2,
-            opacity: 0.5,
-          }}
-          color={theme.colors.logoCol5}
-        />
+          <Text
+            style={{
+              fontFamily: "Roboto_400Regular",
+              fontSize: 20,
+              fontWeight: "900",
+              color: theme.colors.logoCol2,
+            }}
+          >
+            2000
+          </Text>
+        </View>
       </View>
     </View>
   );
 };
 
-export default NewTicketDash;
+export default memo(DashRoomCheckList);

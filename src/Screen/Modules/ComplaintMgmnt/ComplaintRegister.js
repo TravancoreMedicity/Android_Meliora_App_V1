@@ -18,6 +18,7 @@ import {
   ActivityIndicator,
   Button,
   TouchableOpacity,
+  useWindowDimensions,
 } from "react-native";
 import _ from "underscore";
 import HearderSecondary from "../../../Components/HearderSecondary";
@@ -46,10 +47,14 @@ import Skeleton from "../../../Components/Skeleton-Cmp/Skeleton";
 import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 import NewTicketDash from "./Components/Version1/NewTicketDash";
 import DashAssistRequested from "./Components/Version1/DashAssistRequested";
+import DashSuperVisorChekList from "./Components/Version1/DashSuperVisorChekList";
+import DashRoomCheckList from "./Components/Version1/DashRoomCheckList";
+import DashChart from "./Components/Version1/DashChart";
 
 // create a component
 const ComplaintRegister = ({ navigation }) => {
   const theme = useTheme();
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     if (windowHeight > 750) {
@@ -98,7 +103,7 @@ const ComplaintRegister = ({ navigation }) => {
 
       <ScrollView
         style={{
-          paddingHorizontal: 15,
+          paddingHorizontal: width > 450 ? 35 : 15,
           paddingTop: 5,
         }}
       >
@@ -115,20 +120,66 @@ const ComplaintRegister = ({ navigation }) => {
               <DashAssistRequested />
             </View>
 
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginTop: 18 }}>
               <DashBoardView navigation={navigation} />
+            </View>
+
+            <View
+              style={{
+                flexGrow: 1,
+                marginTop: 18,
+                backgroundColor: theme.colors.cardBgSecond,
+                borderRadius: 13,
+                padding: 10,
+                // paddingHorizontal: 12,
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{}}>
+                <TouchableOpacity onPress={() => {}}>
+                  <DashSuperVisorChekList />
+                </TouchableOpacity>
+              </View>
+
+              <View style={{ marginTop: 10 }}>
+                <TouchableOpacity onPress={() => {}}>
+                  <DashRoomCheckList />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View
+              style={{
+                flexGrow: 1,
+                marginTop: 18,
+                backgroundColor: theme.colors.cardBgSecond,
+                borderRadius: 13,
+                padding: 7,
+                // paddingHorizontal: 12,
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ marginTop: 10, padding: 10 }}>
+                <DashChart />
+              </View>
             </View>
           </Suspense>
         </View>
         {/* Dash Bord View End  */}
 
-        <View style={styles.card}>
-          <View style={styles.cardHeader}>
+        <View
+          style={{
+            marginTop: 10,
+          }}
+        >
+          {/* <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>My Ticket's Statistics</Text>
           </View>
           <Suspense fallback={<ActivityIndicator />}>
             <MyTicketDash />
-          </Suspense>
+          </Suspense> */}
         </View>
       </ScrollView>
     </SafeAreaView>
