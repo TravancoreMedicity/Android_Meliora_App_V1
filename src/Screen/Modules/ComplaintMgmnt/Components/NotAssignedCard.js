@@ -14,7 +14,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { Button } from "react-native-paper";
+import { Button, useTheme } from "react-native-paper";
 import { styles } from "../Style/Style";
 import _ from "underscore";
 import { useSelector } from "react-redux";
@@ -32,6 +32,7 @@ const CmpTransfer = lazy(() => import("./CmpTransfer"));
 
 // create a component
 const NotAssignedCard = ({ data, setCount }) => {
+  const theme = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
 
   const loggedEmpDetl = useSelector(
@@ -109,291 +110,327 @@ const NotAssignedCard = ({ data, setCount }) => {
   });
 
   return (
-    <View style={{}}>
-      <AlertModal
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        postData={postData}
-      />
-      <TicketAssignModal
-        openModelState={setVisible}
-        openState={visible}
-        data={data}
-      />
-      <ComplainDeptTransfer
-        openModelState={setTrVisible}
-        openState={trVisible}
-        data={data}
-      />
-
-      <View style={{}}>
-        {/* icra recommention warniong */}
-
-        {complaint_hicslno === 1 && (
-          <View className="flex-1">
-            <Text
-              style={{
-                fontFamily: "Roboto_900Black",
-                color: colorTheme.iconColor,
-              }}
-              className="text-[11px] text-center"
-            >
-              Infection Control Risk Assessment (ICRA) Recommended
-            </Text>
-          </View>
-        )}
-
-        {/* name and department section */}
-        <View
-          style={{
-            flexDirection: "row",
-            paddingVertical: 5,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={styles.FLCP_captionStyle}>{create_employee}</Text>
-            <Text style={{ color: bgColor.statusbar }}>@</Text>
-            <Text style={{ ...styles.FLCP_captionStyle, fontStyle: "italic" }}>
-              {dept_sec}
-            </Text>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignContent: "center",
-              alignItems: "center",
-            }}
-            className="animate-spin"
-          >
-            {priority_check === 1 ? (
-              <MaterialCommunityIcons
-                name="alarm-light"
-                color="red"
-                size={15}
-              />
-            ) : null}
-          </View>
-        </View>
-
-        {/* Priority Reason */}
-
-        {priority_check === 1 && (
-          <View>
-            <View
-              style={{
-                flexGrow: 1,
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <View
-                style={{
-                  flexGrow: 1,
-                  flexDirection: "row",
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "flex-start",
-                }}
-              >
-                <Text style={{ ...styles.FLCP_headStyle }}>
-                  Priority Reason :
-                </Text>
-                <Text
-                  style={{
-                    ...styles.FLCP_cardTitle,
-                    color: colorTheme.iconColor,
-                  }}
-                >
-                  {priority_reason}
-                </Text>
-              </View>
-            </View>
-          </View>
-        )}
-
-        {/* register time and numeber section */}
-        <View>
-          <View
-            style={{
-              flexGrow: 1,
-              flexDirection: "row",
-              borderColor: fontColor.inActiveFont,
-              justifyContent: "space-between",
-            }}
-          >
-            <View
-              style={{
-                flexGrow: 1,
-                flexDirection: "row",
-                alignContent: "center",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                // textTransform: 'capitalize'
-              }}
-            >
-              {/* <Text style={styles.cardTitle} >Register Time :</Text> */}
-              <Text style={styles.FLCP_cardTitle}>{compalint_date}</Text>
-            </View>
-            <View
-              style={{
-                flexGrow: 1,
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                // paddingHorizontal: 5
-              }}
-            >
-              {/* <Text style={styles.cardTitle} >complaint description :</Text> */}
-              <Text
-                style={styles.FLCP_cardTitle}
-              >{`#${complaint_slno}/2023`}</Text>
-            </View>
-          </View>
-        </View>
-        {/* request type and complaint type */}
-        <View>
-          <View
-            style={{
-              flexGrow: 1,
-              flexDirection: "row",
-              borderColor: fontColor.inActiveFont,
-              justifyContent: "space-between",
-            }}
-          >
-            <View
-              style={{
-                flexGrow: 1,
-                flexDirection: "row",
-                alignContent: "center",
-                alignItems: "center",
-                justifyContent: "flex-start",
-                // textTransform: 'capitalize'
-              }}
-            >
-              <Text style={styles.FLCP_headStyle}>request Type :</Text>
-              <Text style={styles.FLCP_cardTitle}>{req_type_name}</Text>
-            </View>
-            <View
-              style={{
-                flexGrow: 1,
-                flexDirection: "row",
-                justifyContent: "flex-end",
-                // paddingHorizontal: 5
-              }}
-            >
-              {/* <Text style={styles.cardTitle} >complaint description :</Text> */}
-              <Text style={styles.FLCP_cardTitle}>{complaint_type_name}</Text>
-            </View>
-          </View>
-        </View>
-        <View style={{ marginTop: 5 }}>
-          <View>
-            <Text style={styles.FLCP_headStyle}>
-              complaint description :
-              <Text style={styles.FLCP_cardTitle}> {` ${complaint_desc}`}</Text>
-            </Text>
-          </View>
-        </View>
-        <View
-          style={{
-            // flex: 1,
-            flexDirection: "row",
-          }}
-        >
-          <Text style={styles.FLCP_headStyle}>Location :</Text>
-          <Text style={styles.FLCP_cardTitle}>{location}</Text>
-        </View>
-      </View>
+    <View
+      style={{
+        minHeight: 150,
+        flexGrow: 1,
+        // backgroundColor: "green",
+        marginBottom: 10,
+        borderRadius: 20,
+        overflow: "hidden",
+        // paddingLeft: 5,
+        borderLeftWidth: 2,
+        borderColor: theme.colors.cardBgColor,
+        justifyContent: "space-between",
+      }}
+    >
+      {/* top component */}
       <View
         style={{
-          flexGrow: 1,
-          flexDirection: "row",
-          paddingHorizontal: 6,
-          justifyContent: "space-between",
-          marginVertical: 5,
+          flex: 1,
+          height: 30,
+          padding: 5,
+          //   backgroundColor: "rgba(124,81,161,0.5)",
         }}
       >
-        <View style={{ flex: 1 }}>
-          <Button
-            icon={() => (
-              <AntDesign
-                name="rightcircle"
-                color={colorTheme.secondaryBgColor}
-                size={20}
-              />
-            )}
-            mode="elevated"
-            style={{
-              borderRadius: 0,
-              borderTopLeftRadius: 10,
-              borderBottomLeftRadius: 10,
-              backgroundColor: colorTheme.mainColor,
-              borderWidth: 0.5,
-              borderColor: "white",
-            }}
-            labelStyle={{ color: colorTheme.secondaryBgColor }}
-            onPress={() => quickAssignMent()}
-          >
-            Quick
-          </Button>
+        <View style={{ height: 30, backgroundColor: "lightgreen" }}>
+          <Ionicons name="ticket" size={25} color={theme.colors.cardBgColor} />
+          <Text>Top Component</Text>
         </View>
-        {supervisor === 1 ? (
-          <View style={{ flex: 1 }}>
-            <Button
-              icon={() => (
-                <MaterialIcons
-                  name="assignment-ind"
-                  size={21}
-                  style={{ color: colorTheme.secondaryBgColor }}
-                />
-              )}
-              // loading={true}
-              mode="elevated"
-              style={{
-                borderRadius: 0,
-                backgroundColor: colorTheme.mainColor,
-                borderWidth: 0.5,
-                borderColor: "white",
-              }}
-              labelStyle={{ color: colorTheme.secondaryBgColor }}
-              onPress={assign}
-            >
-              Assign
-            </Button>
-          </View>
-        ) : null}
-        <View style={{ flex: 1 }}>
-          <Button
-            icon={() => (
-              <Ionicons
-                name="arrow-redo-sharp"
-                color={colorTheme.secondaryBgColor}
-                size={21}
-              />
-            )}
-            elevation={10}
-            mode="elevated"
-            style={{
-              borderRadius: 0,
-              borderTopEndRadius: 10,
-              borderBottomRightRadius: 10,
-              backgroundColor: colorTheme.mainColor,
-              borderColor: "white",
-              borderWidth: 0.5,
-            }}
-            labelStyle={{ color: colorTheme.secondaryBgColor }}
-            onPress={() => transferFun()}
-          >
-            Transfer
-          </Button>
+        <View>
+          <Text>Middle Components</Text>
         </View>
       </View>
+      {/* Middle Components */}
+      <View style={{ flex: 0.2, backgroundColor: theme.colors.cardBgColor }}>
+        <Text>Bottom Components</Text>
+      </View>
     </View>
+    // <View style={{}}>
+    //   <AlertModal
+    //     modalVisible={modalVisible}
+    //     setModalVisible={setModalVisible}
+    //     postData={postData}
+    //   />
+    //   <TicketAssignModal
+    //     openModelState={setVisible}
+    //     openState={visible}
+    //     data={data}
+    //   />
+    //   <ComplainDeptTransfer
+    //     openModelState={setTrVisible}
+    //     openState={trVisible}
+    //     data={data}
+    //   />
+
+    //   <View style={{}}>
+    //     {/* icra recommention warniong */}
+
+    //     {complaint_hicslno === 1 && (
+    //       <View className="flex-1">
+    //         <Text
+    //           style={{
+    //             fontFamily: "Roboto_900Black",
+    //             color: colorTheme.iconColor,
+    //           }}
+    //           className="text-[11px] text-center"
+    //         >
+    //           Infection Control Risk Assessment (ICRA) Recommended
+    //         </Text>
+    //       </View>
+    //     )}
+
+    //     {/* name and department section */}
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         paddingVertical: 5,
+    //       }}
+    //     >
+    //       <View
+    //         style={{
+    //           flexDirection: "row",
+    //           alignContent: "center",
+    //           alignItems: "center",
+    //         }}
+    //       >
+    //         <Text style={styles.FLCP_captionStyle}>{create_employee}</Text>
+    //         <Text style={{ color: bgColor.statusbar }}>@</Text>
+    //         <Text style={{ ...styles.FLCP_captionStyle, fontStyle: "italic" }}>
+    //           {dept_sec}
+    //         </Text>
+    //       </View>
+    //       <View
+    //         style={{
+    //           flexDirection: "row",
+    //           alignContent: "center",
+    //           alignItems: "center",
+    //         }}
+    //         className="animate-spin"
+    //       >
+    //         {priority_check === 1 ? (
+    //           <MaterialCommunityIcons
+    //             name="alarm-light"
+    //             color="red"
+    //             size={15}
+    //           />
+    //         ) : null}
+    //       </View>
+    //     </View>
+
+    //     {/* Priority Reason */}
+
+    //     {priority_check === 1 && (
+    //       <View>
+    //         <View
+    //           style={{
+    //             flexGrow: 1,
+    //             flexDirection: "row",
+    //             justifyContent: "space-between",
+    //           }}
+    //         >
+    //           <View
+    //             style={{
+    //               flexGrow: 1,
+    //               flexDirection: "row",
+    //               alignContent: "center",
+    //               alignItems: "center",
+    //               justifyContent: "flex-start",
+    //             }}
+    //           >
+    //             <Text style={{ ...styles.FLCP_headStyle }}>
+    //               Priority Reason :
+    //             </Text>
+    //             <Text
+    //               style={{
+    //                 ...styles.FLCP_cardTitle,
+    //                 color: colorTheme.iconColor,
+    //               }}
+    //             >
+    //               {priority_reason}
+    //             </Text>
+    //           </View>
+    //         </View>
+    //       </View>
+    //     )}
+
+    //     {/* register time and numeber section */}
+    //     <View>
+    //       <View
+    //         style={{
+    //           flexGrow: 1,
+    //           flexDirection: "row",
+    //           borderColor: fontColor.inActiveFont,
+    //           justifyContent: "space-between",
+    //         }}
+    //       >
+    //         <View
+    //           style={{
+    //             flexGrow: 1,
+    //             flexDirection: "row",
+    //             alignContent: "center",
+    //             alignItems: "center",
+    //             justifyContent: "flex-start",
+    //             // textTransform: 'capitalize'
+    //           }}
+    //         >
+    //           {/* <Text style={styles.cardTitle} >Register Time :</Text> */}
+    //           <Text style={styles.FLCP_cardTitle}>{compalint_date}</Text>
+    //         </View>
+    //         <View
+    //           style={{
+    //             flexGrow: 1,
+    //             flexDirection: "row",
+    //             justifyContent: "flex-end",
+    //             // paddingHorizontal: 5
+    //           }}
+    //         >
+    //           {/* <Text style={styles.cardTitle} >complaint description :</Text> */}
+    //           <Text
+    //             style={styles.FLCP_cardTitle}
+    //           >{`#${complaint_slno}/2023`}</Text>
+    //         </View>
+    //       </View>
+    //     </View>
+    //     {/* request type and complaint type */}
+    //     <View>
+    //       <View
+    //         style={{
+    //           flexGrow: 1,
+    //           flexDirection: "row",
+    //           borderColor: fontColor.inActiveFont,
+    //           justifyContent: "space-between",
+    //         }}
+    //       >
+    //         <View
+    //           style={{
+    //             flexGrow: 1,
+    //             flexDirection: "row",
+    //             alignContent: "center",
+    //             alignItems: "center",
+    //             justifyContent: "flex-start",
+    //             // textTransform: 'capitalize'
+    //           }}
+    //         >
+    //           <Text style={styles.FLCP_headStyle}>request Type :</Text>
+    //           <Text style={styles.FLCP_cardTitle}>{req_type_name}</Text>
+    //         </View>
+    //         <View
+    //           style={{
+    //             flexGrow: 1,
+    //             flexDirection: "row",
+    //             justifyContent: "flex-end",
+    //             // paddingHorizontal: 5
+    //           }}
+    //         >
+    //           {/* <Text style={styles.cardTitle} >complaint description :</Text> */}
+    //           <Text style={styles.FLCP_cardTitle}>{complaint_type_name}</Text>
+    //         </View>
+    //       </View>
+    //     </View>
+    //     <View style={{ marginTop: 5 }}>
+    //       <View>
+    //         <Text style={styles.FLCP_headStyle}>
+    //           complaint description :
+    //           <Text style={styles.FLCP_cardTitle}> {` ${complaint_desc}`}</Text>
+    //         </Text>
+    //       </View>
+    //     </View>
+    //     <View
+    //       style={{
+    //         // flex: 1,
+    //         flexDirection: "row",
+    //       }}
+    //     >
+    //       <Text style={styles.FLCP_headStyle}>Location :</Text>
+    //       <Text style={styles.FLCP_cardTitle}>{location}</Text>
+    //     </View>
+    //   </View>
+    //   <View
+    //     style={{
+    //       flexGrow: 1,
+    //       flexDirection: "row",
+    //       paddingHorizontal: 6,
+    //       justifyContent: "space-between",
+    //       marginVertical: 5,
+    //     }}
+    //   >
+    //     <View style={{ flex: 1 }}>
+    //       <Button
+    //         icon={() => (
+    //           <AntDesign
+    //             name="rightcircle"
+    //             color={colorTheme.secondaryBgColor}
+    //             size={20}
+    //           />
+    //         )}
+    //         mode="elevated"
+    //         style={{
+    //           borderRadius: 0,
+    //           borderTopLeftRadius: 10,
+    //           borderBottomLeftRadius: 10,
+    //           backgroundColor: colorTheme.mainColor,
+    //           borderWidth: 0.5,
+    //           borderColor: "white",
+    //         }}
+    //         labelStyle={{ color: colorTheme.secondaryBgColor }}
+    //         onPress={() => quickAssignMent()}
+    //       >
+    //         Quick
+    //       </Button>
+    //     </View>
+    //     {supervisor === 1 ? (
+    //       <View style={{ flex: 1 }}>
+    //         <Button
+    //           icon={() => (
+    //             <MaterialIcons
+    //               name="assignment-ind"
+    //               size={21}
+    //               style={{ color: colorTheme.secondaryBgColor }}
+    //             />
+    //           )}
+    //           // loading={true}
+    //           mode="elevated"
+    //           style={{
+    //             borderRadius: 0,
+    //             backgroundColor: colorTheme.mainColor,
+    //             borderWidth: 0.5,
+    //             borderColor: "white",
+    //           }}
+    //           labelStyle={{ color: colorTheme.secondaryBgColor }}
+    //           onPress={assign}
+    //         >
+    //           Assign
+    //         </Button>
+    //       </View>
+    //     ) : null}
+    //     <View style={{ flex: 1 }}>
+    //       <Button
+    //         icon={() => (
+    //           <Ionicons
+    //             name="arrow-redo-sharp"
+    //             color={colorTheme.secondaryBgColor}
+    //             size={21}
+    //           />
+    //         )}
+    //         elevation={10}
+    //         mode="elevated"
+    //         style={{
+    //           borderRadius: 0,
+    //           borderTopEndRadius: 10,
+    //           borderBottomRightRadius: 10,
+    //           backgroundColor: colorTheme.mainColor,
+    //           borderColor: "white",
+    //           borderWidth: 0.5,
+    //         }}
+    //         labelStyle={{ color: colorTheme.secondaryBgColor }}
+    //         onPress={() => transferFun()}
+    //       >
+    //         Transfer
+    //       </Button>
+    //     </View>
+    //   </View>
+    // </View>
   );
 };
 
