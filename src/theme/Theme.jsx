@@ -35,6 +35,8 @@ const CombinedDarkTheme = {
     whiteFontColor: "#fff",
     cardBgColor: "rgb(178, 146, 202)",
     cardBgSecond: "#303030",
+    inactiveFont: "#a3a0a4",
+    lightBlueFont: "#444655",
   },
 };
 
@@ -58,6 +60,8 @@ const CombinedLightTheme = {
     whiteFontColor: "#fff",
     cardBgColor: "rgb(178, 146, 202)",
     cardBgSecond: "#fff",
+    inactiveFont: "#a3a0a4",
+    lightBlueFont: "#444655",
   },
 };
 
