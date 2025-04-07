@@ -1,5 +1,5 @@
 import { Image, StyleSheet, View } from "react-native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Avatar, Button, Card, Text, useTheme } from "react-native-paper";
 import image0 from "../../../../assets/pic/1.png";
 import image1 from "../../../../assets/pic/2.png";
@@ -8,10 +8,18 @@ import image3 from "../../../../assets/pic/4.png";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { shallowEqual, useSelector } from "react-redux";
 
 const PersonalinfoCard = () => {
   const theme = useTheme();
   const image = [image0, image1, image2, image3];
+
+  const loggedEmpDetl = useSelector(
+    (state) => state.loginFuntion.loginInfo.loginDetl,
+    shallowEqual
+  );
+  const loggedDetl = useMemo(() => loggedEmpDetl, [loggedEmpDetl]);
+  const { emp_name, emp_id, emp_no, emp_dept, dept_name, emp_sec } = loggedDetl;
 
   const [imageUri, setImageUri] = useState(image[0]);
   const randomIndex = Math.floor(Math.random() * image.length);
@@ -61,12 +69,13 @@ const PersonalinfoCard = () => {
             fontSize: 18,
             fontFamily: "Roboto_500Medium",
             color: theme.colors.whiteFontColor,
+            textTransform: "capitalize",
           }}
           lineBreakMode="head"
           lineBreakStrategyIOS="hangul-word"
           numberOfLines={1}
         >
-          Ajith Arjunan
+          {emp_name?.toLowerCase()}
         </Text>
         <Text
           lineBreakMode="head"
@@ -77,9 +86,10 @@ const PersonalinfoCard = () => {
             fontFamily: "Roboto_500Medium",
             lineHeight: 18,
             color: theme.colors.whiteFontColor,
+            textTransform: "capitalize",
           }}
         >
-          Manager
+          {dept_name?.toLowerCase() ?? null}
         </Text>
         <Text
           lineBreakMode="head"
@@ -90,9 +100,10 @@ const PersonalinfoCard = () => {
             fontFamily: "Roboto_500Medium",
             lineHeight: 15,
             color: theme.colors.whiteFontColor,
+            textTransform: "capitalize",
           }}
         >
-          Information Technology
+          {emp_sec?.toLowerCase() ?? null}
         </Text>
         <View
           style={{
@@ -124,7 +135,7 @@ const PersonalinfoCard = () => {
                 lineHeight: 15,
               }}
             >
-              100
+              0
             </Text>
           </View>
           <View
@@ -151,7 +162,7 @@ const PersonalinfoCard = () => {
                 lineHeight: 15,
               }}
             >
-              100
+              0
             </Text>
           </View>
         </View>

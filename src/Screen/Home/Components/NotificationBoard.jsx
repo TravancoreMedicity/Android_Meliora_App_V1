@@ -30,6 +30,19 @@ const NotificationBoard = () => {
     }
   };
 
+  const notification = [
+    {
+      title: "Ticket Management",
+      body: "Ticket management software is a tool used to efficiently track, prioritize, assign, and resolve customer or internal support requests. It helps teams streamline communication, improve response times, and ensure no issue falls through the cracks—ideal for customer service, IT support, and help desks",
+      time: "07-04-2025 02:34 PM",
+    },
+    {
+      title: "CRF Management",
+      body: "Central Asset Request Management is a unified system that streamlines how teams request, approve, track, and manage organizational assets—such as equipment, devices, software, or facilities—ensuring transparency, accountability, and faster fulfillment.",
+      time: "07-04-2025 02:34 PM",
+    },
+  ];
+
   return (
     <View
       style={{
@@ -45,11 +58,11 @@ const NotificationBoard = () => {
         height={110}
         autoFillData={true}
         autoPlay={true}
-        autoPlayInterval={3000}
+        autoPlayInterval={10000}
         windowSize={1}
         mode="parallax"
         modeConfig={{
-          parallaxScrollingScale: 0.86,
+          parallaxScrollingScale: 0.88,
           parallaxScrollingOffset: 40,
         }}
         pagingEnabled={true}
@@ -60,7 +73,7 @@ const NotificationBoard = () => {
           width: width,
         }}
         // vertical={true}
-        data={data}
+        data={notification}
         onProgressChange={progress}
         renderItem={(data) => (
           <View
@@ -95,7 +108,7 @@ const NotificationBoard = () => {
                 lineBreakMode="middle"
                 textBreakStrategy="balanced"
               >
-                Notifications
+                {data?.item?.title}
               </Text>
             </View>
             <View
@@ -107,21 +120,17 @@ const NotificationBoard = () => {
             >
               <Text
                 style={{
-                  textAlign: "center",
                   fontSize: 30,
-                  textAlign: "center",
+                  textAlign: "justify",
                   fontSize: 16,
-                  // textTransform: "capitalize",
+                  textTransform: "capitalize",
                   fontFamily: "Roboto_300Light",
                   color: "#fff",
                   // paddingHorizontal: 10,
                 }}
                 numberOfLines={3}
               >
-                sdfsdfsfsdfsdfdsfsdfsdfsdf sdfsf sdf sdfsdfs sfsdfs
-                sdfsdfsdfsdghtfhrhytu drgdrgr ertertertert
-                erterterytyuy7iyiuyiyuiyuiyuiyuiy dtdrtrtdrtdrtdrtd
-                drtdrtdtyrtuyiou youoy
+                {data?.item?.body}
               </Text>
             </View>
           </View>
