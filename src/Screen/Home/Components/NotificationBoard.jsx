@@ -1,16 +1,7 @@
-import {
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-  Dimensions,
-} from "react-native";
+import { Text, useWindowDimensions, View } from "react-native";
 import React, { memo, useRef } from "react";
 import { useSharedValue } from "react-native-reanimated";
-import Carousel, {
-  ICarouselInstance,
-  Pagination,
-} from "react-native-reanimated-carousel";
+import Carousel from "react-native-reanimated-carousel";
 import { useTheme } from "react-native-paper";
 
 const data = [100, 200, 300, 400, 500];
@@ -148,6 +139,4 @@ const NotificationBoard = () => {
   );
 };
 
-export default NotificationBoard; // NotificationBoard;
-
-const styles = StyleSheet.create({});
+export default memo(NotificationBoard); // NotificationBoard;

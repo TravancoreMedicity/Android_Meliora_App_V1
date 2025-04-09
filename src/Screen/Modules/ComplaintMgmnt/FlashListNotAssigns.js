@@ -49,6 +49,7 @@ const FlashListNotAssigns = ({ navigation }) => {
   const [loding, setLoading] = useState(true);
 
   const notAssignedList = useSelector(getNotAssignedList);
+  //   console.log(notAssignedList);
 
   return (
     <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
@@ -68,7 +69,7 @@ const FlashListNotAssigns = ({ navigation }) => {
       >
         <Suspense fallback={<CustomActivityIndicator />}>
           <FlashListNotAssignCmp
-            notAssigned={notAssignedList}
+            notAssigned={[]}
             setCount={setCount}
             refresh={refresh}
             count={count}

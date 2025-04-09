@@ -3,10 +3,20 @@ import React, { memo } from "react";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { getLogiEmployeeID } from "../../../../../Redux/ReduxSlice/LoginSLice";
+import { UseGetPendingTicketCount } from "../../../../../api/TicketsUtilities";
 
 const DashAssistRequested = () => {
   const theme = useTheme();
   const { width } = useWindowDimensions();
+  const navigation = useNavigation();
+  const empID = useSelector((state) => getLogiEmployeeID(state));
+
+  const { data, isError, isLoading, isSuccess } =
+    UseGetPendingTicketCount(empID);
+  console.log(data);
 
   return (
     <View

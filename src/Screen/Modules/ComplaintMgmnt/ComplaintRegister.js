@@ -68,13 +68,12 @@ const ComplaintRegister = ({ navigation }) => {
 
   const dispatch = useDispatch();
 
+  //   Login INformation
   const loggedEmpDetl = useSelector(
     (state) => state.loginFuntion.loginInfo.loginDetl
   );
   const loggedDetl = useMemo(() => loggedEmpDetl, [loggedEmpDetl]);
   const { emp_id, emp_dept } = loggedDetl;
-
-  console.log(loggedDetl);
 
   const [refresh, setRefresh] = useState(false);
   const [count, setCount] = useState(0);

@@ -13,7 +13,7 @@ const FlashListNotAssign = ({
   count,
   setLoading,
 }) => {
-  const legth = Object.keys(notAssigned).length;
+  const legth = Object.keys(notAssigned)?.length;
   return (
     <FlashList
       data={notAssigned}

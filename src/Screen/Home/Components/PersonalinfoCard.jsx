@@ -19,7 +19,8 @@ const PersonalinfoCard = () => {
     shallowEqual
   );
   const loggedDetl = useMemo(() => loggedEmpDetl, [loggedEmpDetl]);
-  const { emp_name, emp_id, emp_no, emp_dept, dept_name, emp_sec } = loggedDetl;
+  const { emp_name, emp_id, emp_no, emp_dept, dept_name, emp_sec, desg_name } =
+    loggedDetl;
 
   const [imageUri, setImageUri] = useState(image[0]);
   const randomIndex = Math.floor(Math.random() * image.length);
@@ -89,7 +90,7 @@ const PersonalinfoCard = () => {
             textTransform: "capitalize",
           }}
         >
-          {dept_name?.toLowerCase() ?? null}
+          {desg_name?.toLowerCase() ?? null}
         </Text>
         <Text
           lineBreakMode="head"
