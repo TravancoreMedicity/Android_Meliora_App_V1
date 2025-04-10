@@ -44,6 +44,8 @@ const NotAssignedCard = ({ data, setCount }) => {
 
   const navigation = useNavigation();
 
+  const pendingAssinData = useMemo(() => data, [data]);
+
   //for assign modal
   const [visible, setVisible] = useState(false);
   //for transfer modal
@@ -55,13 +57,38 @@ const NotAssignedCard = ({ data, setCount }) => {
     complaint_hicslno,
     complaint_slno,
     complaint_type_name,
-    create_employee,
+    comp_reg_emp,
     dept_sec,
     location,
     priority_check,
     priority_reason,
+    sec_name,
     req_type_name,
-  } = data;
+    rm_room_name,
+  } = pendingAssinData;
+
+  const locationName = useMemo(() => {
+    const location =
+      pendingAssinData.rm_roomtype_name ||
+      pendingAssinData.rm_insidebuildblock_name ||
+      pendingAssinData.rm_floor_name
+        ? `(${pendingAssinData.rm_roomtype_name || ""}${
+            pendingAssinData.rm_roomtype_name &&
+            pendingAssinData.rm_insidebuildblock_name
+              ? " - "
+              : ""
+          }${pendingAssinData.rm_insidebuildblock_name || ""}${
+            pendingAssinData.rm_insidebuildblock_name &&
+            pendingAssinData.rm_floor_name
+              ? " - "
+              : ""
+          }${pendingAssinData.rm_floor_name || ""})`
+        : pendingAssinData.cm_complaint_location || null;
+
+    return `${pendingAssinData.rm_room_name} ${location}`;
+  }, [pendingAssinData]);
+
+  // console.log(locationName);
 
   const assignData = useMemo(() => data, [data]);
 
@@ -238,7 +265,7 @@ const NotAssignedCard = ({ data, setCount }) => {
                   }}
                   numberOfLines={1}
                 >
-                  {create_employee}
+                  {comp_reg_emp}
                 </Text>
                 <Text
                   style={{
@@ -260,7 +287,7 @@ const NotAssignedCard = ({ data, setCount }) => {
                     color: theme.colors.lightBlueFont,
                   }}
                 >
-                  {dept_sec}
+                  {sec_name}
                 </Text>
               </View>
             </View>
@@ -326,7 +353,7 @@ const NotAssignedCard = ({ data, setCount }) => {
                 color: theme.colors.lightBlueFont,
               }}
             >
-              {location}
+              {locationName}
             </Text>
           </View>
 
@@ -409,7 +436,11 @@ const NotAssignedCard = ({ data, setCount }) => {
               //   borderStartEndRadius: 30,
             }}
           >
-            <AntDesign name="setting" size={20} color={theme.colors.logoCol2} />
+            <AntDesign
+              name="pushpino"
+              size={20}
+              color={theme.colors.logoCol2}
+            />
             {/* <Text
               style={{
                 fontSize: 11,

@@ -25,10 +25,24 @@ const getPendingAssistRequestCount = async (empID) => {
   return await response.data;
 };
 
-export const UseGetPendingTicketCount = (empID) => {
+export const UseGetPendingAssistTicketCount = (empID) => {
   const { data, isError, isLoading, isSuccess } = useQuery({
     queryKey: ["getAssistpendingCount"],
     queryFn: () => getPendingAssistRequestCount(empID),
+  });
+  return { data, isLoading, isError, isSuccess };
+};
+
+// PENDING TICKET LIST COUNT
+const getPendingTicket = async (deptID) => {
+  const response = await axiosApi.get(`/complaintassign/${deptID}`);
+  return await response.data;
+};
+
+export const UseGetPendingTicket = (deptID) => {
+  const { data, isError, isLoading, isSuccess } = useQuery({
+    queryKey: ["peningTicketList"],
+    queryFn: () => getPendingTicket(deptID),
   });
   return { data, isLoading, isError, isSuccess };
 };

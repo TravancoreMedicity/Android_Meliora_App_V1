@@ -37,6 +37,8 @@ import { getNotAssignedList } from "../../../Redux/ReduxSlice/ticketMagmntSlice"
 import ApiGetFun from "./func/ApiGetFun";
 import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 import { useTheme } from "react-native-paper";
+import { UseGetPendingTicket } from "../../../api/TicketsUtilities";
+import { getLogiEmpDEPT } from "../../../Redux/ReduxSlice/LoginSLice";
 
 // create a component
 const FlashListNotAssigns = ({ navigation }) => {
@@ -48,7 +50,14 @@ const FlashListNotAssigns = ({ navigation }) => {
   const [count, setCount] = useState(0);
   const [loding, setLoading] = useState(true);
 
-  const notAssignedList = useSelector(getNotAssignedList);
+  const deptID = useSelector((state) => getLogiEmpDEPT(state));
+
+  const { data, isError, isLoading, isSuccess } = UseGetPendingTicket(deptID);
+
+  // console.log(data?.data?.[0]);
+
+  // console.log(pendingTicketList?.data?.data);
+  // const notAssignedList = useSelector(getNotAssignedList);
   //   console.log(notAssignedList);
 
   return (
@@ -61,7 +70,6 @@ const FlashListNotAssigns = ({ navigation }) => {
 
       <View
         style={{
-          //   height: (windowHeight * 90) / 100,
           height: height - 100,
           width: width,
           paddingHorizontal: 15,
@@ -69,7 +77,7 @@ const FlashListNotAssigns = ({ navigation }) => {
       >
         <Suspense fallback={<CustomActivityIndicator />}>
           <FlashListNotAssignCmp
-            notAssigned={[]}
+            notAssigned={isLoading ? [] : data?.data}
             setCount={setCount}
             refresh={refresh}
             count={count}

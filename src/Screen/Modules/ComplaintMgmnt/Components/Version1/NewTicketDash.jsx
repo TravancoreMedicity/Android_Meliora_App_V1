@@ -30,7 +30,7 @@ const NewTicketDash = () => {
       <View
         style={{
           backgroundColor: theme.colors.cardBgColor,
-          height: 55,
+          height: 50,
           borderRadius: 15,
           overflow: "hidden",
           flexDirection: "row",
@@ -49,7 +49,7 @@ const NewTicketDash = () => {
             style={{
               flex: 1,
               flexDirection: "row",
-              justifyContent: "center",
+              justifyContent: "space-evenly",
               alignItems: "center",
             }}
           >
@@ -78,6 +78,7 @@ const NewTicketDash = () => {
               fontSize: 20,
               fontWeight: "900",
               color: theme.colors.logoCol2,
+              textAlign: "center",
             }}
           >
             {isLoading === true ? <Skeleton /> : pendingTicketCount}

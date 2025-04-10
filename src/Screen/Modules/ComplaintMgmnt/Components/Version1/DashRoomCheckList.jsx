@@ -1,75 +1,84 @@
-import { View, Text, useWindowDimensions } from "react-native";
+import {
+  View,
+  Text,
+  useWindowDimensions,
+  TouchableOpacity,
+} from "react-native";
 import React, { memo } from "react";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 
 const DashRoomCheckList = () => {
   const theme = useTheme();
   const { width } = useWindowDimensions();
+  const navigation = useNavigation();
 
   return (
-    <View
-      style={{
-        backgroundColor: theme.colors.cardBgColor,
-        borderRadius: 15,
-        height: 50,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <TouchableOpacity onPress={() => navigation.navigate("notAssign")}>
       <View
         style={{
-          flex: 1,
-          flexDirection: "row",
+          backgroundColor: theme.colors.cardBgColor,
+          borderRadius: 15,
+          height: 50,
           justifyContent: "center",
           alignItems: "center",
-          paddingLeft: width > 460 ? 0 : 10,
         }}
       >
         <View
           style={{
             flex: 1,
             flexDirection: "row",
+            justifyContent: "center",
             alignItems: "center",
+            paddingLeft: width > 460 ? 0 : 10,
           }}
         >
-          <Ionicons
-            name="ticket-outline"
-            size={30}
-            color={theme.colors.logoCol2}
-          />
-          {/* </View> */}
-          <Text
+          <View
             style={{
-              fontFamily: "Roboto_400Regular",
-              fontSize: width > 360 ? 17 : 15,
-              fontWeight: "800",
-              paddingLeft: 10,
-              color: theme.colors.logoCol2,
+              flex: 1,
+              flexDirection: "row",
+              alignItems: "center",
             }}
           >
-            Room Checklist
-          </Text>
-        </View>
-        <View
-          style={{
-            flex: 0.3,
-            flexDirection: "row",
-          }}
-        >
-          <Text
+            <Ionicons
+              name="ticket-outline"
+              size={30}
+              color={theme.colors.logoCol2}
+            />
+            {/* </View> */}
+            <Text
+              style={{
+                fontFamily: "Roboto_400Regular",
+                fontSize: width > 360 ? 17 : 15,
+                fontWeight: "800",
+                paddingLeft: 10,
+                color: theme.colors.logoCol2,
+              }}
+            >
+              Room Checklist
+            </Text>
+          </View>
+          <View
             style={{
-              fontFamily: "Roboto_400Regular",
-              fontSize: 20,
-              fontWeight: "900",
-              color: theme.colors.logoCol2,
+              flex: 0.3,
+              flexDirection: "row",
             }}
           >
-            2000
-          </Text>
+            <Text
+              style={{
+                fontFamily: "Roboto_400Regular",
+                fontSize: 20,
+                fontWeight: "900",
+                color: theme.colors.logoCol2,
+              }}
+            >
+              2000
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
