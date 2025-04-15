@@ -54,7 +54,7 @@ const FlashListNotAssigns = ({ navigation }) => {
 
   const { data, isError, isLoading, isSuccess } = UseGetPendingTicket(deptID);
 
-  // console.log(data?.data?.[0]);
+  // console.log(data?.data);
 
   // console.log(pendingTicketList?.data?.data);
   // const notAssignedList = useSelector(getNotAssignedList);
@@ -77,7 +77,7 @@ const FlashListNotAssigns = ({ navigation }) => {
       >
         <Suspense fallback={<CustomActivityIndicator />}>
           <FlashListNotAssignCmp
-            notAssigned={isLoading ? [] : data?.data}
+            notAssigned={isLoading ? [] : data?.data ?? []}
             setCount={setCount}
             refresh={refresh}
             count={count}
@@ -92,7 +92,6 @@ const FlashListNotAssigns = ({ navigation }) => {
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: colorTheme.mainBgColor,
-          // minHeight: (windowHeight * 5 / 100)
         }}
       >
         <Text

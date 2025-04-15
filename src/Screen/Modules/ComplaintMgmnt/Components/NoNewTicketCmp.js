@@ -1,23 +1,32 @@
 //import liraries
-import React, { memo } from 'react';
-import { View, Text } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
-import { windowHeight } from '../../../../utils/Dimentions';
+import React, { memo } from "react";
+import { View, Text, useWindowDimensions } from "react-native";
+import { ActivityIndicator, useTheme } from "react-native-paper";
 
 // create a component
-const NoNewTicketCmp = ({ legth }) => {
-    return (
-        <View style={{
-            height: windowHeight >= 1200 ? windowHeight - 280 : windowHeight - 220,
-            alignItems: 'center',
-            justifyContent: 'center'
-        }} >
-            <ActivityIndicator color='pink' />
-            {
-                legth === 0 && <Text>No new Tickets</Text>
-            }
-        </View>
-    );
+const NoNewTicketCmp = () => {
+  const theme = useTheme();
+  const { height } = useWindowDimensions();
+  return (
+    <View
+      style={{
+        height: (height * 80) / 100,
+        alignItems: "center",
+        justifyContent: "center",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
+    >
+      <ActivityIndicator
+        color={theme.colors.logoCol2}
+        size={40}
+        animating={true}
+      />
+    </View>
+  );
 };
 
 //make this component available to the app

@@ -8,13 +8,13 @@ import React, {
   useMemo,
   useRef,
 } from "react";
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, TouchableOpacity } from "react-native";
 import { bgColor, colorTheme, fontColor } from "../../../../Constant/Colors";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { Button, useTheme } from "react-native-paper";
+import { Button, Dialog, Portal, useTheme } from "react-native-paper";
 import { styles } from "../Style/Style";
 import _ from "underscore";
 import { useSelector } from "react-redux";
@@ -26,6 +26,7 @@ import AlertModal from "./Modals/AlertModal";
 import TicketAssignModal from "./Modals/TicketAssignModal";
 import BaseModal from "../../../../Components/BaseModal";
 import ComplainDeptTransfer from "./Modals/ComplainDeptTransfer";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CustmDIalog = lazy(() => import("./CustmDIalog"));
 const CmpTransfer = lazy(() => import("./CmpTransfer"));
@@ -33,23 +34,23 @@ const CmpTransfer = lazy(() => import("./CmpTransfer"));
 // create a component
 const NotAssignedCard = ({ data, setCount }) => {
   const theme = useTheme();
-  const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
+  const queryClient = useQueryClient();
 
+  // STATE MANAGMENT
+  const [visible, setVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [trVisible, setTrVisible] = useState(false);
+
+  // DATA FETCHING AND MEMORIZATION
   const loggedEmpDetl = useSelector(
     (state) => state.loginFuntion.loginInfo.loginDetl,
     _.isEqual
   );
-  const loggedDetl = useMemo(() => loggedEmpDetl, [loggedEmpDetl]);
-  const { emp_id, supervisor } = loggedDetl;
-
-  const navigation = useNavigation();
 
   const pendingAssinData = useMemo(() => data, [data]);
-
-  //for assign modal
-  const [visible, setVisible] = useState(false);
-  //for transfer modal
-  const [trVisible, setTrVisible] = useState(false);
+  const loggedDetl = useMemo(() => loggedEmpDetl, [loggedEmpDetl]);
+  const { emp_id, supervisor } = loggedDetl;
 
   const {
     compalint_date,
@@ -67,6 +68,7 @@ const NotAssignedCard = ({ data, setCount }) => {
     rm_room_name,
   } = pendingAssinData;
 
+  // location name mapping
   const locationName = useMemo(() => {
     const location =
       pendingAssinData.rm_roomtype_name ||
@@ -140,8 +142,92 @@ const NotAssignedCard = ({ data, setCount }) => {
 
   const year = format(new Date(compalint_date), "yyyy");
 
+  const handleHideDialog = () => setVisible(false);
+
+  const quickAssignPostData = useMemo(() => {
+    return {
+      complaint_slno: complaint_slno,
+      assigned_emp: emp_id,
+      assigned_date: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+      assign_rect_status: 0,
+      assigned_user: emp_id,
+      assign_status: 1,
+    };
+  }, [emp_id, complaint_slno]);
+
+  const handleQuickAssignTicket = async () => {
+    console.log("submit function");
+    console.log(quickAssignPostData);
+
+    const response = await axiosApi.post(
+      "/complaintassign",
+      quickAssignPostData
+    );
+    const { success, message } = response.data;
+    if (success === 1) {
+      // PENDING TICKET LIST
+      queryClient.invalidateQueries({
+        queryKey: ["peningTicketList"],
+        exact: true,
+        refetchType: "active",
+      });
+      // PENDING TICKET COUNT
+      queryClient.invalidateQueries({
+        queryKey: ["peningTicketCount"],
+        exact: true,
+        refetchType: "active",
+      });
+      handleHideDialog();
+    }
+
+    console.log(response.data);
+  };
+
   return (
     <View>
+      {/* PORTAL DIALOG FOR QUICK ASSIGN */}
+      <Portal>
+        <Dialog visible={visible} onDismiss={handleHideDialog}>
+          <Dialog.Icon
+            icon="book-cog-outline"
+            size={30}
+            color={theme.colors.logoCol2}
+          />
+          <Dialog.Title
+            style={{
+              textAlign: "center",
+              fontSize: 16,
+              fontFamily: "Roboto_500Medium",
+              color: theme.colors.logoCol2,
+            }}
+          >
+            Tap "Agree" to assign this to yourself
+          </Dialog.Title>
+          <Dialog.Actions>
+            <Button
+              onPress={() => handleQuickAssignTicket()}
+              mode="elevated"
+              style={{
+                width: 100,
+              }}
+            >
+              agree
+            </Button>
+            <Button
+              onPress={() => setVisible(false)}
+              mode="elevated"
+              style={{
+                width: 100,
+              }}
+            >
+              not agree
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+
+      {/* SNACK BAR FOR SHOWING MESSAGES */}
+
       <View
         style={{
           minHeight: 150,
@@ -149,22 +235,17 @@ const NotAssignedCard = ({ data, setCount }) => {
           marginBottom: 20,
           borderRadius: 20,
           overflow: "hidden",
-          // paddingLeft: 5,
           paddingVertical: 5,
           borderLeftWidth: 2,
           borderColor:
             priority_check === 1
               ? theme.colors.logoCol1
               : theme.colors.cardBgColor,
-          //   justifyContent: "space-between",
         }}
       >
         {/* top component */}
         <View
           style={{
-            // flex: 1,
-            // height: 30,
-            // padding: 5,
             marginBottom: 3,
           }}
         >
@@ -300,7 +381,6 @@ const NotAssignedCard = ({ data, setCount }) => {
             paddingLeft: 15,
             justifyContent: "flex-start",
             alignItems: "flex-start",
-            // backgroundColor: "green",
           }}
         >
           <View>
@@ -382,11 +462,8 @@ const NotAssignedCard = ({ data, setCount }) => {
           </View>
           <View
             style={{
-              //   flex: 1,
               width: "100%",
-              //   flexDirection: "row",
               alignItems: "center",
-              //   backgroundColor: "red",
             }}
           >
             {priority_check === 1 ? (
@@ -417,71 +494,59 @@ const NotAssignedCard = ({ data, setCount }) => {
           style={{
             flex: 0.2,
             flexDirection: "row",
-            // backgroundColor: theme.colors.cardBgColor,
             marginTop: 5,
             padding: 5,
             paddingHorizontal: 15,
           }}
         >
-          <View
+          <TouchableOpacity
+            onPress={() => setVisible(true)}
             style={{
               flex: 1,
-              //   backgroundColor: "red",
               alignItems: "center",
               paddingVertical: 3,
               marginHorizontal: 10,
               borderWidth: 1,
               borderColor: theme.colors.logoCol2,
               borderRadius: 30,
-              //   borderStartEndRadius: 30,
             }}
           >
-            <AntDesign
-              name="pushpino"
-              size={20}
-              color={theme.colors.logoCol2}
-            />
-            {/* <Text
-              style={{
-                fontSize: 11,
-                fontFamily: "Roboto_500Medium",
-                fontWeight: "800",
-                color: theme.colors.logoCol2,
-              }}
+            <View
+              style={
+                {
+                  // flex: 1,
+                  // alignItems: "center",
+                  // paddingVertical: 3,
+                  // marginHorizontal: 10,
+                  // borderWidth: 1,
+                  // borderColor: theme.colors.logoCol2,
+                  // borderRadius: 30,
+                }
+              }
             >
-              Quick Assign
-            </Text> */}
-          </View>
+              <AntDesign
+                name="pushpino"
+                size={20}
+                color={theme.colors.logoCol2}
+              />
+            </View>
+          </TouchableOpacity>
           <View
             style={{
               flex: 1,
-              //   backgroundColor: "green",
               alignItems: "center",
               paddingVertical: 3,
               borderWidth: 1,
-              //   borderEndWidth: 0,
-              //   borderStartWidth: 0,
               borderColor: theme.colors.logoCol2,
               borderRadius: 30,
               marginHorizontal: 10,
             }}
           >
             <AntDesign name="tool" size={20} color={theme.colors.logoCol2} />
-            {/* <Text
-              style={{
-                fontSize: 11,
-                fontFamily: "Roboto_500Medium",
-                fontWeight: "800",
-                color: theme.colors.logoCol2,
-              }}
-            >
-              Assign
-            </Text> */}
           </View>
           <View
             style={{
               flex: 1,
-              //   backgroundColor: "blue",
               alignItems: "center",
               paddingVertical: 3,
               borderWidth: 1,
@@ -491,38 +556,10 @@ const NotAssignedCard = ({ data, setCount }) => {
             }}
           >
             <AntDesign name="export" size={20} color={theme.colors.logoCol2} />
-            {/* <Text
-              style={{
-                fontSize: 11,
-                fontFamily: "Roboto_500Medium",
-                fontWeight: "800",
-                color: theme.colors.logoCol2,
-              }}
-            >
-              Transfer
-            </Text> */}
           </View>
         </View>
         {/* Bottom Components End */}
       </View>
-
-      {/* Old  ********************************
-       *
-       *
-       * *
-       * *
-       * *
-       *
-       * *
-       * *
-       * *
-       * *
-       * *
-       * *
-       * *
-       * *
-       * *
-       * *****************************************/}
     </View>
   );
 };

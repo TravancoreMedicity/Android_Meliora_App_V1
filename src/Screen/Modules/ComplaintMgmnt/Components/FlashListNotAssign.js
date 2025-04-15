@@ -16,13 +16,13 @@ const FlashListNotAssign = ({
   const legth = Object.keys(notAssigned)?.length;
   return (
     <FlashList
-      data={notAssigned}
+      data={notAssigned ?? []}
       keyboardShouldPersistTaps="always"
       renderItem={({ item }) => (
         <NotAssignedCard data={item} setCount={setCount} />
       )}
       estimatedItemSize={legth || 5}
-      // ListEmptyComponent={<NoNewTicketCmp legth={legth} />}
+      ListEmptyComponent={<NoNewTicketCmp legth={legth} />}
       showsVerticalScrollIndicator={false}
       keyExtractor={(Assigned) => Assigned.complaint_slno}
       // estimatedListSize={

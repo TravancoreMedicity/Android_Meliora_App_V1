@@ -63,7 +63,7 @@ const Login = () => {
 
       const result = await axiosApi.post("/employee/login", loginCred);
       const { success } = result.data;
-      console.log(result);
+      console.log(result.data);
       if (success === 1) {
         const token = await JSON.stringify(result.data.token);
         const userInfo = await JSON.stringify(result.data);
@@ -78,7 +78,7 @@ const Login = () => {
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setErrorMesg(true);
     }
   };
