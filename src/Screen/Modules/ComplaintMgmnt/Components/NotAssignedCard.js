@@ -27,6 +27,7 @@ import TicketAssignModal from "./Modals/TicketAssignModal";
 import BaseModal from "../../../../Components/BaseModal";
 import ComplainDeptTransfer from "./Modals/ComplainDeptTransfer";
 import { useQueryClient } from "@tanstack/react-query";
+import ToastManager, { Toast } from "toastify-react-native";
 
 const CustmDIalog = lazy(() => import("./CustmDIalog"));
 const CmpTransfer = lazy(() => import("./CmpTransfer"));
@@ -142,7 +143,7 @@ const NotAssignedCard = ({ data, setCount }) => {
 
   const year = format(new Date(compalint_date), "yyyy");
 
-  const handleHideDialog = () => setVisible(false);
+  const handleHideDialog = async () => setVisible(false);
 
   const quickAssignPostData = useMemo(() => {
     return {
@@ -156,36 +157,43 @@ const NotAssignedCard = ({ data, setCount }) => {
   }, [emp_id, complaint_slno]);
 
   const handleQuickAssignTicket = async () => {
-    console.log("submit function");
-    console.log(quickAssignPostData);
-
     const response = await axiosApi.post(
       "/complaintassign",
       quickAssignPostData
     );
+
     const { success, message } = response.data;
     if (success === 1) {
-      // PENDING TICKET LIST
-      queryClient.invalidateQueries({
-        queryKey: ["peningTicketList"],
-        exact: true,
-        refetchType: "active",
+      Toast.show({
+        type: "success",
+        text1: "Ticket Assigned",
+        text2: message,
+        onHide: () => {
+          // PENDING TICKET LIST
+          queryClient.invalidateQueries({
+            queryKey: ["peningTicketList"],
+            exact: true,
+            refetchType: "active",
+          });
+          // PENDING TICKET COUNT
+          queryClient.invalidateQueries({
+            queryKey: ["peningTicketCount"],
+            exact: true,
+            refetchType: "active",
+          });
+
+          handleHideDialog();
+        },
       });
-      // PENDING TICKET COUNT
-      queryClient.invalidateQueries({
-        queryKey: ["peningTicketCount"],
-        exact: true,
-        refetchType: "active",
-      });
-      handleHideDialog();
     }
 
-    console.log(response.data);
+    // console.log(response.data);
   };
 
   return (
     <View>
       {/* PORTAL DIALOG FOR QUICK ASSIGN */}
+      {/* <ToastManager /> */}
       <Portal>
         <Dialog visible={visible} onDismiss={handleHideDialog}>
           <Dialog.Icon

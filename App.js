@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { store } from "./src/Redux/Store";
 import AppNav from "./src/Navigation/AppNav";
 import { View, Text } from "react-native";
+import ToastManager from "toastify-react-native";
 
 const quieryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const App = () => {
     <QueryClientProvider client={quieryClient}>
       <Provider store={store}>
         <GestureHandlerRootView>
+          <ToastManager />
           <AppNav />
         </GestureHandlerRootView>
       </Provider>

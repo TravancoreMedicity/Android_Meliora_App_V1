@@ -43,7 +43,7 @@ import {
 } from "../../../Redux/ReduxSlice/commonSlice";
 import { getComplaintPriority } from "../../../Redux/ReduxSlice/ComplaintPrioritySlice";
 import { useTheme } from "react-native-paper";
-import Skeleton from "../../../Components/Skeleton-Cmp/Skeleton";
+import Skeleton from "../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
 import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 import NewTicketDash from "./Components/Version1/NewTicketDash";
 import DashAssistRequested from "./Components/Version1/DashAssistRequested";

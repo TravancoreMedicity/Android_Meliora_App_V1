@@ -10,7 +10,7 @@ import { useTheme } from "react-native-paper";
 import { UseGetPendingTicketsCount } from "../../../../../api/TicketsUtilities";
 import { getLogiEmpDEPT } from "../../../../../Redux/ReduxSlice/LoginSLice";
 import { useSelector } from "react-redux";
-import Skeleton from "../../../../../Components/Skeleton-Cmp/Skeleton";
+import Skeleton from "../../../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
 import { useNavigation } from "@react-navigation/native";
 
 const NewTicketDash = () => {
