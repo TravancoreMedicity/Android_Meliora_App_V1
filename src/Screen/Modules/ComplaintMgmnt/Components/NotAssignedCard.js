@@ -28,6 +28,7 @@ import BaseModal from "../../../../Components/BaseModal";
 import ComplainDeptTransfer from "./Modals/ComplainDeptTransfer";
 import { useQueryClient } from "@tanstack/react-query";
 import ToastManager, { Toast } from "toastify-react-native";
+import DetailedAssignedTicket from "./Version1/DetailedAssignedTicket";
 
 const CustmDIalog = lazy(() => import("./CustmDIalog"));
 const CmpTransfer = lazy(() => import("./CmpTransfer"));
@@ -187,13 +188,54 @@ const NotAssignedCard = ({ data, setCount }) => {
       });
     }
 
-    // console.log(response.data);
+    if (success === 7) {
+      Toast.show({
+        type: "warning",
+        text1: "Ticket Already Assigned",
+        text2: message,
+        onHide: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["peningTicketList"],
+            exact: true,
+            refetchType: "active",
+          });
+          // PENDING TICKET COUNT
+          queryClient.invalidateQueries({
+            queryKey: ["peningTicketCount"],
+            exact: true,
+            refetchType: "active",
+          });
+
+          handleHideDialog();
+        },
+      });
+    }
+
+    if (success === 2) {
+      Toast.show({
+        type: "error",
+        text1: "Caution !!",
+        text2: message,
+        onHide: () => {
+          handleHideDialog();
+        },
+      });
+    }
   };
+
+  // HANDLE OPEN DETAILED TICKET ASSIGNMENT
+  const [openModal, setOpenModal] = useState(false);
+  const handleDetailedAssign = () => setOpenModal(false);
 
   return (
     <View>
+      {/* PORTAL DIALOG FOR DETAILED ASSIGN */}
+      <DetailedAssignedTicket
+        visible={openModal}
+        handleDetaledHideDialog={handleDetailedAssign}
+        data={{ ...pendingAssinData, locationName, year }}
+      />
       {/* PORTAL DIALOG FOR QUICK ASSIGN */}
-      {/* <ToastManager /> */}
       <Portal>
         <Dialog visible={visible} onDismiss={handleHideDialog}>
           <Dialog.Icon
@@ -240,7 +282,7 @@ const NotAssignedCard = ({ data, setCount }) => {
         style={{
           minHeight: 150,
           flexGrow: 1,
-          marginBottom: 20,
+          // marginBottom: 20,
           borderRadius: 20,
           overflow: "hidden",
           paddingVertical: 5,
@@ -507,6 +549,7 @@ const NotAssignedCard = ({ data, setCount }) => {
             paddingHorizontal: 15,
           }}
         >
+          {/* Quick assign Function */}
           <TouchableOpacity
             onPress={() => setVisible(true)}
             style={{
@@ -519,19 +562,7 @@ const NotAssignedCard = ({ data, setCount }) => {
               borderRadius: 30,
             }}
           >
-            <View
-              style={
-                {
-                  // flex: 1,
-                  // alignItems: "center",
-                  // paddingVertical: 3,
-                  // marginHorizontal: 10,
-                  // borderWidth: 1,
-                  // borderColor: theme.colors.logoCol2,
-                  // borderRadius: 30,
-                }
-              }
-            >
+            <View>
               <AntDesign
                 name="pushpino"
                 size={20}
@@ -539,7 +570,10 @@ const NotAssignedCard = ({ data, setCount }) => {
               />
             </View>
           </TouchableOpacity>
-          <View
+
+          {/* Detailed assign Starts*/}
+          <TouchableOpacity
+            onPress={() => setOpenModal(!openModal)}
             style={{
               flex: 1,
               alignItems: "center",
@@ -550,9 +584,13 @@ const NotAssignedCard = ({ data, setCount }) => {
               marginHorizontal: 10,
             }}
           >
-            <AntDesign name="tool" size={20} color={theme.colors.logoCol2} />
-          </View>
-          <View
+            <View>
+              <AntDesign name="tool" size={20} color={theme.colors.logoCol2} />
+            </View>
+          </TouchableOpacity>
+
+          {/* Transfer complaint STart */}
+          <TouchableOpacity
             style={{
               flex: 1,
               alignItems: "center",
@@ -563,9 +601,16 @@ const NotAssignedCard = ({ data, setCount }) => {
               marginHorizontal: 10,
             }}
           >
-            <AntDesign name="export" size={20} color={theme.colors.logoCol2} />
-          </View>
+            <View>
+              <AntDesign
+                name="export"
+                size={20}
+                color={theme.colors.logoCol2}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
+
         {/* Bottom Components End */}
       </View>
     </View>

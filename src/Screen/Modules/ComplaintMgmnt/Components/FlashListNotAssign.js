@@ -4,6 +4,7 @@ import { RefreshControl, View, Text } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import NotAssignedCard from "./NotAssignedCard";
 import NoNewTicketCmp from "./NoNewTicketCmp";
+import { useQueryClient } from "@tanstack/react-query";
 
 // create a component
 const FlashListNotAssign = ({
@@ -14,6 +15,9 @@ const FlashListNotAssign = ({
   setLoading,
 }) => {
   const legth = Object.keys(notAssigned)?.length;
+
+  const queryClient = useQueryClient();
+
   return (
     <FlashList
       data={notAssigned ?? []}
@@ -35,12 +39,18 @@ const FlashListNotAssign = ({
       refreshControl={
         <RefreshControl
           refreshing={refresh}
-          onRefresh={() => setCount(count + 1)}
+          onRefresh={() => {
+            queryClient.invalidateQueries({
+              queryKey: ["peningTicketList"],
+              exact: true,
+              refetchType: "active",
+            });
+          }}
         />
       }
-      //   ItemSeparatorComponent={() => (
-      //     <View style={{ height: 10, width: "100%", backgroundColor: "green" }} />
-      //   )}
+      ItemSeparatorComponent={() => (
+        <View style={{ height: 20, width: "100%" }} />
+      )}
     />
   );
 };
