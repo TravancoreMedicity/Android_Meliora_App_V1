@@ -5,77 +5,47 @@ import { useSelector } from "react-redux";
 import { getLogiEmpDEPT } from "../../../../../Redux/ReduxSlice/LoginSLice";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { UseGetEmployeeList } from "../../../../../api/TicketsUtilities";
+import {
+  UseGetEmployeeList,
+  UseGetPriorityList,
+} from "../../../../../api/TicketsUtilities";
 import { useTheme } from "react-native-paper";
+import { id } from "date-fns/locale";
 
-const EmployeeSelection = () => {
+const TicketPrioritySelection = () => {
   const theme = useTheme();
   const empDepartment = useSelector((state) => getLogiEmpDEPT(state));
 
   const [selectedLanguage, setSelectedLanguage] = useState([]);
   const [selectedLanguageObject, setSelectedLanguageObject] = useState({});
 
-  const postdata = {
-    em_department: empDepartment,
-  };
+  const { data, isError, isLoading, isSuccess } = UseGetPriorityList();
 
-  const { data, isError, isLoading, isSuccess } = UseGetEmployeeList(postdata);
+  let priorityList = data?.data?.map((e) => {
+    return {
+      id: e.cm_priority_slno,
+      lebel: e.cm_priority_desc,
+    };
+  });
+  console.log(priorityList);
 
-  //   console.log(data?.data);
-
-  //   const items = [
-  //     // this is the parent or 'item'
-  //     {
-  //       name: "Fruits",
-  //       id: 12,
-  //       // these are the children or 'sub items'
-  //       children: [
-  //         {
-  //           name: "Apple",
-  //           id: 10,
-  //         },
-  //         {
-  //           name: "Strawberry",
-  //           id: 17,
-  //         },
-  //         {
-  //           name: "Pineapple",
-  //           id: 13,
-  //         },
-  //         {
-  //           name: "Banana",
-  //           id: 14,
-  //         },
-  //         {
-  //           name: "Watermelon",
-  //           id: 15,
-  //         },
-  //         {
-  //           name: "Kiwi fruit",
-  //           id: 16,
-  //         },
-  //       ],
-  //     },
-  //   ];
-
-  //   console.log(selectedLanguage);
-  //   console.log(selectedLanguageObject);
+  //   return null;
 
   return (
     <View>
       <SectionedMultiSelect
         IconRenderer={MaterialIcons}
-        uniqueKey="em_id"
-        displayKey="em_name"
-        items={isLoading ? [] : data?.data}
+        uniqueKey="id"
+        displayKey="lebel"
+        items={isLoading ? [] : priorityList}
         onSelectedItemsChange={setSelectedLanguage}
         onSelectedItemObjectsChange={setSelectedLanguageObject}
         selectedItems={selectedLanguage}
-        selectText="Select Employees"
+        selectText="Ticket Priority"
         autoFocus
         // subKey="children"
         showDropDowns={false}
-        single={false}
+        single={true}
         showCancelButton
         alwaysShowSelectText={false}
         // selectChildren
@@ -215,4 +185,4 @@ const EmployeeSelection = () => {
   );
 };
 
-export default memo(EmployeeSelection);
+export default memo(TicketPrioritySelection);

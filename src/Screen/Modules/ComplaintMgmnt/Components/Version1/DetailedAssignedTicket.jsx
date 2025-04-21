@@ -4,6 +4,7 @@ import { Dialog, Portal, useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { format } from "date-fns";
 import EmployeeSelection from "./EmployeeSelection";
+import TicketPrioritySelection from "./TicketPrioritySelection";
 
 const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
   const { height, width } = useWindowDimensions();
@@ -298,8 +299,43 @@ const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
           </View>
 
           {/* Employee Picker */}
-          <View>
-            <EmployeeSelection />
+          <View
+            style={{
+              padding: 15,
+              paddingTop: 15,
+              justifyContent: "flex-start",
+              //   alignItems: "flex-start",
+            }}
+          >
+            <View>
+              <Text
+                style={{
+                  fontSize: width > 360 ? 12 : 10.5,
+                  fontFamily: "Roboto_500Medium",
+                  fontWeight: "800",
+                  paddingRight: 5,
+                  color: theme.colors.inactiveFont,
+                }}
+              >
+                Select Responsible Employee
+              </Text>
+              <EmployeeSelection />
+            </View>
+            <View>
+              <Text
+                style={{
+                  fontSize: width > 360 ? 12 : 10.5,
+                  fontFamily: "Roboto_500Medium",
+                  fontWeight: "800",
+                  paddingRight: 5,
+                  paddingTop: 10,
+                  color: theme.colors.inactiveFont,
+                }}
+              >
+                Select Ticket Priority
+              </Text>
+              <TicketPrioritySelection />
+            </View>
           </View>
         </ScrollView>
       </Dialog>
