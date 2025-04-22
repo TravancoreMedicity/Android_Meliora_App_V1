@@ -5,6 +5,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { format } from "date-fns";
 import EmployeeSelection from "./EmployeeSelection";
 import TicketPrioritySelection from "./TicketPrioritySelection";
+import CustomDateTimeSelector from "./Common/CustomDateTimeSelector";
 
 const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
   const { height, width } = useWindowDimensions();
@@ -45,7 +46,7 @@ const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
         }}
         dismissableBackButton={true}
       >
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
               marginBottom: 20,
@@ -335,6 +336,22 @@ const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
                 Select Ticket Priority
               </Text>
               <TicketPrioritySelection />
+            </View>
+            <View>
+              <Text
+                style={{
+                  fontSize: width > 360 ? 12 : 10.5,
+                  fontFamily: "Roboto_500Medium",
+                  fontWeight: "800",
+                  paddingRight: 5,
+                  paddingTop: 8,
+                  paddingBottom: 4,
+                  color: theme.colors.inactiveFont,
+                }}
+              >
+                Approximate Completion Date
+              </Text>
+              <CustomDateTimeSelector />
             </View>
           </View>
         </ScrollView>
