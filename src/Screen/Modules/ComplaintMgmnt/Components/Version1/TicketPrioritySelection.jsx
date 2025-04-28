@@ -12,7 +12,11 @@ import {
 import { useTheme } from "react-native-paper";
 import { id } from "date-fns/locale";
 
-const TicketPrioritySelection = () => {
+const TicketPrioritySelection = ({
+  priorityVal,
+  setPriorityVal,
+  setPriorityObj,
+}) => {
   const theme = useTheme();
   const empDepartment = useSelector((state) => getLogiEmpDEPT(state));
 
@@ -20,16 +24,18 @@ const TicketPrioritySelection = () => {
   const [selectedLanguageObject, setSelectedLanguageObject] = useState({});
 
   const { data, isError, isLoading, isSuccess } = UseGetPriorityList();
+  // console.log(data);
 
   let priorityList = data?.data?.map((e) => {
     return {
       id: e.cm_priority_slno,
       lebel: e.cm_priority_desc,
+      maxMinists: e.escalation_max,
     };
   });
-  console.log(priorityList);
-
   //   return null;
+
+  // console.log(selectedLanguageObject);
 
   return (
     <View>
@@ -38,9 +44,9 @@ const TicketPrioritySelection = () => {
         uniqueKey="id"
         displayKey="lebel"
         items={isLoading ? [] : priorityList}
-        onSelectedItemsChange={setSelectedLanguage}
-        onSelectedItemObjectsChange={setSelectedLanguageObject}
-        selectedItems={selectedLanguage}
+        onSelectedItemsChange={setPriorityVal}
+        onSelectedItemObjectsChange={setPriorityObj}
+        selectedItems={priorityVal}
         selectText="Ticket Priority"
         autoFocus
         // subKey="children"

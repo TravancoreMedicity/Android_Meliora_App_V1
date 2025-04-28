@@ -8,7 +8,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { UseGetEmployeeList } from "../../../../../api/TicketsUtilities";
 import { useTheme } from "react-native-paper";
 
-const EmployeeSelection = () => {
+const EmployeeSelection = ({ selectedEmpArray, handleSelectedEmpArray }) => {
   const theme = useTheme();
   const empDepartment = useSelector((state) => getLogiEmpDEPT(state));
 
@@ -21,45 +21,13 @@ const EmployeeSelection = () => {
 
   const { data, isError, isLoading, isSuccess } = UseGetEmployeeList(postdata);
 
-  //   console.log(data?.data);
+  // console.log(selectedLanguage);
 
-  //   const items = [
-  //     // this is the parent or 'item'
-  //     {
-  //       name: "Fruits",
-  //       id: 12,
-  //       // these are the children or 'sub items'
-  //       children: [
-  //         {
-  //           name: "Apple",
-  //           id: 10,
-  //         },
-  //         {
-  //           name: "Strawberry",
-  //           id: 17,
-  //         },
-  //         {
-  //           name: "Pineapple",
-  //           id: 13,
-  //         },
-  //         {
-  //           name: "Banana",
-  //           id: 14,
-  //         },
-  //         {
-  //           name: "Watermelon",
-  //           id: 15,
-  //         },
-  //         {
-  //           name: "Kiwi fruit",
-  //           id: 16,
-  //         },
-  //       ],
-  //     },
-  //   ];
-
-  //   console.log(selectedLanguage);
-  //   console.log(selectedLanguageObject);
+  // const handleSelectedEmpArray = (emp) => {
+  //   // console.log(emp);
+  //   setSelectedLanguage(emp);
+  //   // selectedEmpArray(selectedLanguage);
+  // };
 
   return (
     <View>
@@ -68,9 +36,9 @@ const EmployeeSelection = () => {
         uniqueKey="em_id"
         displayKey="em_name"
         items={isLoading ? [] : data?.data}
-        onSelectedItemsChange={setSelectedLanguage}
+        onSelectedItemsChange={handleSelectedEmpArray}
         onSelectedItemObjectsChange={setSelectedLanguageObject}
-        selectedItems={selectedLanguage}
+        selectedItems={selectedEmpArray}
         selectText="Select Employees"
         autoFocus
         // subKey="children"

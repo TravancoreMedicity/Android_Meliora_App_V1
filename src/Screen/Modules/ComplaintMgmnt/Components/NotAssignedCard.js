@@ -233,7 +233,7 @@ const NotAssignedCard = ({ data, setCount }) => {
       <DetailedAssignedTicket
         visible={openModal}
         handleDetaledHideDialog={handleDetailedAssign}
-        data={{ ...pendingAssinData, locationName, year }}
+        data={{ ...pendingAssinData, locationName, year, emp_id }}
       />
       {/* PORTAL DIALOG FOR QUICK ASSIGN */}
       <Portal>

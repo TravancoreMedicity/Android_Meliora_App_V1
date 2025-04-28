@@ -62,7 +62,7 @@ const FlashListNotAssigns = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
-      <ApiGetFun count={count} />
+      {/* <ApiGetFun count={count} /> */}
 
       {/* Header Start */}
       <HearderSecondary navigation={navigation} name="Pending Tickets" />

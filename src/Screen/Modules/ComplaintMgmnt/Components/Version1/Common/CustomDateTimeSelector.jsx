@@ -4,14 +4,14 @@ import {
   useWindowDimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import DateTimePicker, { useDefaultStyles } from "react-native-ui-datepicker";
 import { format } from "date-fns";
 import { Dialog, Portal, useTheme } from "react-native-paper";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ioniccons from "react-native-vector-icons/Ionicons";
 
-const CustomDateTimeSelector = () => {
+const CustomDateTimeSelector = ({ priorityDate }) => {
   const theme = useTheme();
   const { width } = useWindowDimensions();
   const defaultStyles = useDefaultStyles();
@@ -23,6 +23,10 @@ const CustomDateTimeSelector = () => {
   const onDissmissModal = () => {
     setvisibleDateModal(!visibleDateModal);
   };
+
+  useEffect(() => {
+    setSelected(priorityDate ?? new Date());
+  }, [priorityDate]);
 
   return (
     <View>
@@ -135,7 +139,7 @@ const CustomDateTimeSelector = () => {
                 alignItems: "center",
                 justifyContent: "center",
               }}
-              onPress={onDissmissModal}
+              onPressIn={onDissmissModal}
             >
               <MaterialCommunityIcons
                 name="check-all"
