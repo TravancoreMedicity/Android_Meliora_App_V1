@@ -77,3 +77,33 @@ export const UseGetPriorityList = () => {
   });
   return { data, isLoading, isError, isSuccess };
 };
+
+// GET ASSIGNED LIST BASED ON EMPLOYEE ID NUMBER
+const getAssignedList = async (empID) => {
+  const response = await axiosApi.get(`/complaintassign/user/${empID}`);
+  return await response.data;
+};
+
+export const UseGetAssignedList = (empID) => {
+  const { data, isError, isLoading, isSuccess } = useQuery({
+    queryKey: ["assignedList"],
+    queryFn: () => getAssignedList(empID),
+  });
+  return { data, isLoading, isError, isSuccess };
+};
+
+// CONST getAssigned ticket Employee list for recfify complaint card
+const getAssignListEmp = async (complaint_slno) => {
+  const response = await axiosApi.get(
+    `Rectifycomplit/getAssignEmps/${complaint_slno}`
+  );
+  return await response.data;
+};
+
+export const UseGetAssignListEmp = (complaint_slno) => {
+  const { data, isError, isLoading, isSuccess } = useQuery({
+    queryKey: ["assignedListEmp"],
+    queryFn: () => getAssignListEmp(complaint_slno),
+  });
+  return { data, isLoading, isError, isSuccess };
+};

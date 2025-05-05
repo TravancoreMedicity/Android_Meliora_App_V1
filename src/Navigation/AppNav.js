@@ -1,16 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  NavigationContainer,
-  DarkTheme,
-  DefaultTheme,
-} from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { StatusBar, View, useColorScheme } from "react-native";
+import { StatusBar, useColorScheme } from "react-native";
 import { useSelector } from "react-redux";
 import { colorTheme } from "../Constant/Colors";
 import AppStack from "./AppStack";
 import AuthStack from "./AuthStack";
-import { PaperProvider, useTheme } from "react-native-paper";
+import { PaperProvider } from "react-native-paper";
 import { CombinedDarkTheme, CombinedLightTheme } from "../theme/Theme";
 import useDarkThemeMode from "../Hooks/useDarkThemeMode";
 import { ThemeContext } from "../Context/ThemeContext";

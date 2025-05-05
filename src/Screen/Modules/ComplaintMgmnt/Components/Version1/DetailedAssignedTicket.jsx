@@ -3,10 +3,9 @@ import {
   Text,
   useWindowDimensions,
   ScrollView,
-  Touchable,
   TouchableOpacity,
 } from "react-native";
-import React, { memo, useMemo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { Dialog, Portal, TextInput, useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { addMinutes, format } from "date-fns";
@@ -14,10 +13,17 @@ import EmployeeSelection from "./EmployeeSelection";
 import TicketPrioritySelection from "./TicketPrioritySelection";
 import CustomDateTimeSelector from "./Common/CustomDateTimeSelector";
 import { Toast } from "toastify-react-native";
+import { axiosApi } from "../../../../../config/Axiox";
+import { useQueryClient } from "@tanstack/react-query";
 
-const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
-  const { height, width } = useWindowDimensions();
+const DetailedAssignedTicket = ({ visible, data, handleDetaledHideDialog }) => {
+  const { width } = useWindowDimensions();
+  const queryClient = useQueryClient();
   const theme = useTheme();
+
+  const cmpData = useMemo(() => {
+    return data;
+  }, [data]);
 
   const {
     compalint_date,
@@ -26,17 +32,13 @@ const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
     complaint_slno,
     complaint_type_name,
     comp_reg_emp,
-    dept_sec,
-    location,
     priority_check,
     priority_reason,
     sec_name,
-    req_type_name,
-    rm_room_name,
     year,
     locationName,
     emp_id,
-  } = data;
+  } = cmpData;
 
   //   const year = format(new Date(compalint_date), "yyyy");
   // console.log(width);
@@ -55,7 +57,12 @@ const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
     return new Date();
   }, [priorityObj]);
 
-  const hadleSubmitTicketAssign = async () => {
+  const handleRemarkChange = (text) => {
+    setRemark(text);
+  };
+
+  const hadleSubmitTicketAssign = useCallback(async () => {
+    // e.preventDefault();
     if (selectedEmp.length === 0) {
       Toast.show({
         type: "warn",
@@ -75,36 +82,61 @@ const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
         text2: "Please Enter the Remark",
       });
     } else {
-      Toast.show({
-        type: "success",
-        text1: "Success",
-        text2: "Ticket Assigned",
-        onHide: () => {
-          handleDetaledHideDialog();
-        },
+      // SUBMIT THE TICKET ASSIGNMENT DETAILED FUNCTION
+      // console.log(remark);
+      const postDataDetailedAssign = selectedEmp?.map((val) => {
+        return {
+          complaint_remark: remark,
+          complaint_slno: complaint_slno,
+          assigned_emp: val,
+          assigned_date: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+          assign_rect_status: 0,
+          assigned_user: emp_id,
+          compalint_priority: priorityVal[0] ?? 0,
+          aprrox_date: format(
+            new Date(MaxTicketCompletionDate),
+            "yyyy-MM-dd HH:mm:ss"
+          ),
+          assign_status: 1,
+        };
       });
+      // console.log(postDataDetailedAssign);
+      const response = await axiosApi.post(
+        `/complaintassign/detailassign`,
+        postDataDetailedAssign
+      );
+      const { message, success } = await response.data;
+      if (success === 1) {
+        handleDetaledHideDialog();
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: message,
+          visibilityTime: 2000,
+          onHide: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["peningTicketList"],
+              exact: true,
+              refetchType: "active",
+            });
+            // PENDING TICKET COUNT
+            queryClient.invalidateQueries({
+              queryKey: ["peningTicketCount"],
+              exact: true,
+              refetchType: "active",
+            });
+          },
+        });
+      }
     }
-  };
-
-  // console.log(priorityVal);
-
-  // const postData = selectedEmp?.map((val) => {
-  //   return {
-  //     complaint_remark: remark,
-  //     complaint_slno: complaint_slno,
-  //     assigned_emp: val,
-  //     assigned_date: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-  //     assign_rect_status: 0,
-  //     assigned_user: emp_id,
-  //     compalint_priority: priorityVal[0] ?? 0,
-  //     aprrox_date: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-  //     assign_status: 1,
-  //   };
-  // });
-
-  // console.log(postData);
-
-  console.log(priorityObj);
+  }, [
+    selectedEmp,
+    priorityVal,
+    remark,
+    emp_id,
+    complaint_slno,
+    MaxTicketCompletionDate,
+  ]);
 
   return (
     <Portal>
@@ -121,7 +153,10 @@ const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
         }}
         dismissableBackButton={true}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
           <View
             style={{
               marginBottom: 20,
@@ -213,7 +248,6 @@ const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
                   style={{
                     flexDirection: "row",
                     alignItems: "center",
-                    //justifyContent: "space-between",
                     overflow: "hidden",
                   }}
                 >
@@ -452,9 +486,9 @@ const DetailedAssignedTicket = ({ visible, handleDetaledHideDialog, data }) => {
               <View>
                 <TextInput
                   label="Remarks"
-                  value={remark}
-                  onChange={(text) => setRemark(text)}
-                  multiline={true}
+                  // value={remark}
+                  onChangeText={handleRemarkChange}
+                  multiline
                   dense={true}
                   numberOfLines={3}
                 />

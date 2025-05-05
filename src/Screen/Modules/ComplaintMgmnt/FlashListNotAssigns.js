@@ -34,7 +34,7 @@ import {
 } from "../../../utils/Dimentions";
 import OverLayLoading from "./Components/OverLayLoading";
 import { getNotAssignedList } from "../../../Redux/ReduxSlice/ticketMagmntSlice";
-import ApiGetFun from "./func/ApiGetFun";
+// import ApiGetFun from "./func/ApiGetFun";
 import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 import { useTheme } from "react-native-paper";
 import { UseGetPendingTicket } from "../../../api/TicketsUtilities";
@@ -54,6 +54,8 @@ const FlashListNotAssigns = ({ navigation }) => {
 
   const { data, isError, isLoading, isSuccess } = UseGetPendingTicket(deptID);
 
+  const [notAssignedData] = useState(data?.data ?? []);
+
   // console.log(data?.data);
 
   // console.log(pendingTicketList?.data?.data);
@@ -67,31 +69,36 @@ const FlashListNotAssigns = ({ navigation }) => {
       {/* Header Start */}
       <HearderSecondary navigation={navigation} name="Pending Tickets" />
       {/* Header End */}
-
       <View
         style={{
-          height: height - 100,
+          height: height,
           width: width,
           paddingHorizontal: 15,
         }}
       >
+        {isLoading && !isSuccess && !isError && <CustomActivityIndicator />}
         <Suspense fallback={<CustomActivityIndicator />}>
           <FlashListNotAssignCmp
-            notAssigned={isLoading ? [] : data?.data ?? []}
-            setCount={setCount}
-            refresh={refresh}
-            count={count}
-            setLoading={setLoading}
+            notAssigned={isLoading ? [] : notAssignedData}
           />
         </Suspense>
       </View>
 
-      <View
+      {/* <View
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: colorTheme.mainBgColor,
+          backgroundColor: "green",
+          position: "absolute",
+          height: 40,
+          // top: 0,
+          left: 30,
+          right: 30,
+          bottom: (height * 15) / 100,
+          zIndex: 999,
+
+          // opacity: loding ? 1 : 0,
         }}
       >
         <Text
@@ -107,7 +114,7 @@ const FlashListNotAssigns = ({ navigation }) => {
         >
           Pull Down To Refresh
         </Text>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 };

@@ -7,13 +7,7 @@ import NoNewTicketCmp from "./NoNewTicketCmp";
 import { useQueryClient } from "@tanstack/react-query";
 
 // create a component
-const FlashListNotAssign = ({
-  notAssigned,
-  setCount,
-  refresh,
-  count,
-  setLoading,
-}) => {
+const FlashListNotAssign = ({ notAssigned }) => {
   const legth = Object.keys(notAssigned)?.length;
 
   const queryClient = useQueryClient();
@@ -22,9 +16,7 @@ const FlashListNotAssign = ({
     <FlashList
       data={notAssigned ?? []}
       keyboardShouldPersistTaps="always"
-      renderItem={({ item }) => (
-        <NotAssignedCard data={item} setCount={setCount} />
-      )}
+      renderItem={({ item }) => <NotAssignedCard data={item} />}
       estimatedItemSize={legth || 5}
       ListEmptyComponent={<NoNewTicketCmp legth={legth} />}
       showsVerticalScrollIndicator={false}
@@ -35,19 +27,19 @@ const FlashListNotAssign = ({
       //         width: windowWidth - 30
       //     }
       // }
-      onLoad={() => setLoading(false)}
-      refreshControl={
-        <RefreshControl
-          refreshing={refresh}
-          onRefresh={() => {
-            queryClient.invalidateQueries({
-              queryKey: ["peningTicketList"],
-              exact: true,
-              refetchType: "active",
-            });
-          }}
-        />
-      }
+      // onLoad={() => setLoading(false)}
+      // refreshControl={
+      //   <RefreshControl
+      //     refreshing={refresh}
+      //     onRefresh={() => {
+      //       queryClient.invalidateQueries({
+      //         queryKey: ["peningTicketList"],
+      //         exact: true,
+      //         refetchType: "active",
+      //       });
+      //     }}
+      //   />
+      // }
       ItemSeparatorComponent={() => (
         <View style={{ height: 20, width: "100%" }} />
       )}

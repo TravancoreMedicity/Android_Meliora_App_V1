@@ -29,6 +29,7 @@ const HearderSecondary = ({ navigation, name }) => {
           flexDirection: "row",
           alignItems: "center",
           height: height > 790 ? 100 : 75,
+          backgroundColor: theme.colors.statusBarCol,
         }}
       >
         {/* Drawer open button Start */}
