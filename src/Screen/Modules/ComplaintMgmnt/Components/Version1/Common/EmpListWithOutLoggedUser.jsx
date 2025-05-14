@@ -1,18 +1,18 @@
 import { View, Text } from "react-native";
-import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { Checkbox, useTheme } from "react-native-paper";
-import { UseGetAssignListEmp } from "../../../../../../api/TicketsUtilities";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { UseGetEmpWithOutLoginUser } from "../../../../../../api/TicketsUtilities";
 import Skeleton from "../../../../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
+import { Checkbox, useTheme } from "react-native-paper";
 
-const CheckBoxEmployeeSelection = ({
-  cmp_no,
+const EmpListWithOutLoggedUser = ({
+  postData,
   selectedEmpNos,
   setSelectedEmpNos,
 }) => {
   const theme = useTheme();
-  // const [selectedEmpNos, setSelectedEmpNos] = useState([]);
 
-  const { data, isError, isLoading, isSuccess } = UseGetAssignListEmp(cmp_no);
+  const { data, isError, isLoading, isSuccess } =
+    UseGetEmpWithOutLoginUser(postData);
   const empList = data?.data ?? [];
   const employees = useMemo(() => empList, [empList]);
 
@@ -52,7 +52,7 @@ const CheckBoxEmployeeSelection = ({
       {employees.length > 0 &&
         employees.map((emp) => (
           <View
-            key={emp.assigned_emp}
+            key={emp.em_id}
             style={{
               width: "100%",
               // backgroundColor: "orange",
@@ -67,11 +67,9 @@ const CheckBoxEmployeeSelection = ({
           >
             <Checkbox.Item
               status={
-                selectedEmpNos.includes(emp.assigned_emp)
-                  ? "checked"
-                  : "unchecked"
+                selectedEmpNos.includes(emp.em_id) ? "checked" : "unchecked"
               }
-              onPress={() => toggleCheckbox(emp.assigned_emp)}
+              onPress={() => toggleCheckbox(emp.em_id)}
               label={emp.em_name}
               accessibilityLabel="Checkbox"
               labelVariant="titleMedium"
@@ -100,4 +98,4 @@ const CheckBoxEmployeeSelection = ({
   );
 };
 
-export default memo(CheckBoxEmployeeSelection);
+export default EmpListWithOutLoggedUser;

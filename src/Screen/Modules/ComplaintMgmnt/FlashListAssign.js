@@ -52,8 +52,6 @@ const FlashListAssign = ({ navigation }) => {
 
   const [assignedList, setAssignedList] = useState(data?.data ?? []);
 
-  console.log(assignedList);
-
   //   const [loding, setLoading] = useState(true);
   //   useEffect(() => {
   //     dispatch(getAssignListEmp(emId));
@@ -83,7 +81,7 @@ const FlashListAssign = ({ navigation }) => {
           <Suspense fallback={<CustomActivityIndicator />}>
             <FlashListCmp
               FlashRenderCmp={AssignedListCmp}
-              Assigned={assignedList}
+              Assigned={data?.data ?? []}
             />
           </Suspense>
         </View>

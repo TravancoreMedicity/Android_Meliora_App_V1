@@ -10,7 +10,7 @@ import React, {
 import { View, Text, Pressable, TouchableOpacity } from "react-native";
 import { bgColor, colorTheme, fontColor } from "../../../../Constant/Colors";
 import { styles } from "../Style/Style";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getDayDiffrenceIncludeTheTime,
   getTimeDiffrenceForLiveClock,
@@ -24,10 +24,23 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import { format } from "date-fns";
 import Feather from "react-native-vector-icons/Feather";
 import TicketRectifyModal from "./Version1/TicketRectifyModal";
+import AssistRequestedModal from "./Version1/AssistRequestedModal";
+import {
+  getLogiEmployeeID,
+  getLogiEmpDEPT,
+} from "../../../../Redux/ReduxSlice/LoginSLice";
 
 // create a component
 const AssignedListCmp = ({ data }) => {
   const theme = useTheme();
+
+  const empId = useSelector((state) => getLogiEmployeeID(state));
+  const empDEPT = useSelector((state) => getLogiEmpDEPT(state));
+
+  const postDeptData = useMemo(() => {
+    return { em_id: empId, em_department: empDEPT };
+  }, []);
+
   const assignTickData = useMemo(() => data, [data]);
   const {
     complaint_slno, //complaint slno
@@ -48,7 +61,7 @@ const AssignedListCmp = ({ data }) => {
     priority_reason,
   } = assignTickData;
 
-  console.log(assignTickData);
+  // console.log(assignTickData);
 
   const year = format(new Date(compalint_date), "yyyy");
 
@@ -96,6 +109,7 @@ const AssignedListCmp = ({ data }) => {
   //   }, [complaint_slno]);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [assistModalVisible, setAssistModalVisible] = useState(false);
 
   return (
     <View>
@@ -110,8 +124,15 @@ const AssignedListCmp = ({ data }) => {
         setModalVisible={setModalVisible}
         data={{ ...assignTickData, locationName }}
       />
-
       {/* MOdal componet end here */}
+
+      {/* MOdal for assit request */}
+      <AssistRequestedModal
+        openState={assistModalVisible}
+        setModalVisible={setAssistModalVisible}
+        data={{ ...assignTickData, locationName }}
+        postData={postDeptData}
+      />
 
       <View
         style={{
@@ -407,27 +428,51 @@ const AssignedListCmp = ({ data }) => {
               //   backgroundColor: "#4CAF50",
               width: "100%",
               alignItems: "flex-start",
+              flexDirection: "row",
             }}
           >
-            <TouchableOpacity
-              style={{
-                backgroundColor: theme.colors.logoCol2, // green
-                padding: 12,
-                borderRadius: 50, // circular
-                alignItems: "center",
-                justifyContent: "center",
-                shadowColor: "#000",
-                opacity: 0.8,
-                shadowOffset: { width: 0, height: 2 }, // iOS shadow
-                shadowOpacity: 0.2,
-                shadowRadius: 3,
-                elevation: 4, // Android shadow
-              }}
-              onPressIn={() => setModalVisible(true)}
-              activeOpacity={0.7}
-            >
-              <Feather name="thumbs-up" size={22} color="white" />
-            </TouchableOpacity>
+            <View>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: theme.colors.logoCol2, // green
+                  padding: 12,
+                  borderRadius: 50, // circular
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowColor: "#000",
+                  opacity: 0.8,
+                  shadowOffset: { width: 0, height: 2 }, // iOS shadow
+                  shadowOpacity: 0.2,
+                  shadowRadius: 3,
+                  elevation: 4, // Android shadow
+                }}
+                onPressIn={() => setModalVisible(true)}
+                activeOpacity={0.7}
+              >
+                <Feather name="thumbs-up" size={22} color="white" />
+              </TouchableOpacity>
+            </View>
+            <View style={{ paddingLeft: 20 }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: theme.colors.logoCol3, // green
+                  padding: 12,
+                  borderRadius: 50, // circular
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowColor: "#000",
+                  opacity: 0.8,
+                  shadowOffset: { width: 0, height: 2 }, // iOS shadow
+                  shadowOpacity: 0.2,
+                  shadowRadius: 3,
+                  elevation: 4, // Android shadow
+                }}
+                onPressIn={() => setAssistModalVisible(true)}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="headset-outline" size={22} color="white" />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
         {/* Middle Components  End*/}

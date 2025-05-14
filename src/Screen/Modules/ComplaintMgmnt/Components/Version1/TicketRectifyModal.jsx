@@ -4,48 +4,236 @@ import {
   Modal,
   TouchableOpacity,
   useWindowDimensions,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import React, { memo, useState } from "react";
+import React, { memo, useCallback, useMemo, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import Feather from "react-native-vector-icons/Feather";
-import { useTheme } from "react-native-paper";
+import { TextInput, useTheme } from "react-native-paper";
 import { format } from "date-fns";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LiveCmpTimeDiffrenceClock from "../Modals/LiveCmpTimeDiffrenceClock";
 import CheckBoxEmployeeSelection from "./Common/CheckBoxEmployeeSelection";
+import RadioGroupRectifyType from "./Common/RadioGroupRectifyType";
+import HoldReason from "./Common/HoldReason";
+import { Toast } from "toastify-react-native";
+import { axiosApi } from "../../../../../config/Axiox";
+import { useSelector } from "react-redux";
+import { getLogiEmployeeID } from "../../../../../Redux/ReduxSlice/LoginSLice";
+import { useQueryClient } from "@tanstack/react-query";
 
 const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
   const theme = useTheme();
   const { height } = useWindowDimensions();
+  const queryClient = useQueryClient();
+
+  const empId = useSelector((state) => getLogiEmployeeID(state));
+  const emId = useMemo(() => empId, [empId]);
+
   const year = format(new Date(data.compalint_date), "yyyy");
+  const [remark, setRemark] = useState("");
+  const [rectifyType, setRectifyType] = useState(2);
+  const [selectedEmpNos, setSelectedEmpNos] = useState([]);
+  const [holdReason, setHoldReason] = useState(1);
+
+  const complaint_slno = useMemo(() => data.complaint_slno, [data]);
+
+  const handleRemarkChange = (text) => {
+    setRemark(text);
+  };
+
+  const handleModalClose = () => {
+    setModalVisible(false);
+  };
+
+  const handleRectify = useCallback(async () => {
+    // console.log("clicked");
+    if (selectedEmpNos.length === 0) {
+      Toast.show({
+        type: "info",
+        text1: "Warning",
+        text2: "Please select employee",
+        visibilityTime: 2000,
+      });
+      return;
+    }
+
+    if (rectifyType === 2) {
+      if (remark === "") {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Remark is mandatory",
+          visibilityTime: 2000,
+        });
+        return;
+      }
+    }
+
+    if (rectifyType === 1) {
+      if (remark === "") {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Remark is mandatory",
+          visibilityTime: 2000,
+        });
+        return;
+      }
+    }
+
+    // RECTIFY THE COMPLAINT TYPE AS RECTIFY
+    if (rectifyType === 2) {
+      // RECTIFY THE COMPLAINT
+      const postData = selectedEmpNos?.map((val) => {
+        return {
+          compalint_status: rectifyType === 2 ? 2 : 1,
+          cm_rectify_status:
+            rectifyType === 2 ? "R" : holdReason === 1 ? "O" : null,
+          cm_rectify_time: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+          rectify_pending_hold_remarks:
+            holdReason === 1 ? remark : rectifyType === 2 ? remark : null,
+          pending_onhold_time:
+            holdReason === 1 ? format(new Date(), "yyyy-MM-dd HH:mm:ss") : null,
+          pending_onhold_user: emId,
+          assigned_emp: val,
+          verify_spervsr: 0,
+          cm_hold_reason_slno: holdReason,
+          complaint_slno: data.complaint_slno,
+        };
+      });
+
+      const response = await axiosApi.patch(
+        "/Rectifycomplit/updatecmp",
+        postData
+      );
+
+      const { success, message } = await response.data;
+
+      console.log(success);
+
+      if (success === 2) {
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: message,
+          visibilityTime: 2000,
+          onHide: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["assignedList", emId],
+              //exact: true,
+            });
+
+            queryClient.invalidateQueries({
+              queryKey: ["getAssistpendingCount", emId],
+              //exact: true,
+            });
+            handleModalClose();
+          },
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: message,
+          visibilityTime: 2000,
+          onHide: () => {
+            handleModalClose();
+          },
+        });
+      }
+    }
+
+    //RECTIFY THE COMPLAINT TYPE AS HOLD
+    if (rectifyType === 1) {
+      // HOLD THE COMPLAINT
+      const postDataOnHold = {
+        compalint_status: 1,
+        cm_rectify_status: rectifyType === 1 ? "O" : null,
+        rectify_pending_hold_remarks: remark,
+        pending_onhold_time: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+        pending_onhold_user: emId,
+        complaint_slno: complaint_slno,
+        cm_hold_reason_slno: holdReason,
+      };
+
+      // console.log(postDataOnHold);
+      const onHoldResponse = await axiosApi.patch(
+        `/Rectifycomplit/updateHoldProgress`,
+        postDataOnHold
+      );
+
+      const { success, message } = await onHoldResponse.data;
+
+      if (success === 1) {
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: message,
+          visibilityTime: 2000,
+          onHide: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["assignedList", emId],
+              exact: true,
+            });
+
+            queryClient.invalidateQueries({
+              queryKey: ["getAssistpendingCount", emId],
+              exact: true,
+            });
+
+            handleModalClose();
+          },
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: message,
+          visibilityTime: 2000,
+          onHide: () => {
+            handleModalClose();
+          },
+        });
+      }
+
+      // console.log(await onHoldResponse.data);
+    }
+  }, [selectedEmpNos, holdReason, rectifyType, remark, emId, complaint_slno]);
+
   return (
     <SafeAreaProvider>
       <SafeAreaView
-        style={{ flex: 1, backgroundColor: "red" }}
+        style={{ flex: 1 }}
         mode="margin"
         edges={["top", "bottom"]}
         animated
       >
         <Modal
           animationType="slide"
-          transparent={true}
+          transparent={false}
           visible={openState}
           onRequestClose={() => {
             setModalVisible(false);
           }}
           statusBarTranslucent
           presentationStyle="overFullScreen"
-          hardwareAccelerated={true}
         >
           {/* outer layer */}
-          <View style={{ flex: 1 }}>
+          <ScrollView
+            style={{ flex: 1, backgroundColor: theme.colors.statusBarCol }}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="always"
+          >
             {/* inner layer starting */}
             <View
               style={{
                 flex: 1,
                 backgroundColor: theme.colors.statusBarCol,
                 overflow: "hidden",
-                paddingTop: (height * 10) / 100,
+                paddingTop: (height * 6) / 100,
               }}
             >
               {/* inner content */}
@@ -56,6 +244,7 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
                   margin: 12.5,
                   padding: 12.5,
                   borderRadius: 22,
+                  overflow: "hidden",
                 }}
               >
                 <View
@@ -262,55 +451,165 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
               {/* Rectify a atransaction status */}
               <View>
                 <View>
-                  <CheckBoxEmployeeSelection cmp_no={data.complaint_slno} />
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontFamily: "Roboto_500Medium",
+                      fontSize: 12,
+                      paddingLeft: 12.7,
+                      color: theme.colors.logoCol2,
+                    }}
+                  >
+                    Select Participating Employees
+                  </Text>
+                  <CheckBoxEmployeeSelection
+                    cmp_no={data.complaint_slno}
+                    selectedEmpNos={selectedEmpNos}
+                    setSelectedEmpNos={setSelectedEmpNos}
+                  />
                 </View>
                 <View>
-                  <Text>Check the rectify status</Text>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontFamily: "Roboto_500Medium",
+                      fontSize: 12,
+                      paddingLeft: 12.7,
+                      color: theme.colors.logoCol2,
+                      paddingBottom: 10,
+                    }}
+                  >
+                    Resolution Status
+                  </Text>
+                  <RadioGroupRectifyType
+                    value={rectifyType}
+                    setValue={setRectifyType}
+                  />
                 </View>
-                <View>
-                  <Text>Remarks</Text>
+                {rectifyType === 1 && (
+                  <View>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontFamily: "Roboto_500Medium",
+                        fontSize: 12,
+                        paddingLeft: 12.7,
+                        color: theme.colors.logoCol2,
+                        paddingBottom: 10,
+                        paddingTop: 10,
+                      }}
+                    >
+                      Hold Reasons
+                    </Text>
+                    <HoldReason value={holdReason} setValue={setHoldReason} />
+                  </View>
+                )}
+                <View style={{ paddingHorizontal: 12.5, paddingBottom: 20 }}>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontFamily: "Roboto_500Medium",
+                      fontSize: 12,
+                      // paddingLeft: 12.7,
+                      paddingTop: 10,
+                      color: theme.colors.logoCol2,
+                      paddingBottom: 3,
+                    }}
+                  >
+                    Remarks
+                  </Text>
+                  <View>
+                    <TextInput
+                      // label="Remarks"
+                      // value={remark}
+                      style={{ height: 60 }}
+                      onChangeText={handleRemarkChange}
+                      multiline
+                      dense={true}
+                      numberOfLines={3}
+                    />
+                  </View>
                 </View>
-                <View>
-                  <Text>Sumbit Button</Text>
-                </View>
-              </View>
-              {/* test */}
-              {/* test */}
-              {/* test */}
-              {/* test */}
-              {/* test */}
-              {/* test */}
-              <View
-                style={{
-                  paddingVertical: 8,
-                  backgroundColor: "#4CAF50",
-                  width: "100%",
-                  alignItems: "flex-start",
-                }}
-              >
-                <TouchableOpacity
+                <View
                   style={{
-                    backgroundColor: theme.colors.logoCol2, // green
-                    padding: 12,
-                    borderRadius: 50, // circular
+                    paddingVertical: 8,
+                    paddingBottom: 50,
+                    width: "100%",
                     alignItems: "center",
-                    justifyContent: "center",
-                    shadowColor: "#000",
-                    opacity: 0.8,
-                    shadowOffset: { width: 0, height: 2 }, // iOS shadow
-                    shadowOpacity: 0.2,
-                    shadowRadius: 3,
-                    elevation: 4, // Android shadow
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
                   }}
-                  onPress={() => setModalVisible(!openState)}
-                  activeOpacity={0.7}
                 >
-                  <Feather name="thumbs-up" size={22} color="white" />
-                </TouchableOpacity>
+                  <View
+                    style={{
+                      // borderWidth: 2,
+                      width: "40%",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 20,
+                      borderColor: theme.colors.logoCol2,
+                      shadowColor: "#000",
+                      opacity: 0.8,
+                      shadowOffset: { width: 0, height: 2 }, // iOS shadow
+                      shadowOpacity: 0.2,
+                      shadowRadius: 3,
+                      // elevation: 4, // Android shadow
+                    }}
+                  >
+                    <View style={{ width: "40%", alignItems: "center" }}>
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: theme.colors.logoCol2, // green
+                          padding: 15,
+                          borderRadius: 50, // circular
+                          alignItems: "center",
+                          justifyContent: "center",
+                          shadowColor: "#000",
+                          opacity: 0.8,
+                          shadowOffset: { width: 0, height: 2 }, // iOS shadow
+                          shadowOpacity: 0.2,
+                          shadowRadius: 3,
+                          elevation: 4, // Android shadow
+                        }}
+                        onPress={handleRectify}
+                        activeOpacity={0.7}
+                      >
+                        <Feather name="thumbs-up" size={22} color="white" />
+                      </TouchableOpacity>
+                    </View>
+                    <View>
+                      <Text
+                        style={{
+                          color: theme.colors.logoCol2,
+                          fontSize: 12,
+                          fontFamily: "Roboto_500Medium",
+                          textAlign: "center",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Confirm Rectify
+                      </Text>
+                    </View>
+                  </View>
+                </View>
               </View>
-              {/* test */}
             </View>
-          </View>
+          </ScrollView>
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              bottom: 30,
+              right: 30,
+              backgroundColor: theme.colors.logoCol1,
+              borderRadius: 50,
+              padding: 15,
+              elevation: 5,
+              zIndex: 10,
+            }}
+            onPress={handleModalClose}
+          >
+            <Feather name="corner-up-left" size={22} color="white" />
+          </TouchableOpacity>
         </Modal>
       </SafeAreaView>
     </SafeAreaProvider>

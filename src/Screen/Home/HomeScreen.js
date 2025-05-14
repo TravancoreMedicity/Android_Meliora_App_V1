@@ -102,7 +102,6 @@ const HomeScreen = ({ navigation }) => {
 
       dispatch(getExpoPushToken(pushTokenData));
       // setExpoPushToken(pushTokenData);
-      // console.log(pushTokenData);
 
       if (Platform.OS === "android") {
         Notifications.setNotificationChannelAsync("default", {

@@ -24,8 +24,6 @@ const DashAssistRequested = () => {
 
   const pendingAssistCount = data?.data?.[0]?.assist_req_count;
 
-  console.log(data?.data?.[0]?.assist_req_count);
-
   return (
     <TouchableOpacity onPress={() => navigation.navigate("notAssign")}>
       <View

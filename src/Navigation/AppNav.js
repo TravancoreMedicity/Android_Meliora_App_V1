@@ -27,8 +27,6 @@ const AppNav = () => {
     getToken();
   }, [tokenId]);
 
-  console.log(isDarkTheme);
-
   const defTheme = isDarkTheme ? CombinedDarkTheme : CombinedLightTheme;
 
   return (

@@ -79,7 +79,7 @@ const FlashListNotAssigns = ({ navigation }) => {
         {isLoading && !isSuccess && !isError && <CustomActivityIndicator />}
         <Suspense fallback={<CustomActivityIndicator />}>
           <FlashListNotAssignCmp
-            notAssigned={isLoading ? [] : notAssignedData}
+            notAssigned={isLoading ? [] : data?.data ?? []}
           />
         </Suspense>
       </View>
