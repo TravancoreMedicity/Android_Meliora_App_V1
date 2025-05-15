@@ -71,7 +71,7 @@ const FlashListAssign = ({ navigation }) => {
 
         <View
           style={{
-            height: height,
+            height: height / 1.2,
             width: width,
             paddingHorizontal: 15,
           }}

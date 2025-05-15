@@ -23,6 +23,8 @@ import { axiosApi } from "../../../../../config/Axiox";
 import { useSelector } from "react-redux";
 import { getLogiEmployeeID } from "../../../../../Redux/ReduxSlice/LoginSLice";
 import { useQueryClient } from "@tanstack/react-query";
+import CenteredButton from "./Common/CenteredButton";
+import FloatingButton from "./Common/FloatingButton";
 
 const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
   const theme = useTheme();
@@ -223,9 +225,13 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
         >
           {/* outer layer */}
           <ScrollView
-            style={{ flex: 1, backgroundColor: theme.colors.statusBarCol }}
+            style={{
+              flex: 1,
+              backgroundColor: theme.colors.statusBarCol,
+            }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="always"
+            fadingEdgeLength={200}
           >
             {/* inner layer starting */}
             <View
@@ -530,86 +536,16 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
                     />
                   </View>
                 </View>
-                <View
-                  style={{
-                    paddingVertical: 8,
-                    paddingBottom: 50,
-                    width: "100%",
-                    alignItems: "center",
-                    flexDirection: "row",
-                    justifyContent: "space-evenly",
-                  }}
-                >
-                  <View
-                    style={{
-                      // borderWidth: 2,
-                      width: "40%",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      borderRadius: 20,
-                      borderColor: theme.colors.logoCol2,
-                      shadowColor: "#000",
-                      opacity: 0.8,
-                      shadowOffset: { width: 0, height: 2 }, // iOS shadow
-                      shadowOpacity: 0.2,
-                      shadowRadius: 3,
-                      // elevation: 4, // Android shadow
-                    }}
-                  >
-                    <View style={{ width: "40%", alignItems: "center" }}>
-                      <TouchableOpacity
-                        style={{
-                          backgroundColor: theme.colors.logoCol2, // green
-                          padding: 15,
-                          borderRadius: 50, // circular
-                          alignItems: "center",
-                          justifyContent: "center",
-                          shadowColor: "#000",
-                          opacity: 0.8,
-                          shadowOffset: { width: 0, height: 2 }, // iOS shadow
-                          shadowOpacity: 0.2,
-                          shadowRadius: 3,
-                          elevation: 4, // Android shadow
-                        }}
-                        onPress={handleRectify}
-                        activeOpacity={0.7}
-                      >
-                        <Feather name="thumbs-up" size={22} color="white" />
-                      </TouchableOpacity>
-                    </View>
-                    <View>
-                      <Text
-                        style={{
-                          color: theme.colors.logoCol2,
-                          fontSize: 12,
-                          fontFamily: "Roboto_500Medium",
-                          textAlign: "center",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Confirm Rectify
-                      </Text>
-                    </View>
-                  </View>
-                </View>
+                {/* centered button Component */}
+                <CenteredButton
+                  hangleOnPress={handleRectify}
+                  label="Confirm Rectify"
+                />
               </View>
             </View>
           </ScrollView>
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              bottom: 30,
-              right: 30,
-              backgroundColor: theme.colors.logoCol1,
-              borderRadius: 50,
-              padding: 15,
-              elevation: 5,
-              zIndex: 10,
-            }}
-            onPress={handleModalClose}
-          >
-            <Feather name="corner-up-left" size={22} color="white" />
-          </TouchableOpacity>
+          {/* Floating button component */}
+          <FloatingButton hangleOnPress={handleModalClose} />
         </Modal>
       </SafeAreaView>
     </SafeAreaProvider>

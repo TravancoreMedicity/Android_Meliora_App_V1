@@ -127,7 +127,6 @@ export const UseGetHoldReasons = () => {
 // EMPLOIYEE LIST WITH OUT LOGGED IN EMPLOYEE
 const getEmpWithOutLoginUser = async (postData) => {
   const response = await axiosApi.post(`/complaintassign/assistant`, postData);
-  console.log("running");
   return await response.data;
 };
 
@@ -139,4 +138,27 @@ export const UseGetEmpWithOutLoginUser = (postData) => {
     staleTime: 1000 * 60 * 10, // 10 minutes
   });
   return { data, isLoading, isError, isSuccess };
+};
+
+// GET THE THE TICKET ASSITANCE EMPLOYEE LIST WITH STATUS
+
+// EMPLOIYEE LIST WITH OUT LOGGED IN EMPLOYEE
+const getAssitedEmpList = async (postCmpNo) => {
+  const response = await axiosApi.post(
+    `/complaintassign/AssistReqEmployee`,
+    postCmpNo
+  );
+  console.log("running ");
+  return await response.data;
+};
+
+export const UsegetAssitedEmpList = (postCmpNo) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["empAssistData", postCmpNo],
+    queryFn: () => getAssitedEmpList(postCmpNo),
+    enabled: false,
+    // refetchOnMount: true,
+    // staleTime: 1000 * 60 * 5, // 10 minutes
+  });
+  return { data, isLoading, isError, isSuccess, refetch };
 };

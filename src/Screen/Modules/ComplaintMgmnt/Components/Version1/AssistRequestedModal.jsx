@@ -6,7 +6,7 @@ import {
   useWindowDimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { memo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "react-native-paper";
 import { format } from "date-fns";
@@ -14,6 +14,15 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import LiveCmpTimeDiffrenceClock from "../Modals/LiveCmpTimeDiffrenceClock";
 import Feather from "react-native-vector-icons/Feather";
 import EmpListWithOutLoggedUser from "./Common/EmpListWithOutLoggedUser";
+import FloatingButton from "./Common/FloatingButton";
+import CenteredButton from "./Common/CenteredButton";
+import { useSelector } from "react-redux";
+import { getLogiEmployeeID } from "../../../../../Redux/ReduxSlice/LoginSLice";
+import { Toast } from "toastify-react-native";
+import { axiosApi } from "../../../../../config/Axiox";
+import { useQueryClient } from "@tanstack/react-query";
+import { UsegetAssitedEmpList } from "../../../../../api/TicketsUtilities";
+import Skeleton from "../../../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
 
 const AssistRequestedModal = ({
   openState,
@@ -23,13 +32,118 @@ const AssistRequestedModal = ({
 }) => {
   const theme = useTheme();
   const { height } = useWindowDimensions();
-  const year = format(new Date(data.compalint_date), "yyyy");
+  const queryClient = useQueryClient();
+
+  const ticketData = useMemo(() => {
+    return data;
+  }, [data]);
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate loading for 2 seconds
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const empId = useSelector((state) => getLogiEmployeeID(state));
+  const emId = useMemo(() => empId, [empId]);
+
+  const {
+    compalint_date,
+    complaint_slno,
+    comp_reg_emp,
+    sec_name,
+    locationName,
+    complaint_type_name,
+    assigned_date,
+    complaint_desc,
+  } = ticketData;
+  const year = format(new Date(compalint_date), "yyyy");
 
   const [empList, setEmpList] = useState([]);
 
   const handleModalClose = () => {
     setModalVisible(false);
   };
+
+  console.log(empList);
+  const postAssistData = useMemo(() => {
+    return empList?.map((val) => {
+      return {
+        complaint_slno: complaint_slno,
+        assigned_emp: val,
+        assist_assign_date: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+        assist_flag: 1,
+        assist_requested_emp: emId,
+        assign_rect_status: 0,
+        assigned_user: emId,
+      };
+    });
+  }, [empList, complaint_slno, emId]);
+
+  const handledSubmitAssistRequest = useCallback(async () => {
+    if (postAssistData?.length === 0) {
+      Toast.show({
+        type: "warn",
+        text1: "Warning",
+        text2: "Please select at least one employee",
+      });
+    }
+
+    if (postAssistData?.length > 0) {
+      const response = await axiosApi.post(
+        `/complaintassign/assist/multiple`,
+        postAssistData
+      );
+      const responseData = await response.data;
+      const { success, message } = responseData;
+
+      if (success === 1) {
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: message,
+          onHide: () => {
+            queryClient.invalidateQueries({
+              queryKey: ["assignedList", emId],
+              //exact: true,
+            });
+            setModalVisible(false);
+          },
+        });
+      }
+      console.log(response.data);
+    }
+  }, [postAssistData]);
+
+  //   LIST ASSIST REQUEST EMPLOYEE DETAILS
+  // UsegetAssitedEmpList
+  const searchPostData = useMemo(() => {
+    return {
+      complaint_slno: complaint_slno,
+    };
+  }, [complaint_slno]);
+
+  const {
+    data: searchData,
+    isError,
+    isLoading,
+    isSuccess,
+    refetch,
+  } = UsegetAssitedEmpList(searchPostData);
+
+  const searchDataList = searchData?.data ?? [];
+
+  useEffect(() => {
+    if (openState === true) {
+      refetch();
+    }
+  }, [openState]);
+
+  console.log(searchDataList);
 
   return (
     <SafeAreaProvider>
@@ -90,7 +204,7 @@ const AssistRequestedModal = ({
                         color: theme.colors.logoCol2,
                       }}
                     >
-                      #{data.complaint_slno}
+                      #{complaint_slno}
                     </Text>
                     <Text
                       style={{
@@ -125,7 +239,7 @@ const AssistRequestedModal = ({
                         paddingRight: 5,
                       }}
                     >
-                      {data.compalint_date}
+                      {compalint_date}
                     </Text>
                   </View>
                 </View>
@@ -145,7 +259,7 @@ const AssistRequestedModal = ({
                     }}
                     numberOfLines={1}
                   >
-                    {data.comp_reg_emp}
+                    {comp_reg_emp}
                   </Text>
                   <Text
                     style={{
@@ -167,7 +281,7 @@ const AssistRequestedModal = ({
                       color: theme.colors.lightBlueFont,
                     }}
                   >
-                    {data.sec_name}
+                    {sec_name}
                   </Text>
                 </View>
 
@@ -191,7 +305,7 @@ const AssistRequestedModal = ({
                       color: theme.colors.lightBlueFont,
                     }}
                   >
-                    {data.locationName}
+                    {locationName}
                   </Text>
                 </View>
 
@@ -215,7 +329,7 @@ const AssistRequestedModal = ({
                       color: theme.colors.lightBlueFont,
                     }}
                   >
-                    {data.complaint_type_name}
+                    {complaint_type_name}
                   </Text>
                 </View>
 
@@ -239,7 +353,7 @@ const AssistRequestedModal = ({
                       color: theme.colors.lightBlueFont,
                     }}
                   >
-                    {data.assigned_date}
+                    {assigned_date}
                   </Text>
                 </View>
 
@@ -265,59 +379,92 @@ const AssistRequestedModal = ({
                     }}
                     textBreakStrategy="highQuality"
                   >
-                    {data.complaint_desc ?? "N/A"}
+                    {complaint_desc ?? "N/A"}
                   </Text>
                 </View>
                 {/* live clock */}
                 <View style={{ alignItems: "center" }}>
-                  <LiveCmpTimeDiffrenceClock
-                    compalint_date={data.compalint_date}
-                  />
+                  <LiveCmpTimeDiffrenceClock compalint_date={compalint_date} />
                 </View>
               </View>
-              <View style={{ paddingHorizontal: 20 }}>
+              <View style={{ paddingHorizontal: 20, marginBottom: 10 }}>
                 <View>
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "800",
-                      fontFamily: "Roboto_500Medium",
-                      color: theme.colors.logoCol2,
-                      textDecorationLine: "underline",
-                      textDecorationColor: theme.colors.logoCol2,
-                      textDecorationStyle: "solid",
-                    }}
+                  <View style={{ paddingBottom: 10 }}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "800",
+                        fontFamily: "Roboto_500Medium",
+                        color: theme.colors.logoCol2,
+                        textDecorationLine: "underline",
+                        textDecorationColor: theme.colors.logoCol2,
+                        textDecorationStyle: "solid",
+                      }}
+                    >
+                      Request Assistance
+                    </Text>
+                  </View>
+                  {/* Assistance status start */}
+                  {searchDataList.length > 0 && (
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: "800",
+                          color: theme.colors.logoCol2,
+                        }}
+                      >
+                        Assistance Status
+                      </Text>
+                      {loading === true ? (
+                        <Skeleton height={50} />
+                      ) : (
+                        <View>
+                          <View>
+                            <Text>adasdasdasd</Text>
+                          </View>
+                        </View>
+                      )}
+                    </View>
+                  )}
+                  {/* Assistance status end */}
+
+                  {/* employee list for select the assist request start  */}
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: "800",
+                        color: theme.colors.logoCol2,
+                      }}
+                    >
+                      Select Assistance
+                    </Text>
+                  </View>
+                  <ScrollView
+                    fadingEdgeLength={40}
+                    style={{ maxHeight: height / 3, marginTop: 10 }}
+                    showsVerticalScrollIndicator={false}
                   >
-                    Request Assistance
-                  </Text>
-                  <View style={{ backgroundColor: "green" }}>
                     <EmpListWithOutLoggedUser
                       postData={postData}
                       selectedEmpNos={empList}
                       setSelectedEmpNos={setEmpList}
                     />
-                  </View>
+                  </ScrollView>
+                  {/* employee list for select the assist request end  */}
                 </View>
               </View>
+              {/* confirm button */}
+              <CenteredButton
+                hangleOnPress={handledSubmitAssistRequest}
+                label={"Confirm Assistance"}
+              />
             </View>
           </ScrollView>
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              bottom: 30,
-              right: 30,
-              backgroundColor: theme.colors.logoCol1,
-              borderRadius: 50,
-              padding: 15,
-              elevation: 5,
-              zIndex: 10,
-            }}
-            onPress={handleModalClose}
-          >
-            <Feather name="corner-up-left" size={22} color="white" />
-          </TouchableOpacity>
+          {/* Floating Button Component    */}
+          <FloatingButton hangleOnPress={handleModalClose} />
         </Modal>
-        {/* Floating Icon */}
       </SafeAreaView>
     </SafeAreaProvider>
   );
