@@ -8,13 +8,17 @@ const EmpListWithOutLoggedUser = ({
   postData,
   selectedEmpNos,
   setSelectedEmpNos,
+  assitedEmplist,
 }) => {
   const theme = useTheme();
 
   const { data, isError, isLoading, isSuccess } =
     UseGetEmpWithOutLoginUser(postData);
   const empList = data?.data ?? [];
-  const employees = useMemo(() => empList, [empList]);
+  const employees = useMemo(() => {
+    const assistemp = assitedEmplist?.map((emp) => emp.assigned_emp);
+    return empList?.filter((emp) => !assistemp.includes(emp.em_id));
+  }, [empList, assitedEmplist]);
 
   const toggleCheckbox = useCallback(
     (emp_no) => {

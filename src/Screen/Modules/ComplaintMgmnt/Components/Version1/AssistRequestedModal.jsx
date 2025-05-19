@@ -23,6 +23,7 @@ import { axiosApi } from "../../../../../config/Axiox";
 import { useQueryClient } from "@tanstack/react-query";
 import { UsegetAssitedEmpList } from "../../../../../api/TicketsUtilities";
 import Skeleton from "../../../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
+import AssitReqListComp from "./AssitReqListComp";
 
 const AssistRequestedModal = ({
   openState,
@@ -69,7 +70,6 @@ const AssistRequestedModal = ({
     setModalVisible(false);
   };
 
-  console.log(empList);
   const postAssistData = useMemo(() => {
     return empList?.map((val) => {
       return {
@@ -115,7 +115,6 @@ const AssistRequestedModal = ({
           },
         });
       }
-      console.log(response.data);
     }
   }, [postAssistData]);
 
@@ -135,15 +134,13 @@ const AssistRequestedModal = ({
     refetch,
   } = UsegetAssitedEmpList(searchPostData);
 
-  const searchDataList = searchData?.data ?? [];
+  const searchDataList = useMemo(() => searchData?.data ?? [], [searchData]);
 
   useEffect(() => {
     if (openState === true) {
       refetch();
     }
   }, [openState]);
-
-  console.log(searchDataList);
 
   return (
     <SafeAreaProvider>
@@ -419,10 +416,10 @@ const AssistRequestedModal = ({
                       {loading === true ? (
                         <Skeleton height={50} />
                       ) : (
-                        <View>
-                          <View>
-                            <Text>adasdasdasd</Text>
-                          </View>
+                        <View style={{ marginVertical: 10, rowGap: 5 }}>
+                          {searchDataList?.map((item, index) => {
+                            return <AssitReqListComp key={index} item={item} />;
+                          })}
                         </View>
                       )}
                     </View>
@@ -441,17 +438,14 @@ const AssistRequestedModal = ({
                       Select Assistance
                     </Text>
                   </View>
-                  <ScrollView
-                    fadingEdgeLength={40}
-                    style={{ maxHeight: height / 3, marginTop: 10 }}
-                    showsVerticalScrollIndicator={false}
-                  >
+                  <View style={{ marginTop: 10 }}>
                     <EmpListWithOutLoggedUser
                       postData={postData}
                       selectedEmpNos={empList}
                       setSelectedEmpNos={setEmpList}
+                      assitedEmplist={searchDataList}
                     />
-                  </ScrollView>
+                  </View>
                   {/* employee list for select the assist request end  */}
                 </View>
               </View>

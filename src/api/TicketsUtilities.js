@@ -148,7 +148,6 @@ const getAssitedEmpList = async (postCmpNo) => {
     `/complaintassign/AssistReqEmployee`,
     postCmpNo
   );
-  console.log("running ");
   return await response.data;
 };
 
