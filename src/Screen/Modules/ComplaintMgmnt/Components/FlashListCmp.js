@@ -19,6 +19,7 @@ const FlashListCmp = ({ Assigned, FlashRenderCmp }) => {
       ItemSeparatorComponent={() => (
         <View style={{ height: 20, width: "100%" }} />
       )}
+      contentContainerStyle={{ paddingBottom: 50 }}
       // estimatedListSize={
       //     {
       //         height: (windowHeight * 70 / 100),

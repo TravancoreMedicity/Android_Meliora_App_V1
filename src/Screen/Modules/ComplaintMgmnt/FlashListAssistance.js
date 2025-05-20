@@ -1,74 +1,73 @@
 //import liraries
-import React, { lazy, memo, Suspense, useMemo, useState } from 'react';
-import { View, Text, ScrollView, SafeAreaView } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
-import { useSelector } from 'react-redux';
-import _ from 'underscore';
-import HearderSecondary from '../../../Components/HearderSecondary';
-import { bgColor, colorTheme } from '../../../Constant/Colors';
-import { assistListUserWise } from '../../../Redux/ReduxSlice/ticketMagmntSlice';
-import { windowHeight, windowWidth } from '../../../utils/Dimentions';
-import { styles } from './Style/Style';
-import OverLayLoading from './Components/OverLayLoading';
+import React, { lazy, memo, Suspense, useMemo, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  KeyboardAvoidingView,
+  useWindowDimensions,
+} from "react-native";
+import { ActivityIndicator, useTheme } from "react-native-paper";
+import { useSelector } from "react-redux";
+import _ from "underscore";
+import HearderSecondary from "../../../Components/HearderSecondary";
+import { bgColor, colorTheme } from "../../../Constant/Colors";
+import { assistListUserWise } from "../../../Redux/ReduxSlice/ticketMagmntSlice";
+import { windowHeight, windowWidth } from "../../../utils/Dimentions";
+import { styles } from "./Style/Style";
+import OverLayLoading from "./Components/OverLayLoading";
+import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { UsegetAssitRequestList } from "../../../api/TicketsUtilities";
+import { getLogiEmployeeID } from "../../../Redux/ReduxSlice/LoginSLice";
 
-const FlashListCmp = lazy(() => import('./Components/FlashListCmp'));
-const AssistanceCmp = lazy(() => import('./Components/AssistanceCmp'))
+const FlashListCmp = lazy(() => import("./Components/FlashListCmp"));
+const AssistanceCmp = lazy(() => import("./Components/AssistanceCmp"));
 
 // create a component
 const FlashListAssistance = ({ navigation }) => {
+  const theme = useTheme();
+  const { height, width } = useWindowDimensions();
+  //   Main view height
+  const headerHeight = height > 790 ? 100 : 75;
+  const headerHeightWithStatusBar = height - headerHeight;
 
-    const [count, setCount] = useState(0)
-    const [refresh, setRefresh] = useState(false)
-    const [loding, setLoading] = useState(true)
+  // GET THE LOGGED EMP ID
+  const emId = useSelector((state) => getLogiEmployeeID(state));
+  // GET  THE ASSIT REQUEST LIST
+  const { data, isError, isLoading, isSuccess } = UsegetAssitRequestList(emId);
 
-    const assitanceTicket = useSelector(assistListUserWise);
-    const assitanceTickList = useMemo(() => assitanceTicket, [assitanceTicket]);
+  const assitedList = useMemo(() => {
+    if (!isError && !isLoading && isSuccess) {
+      return data?.data ?? [];
+    } else {
+      return [];
+    }
+  }, [data, isLoading, isSuccess, isError]);
 
-    return (
-        <SafeAreaView style={{ height: windowHeight }} >
-            {/* Header  */}
-            <HearderSecondary
-                navigation={navigation}
-                name="Assitance Needed tickets"
-                goBackButton={false}
+  return (
+    <KeyboardAvoidingView enabled behavior="height">
+      <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
+        {/* Header  */}
+        <HearderSecondary navigation={navigation} name="Assist Request" />
+        <View
+          style={{
+            height: headerHeightWithStatusBar,
+            width: width,
+            paddingHorizontal: 15,
+          }}
+        >
+          {isLoading && !isSuccess && !isError && <CustomActivityIndicator />}
+          <Suspense fallback={<CustomActivityIndicator />}>
+            <FlashListCmp
+              FlashRenderCmp={AssistanceCmp}
+              Assigned={assitedList}
             />
-            <View style={{ ...styles.card }} >
-                {loding && <OverLayLoading />}
-                <View style={{
-                    flex: 1,
-                    maxWidth: windowWidth,
-                    height: (windowHeight * 70 / 100)
-                }} >
-                    <Suspense fallback={<ActivityIndicator />} >
-                        <FlashListCmp
-                            FlashRenderCmp={AssistanceCmp}
-                            Assigned={assitanceTickList}
-                            setCount={setCount}
-                            refresh={refresh}
-                            count={count}
-                            setLoading={setLoading}
-                        />
-                    </Suspense>
-                </View>
-            </View>
-            <View style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: colorTheme.mainBgColor,
-            }} >
-                <Text style={{
-                    fontFamily: 'Roboto_500Medium',
-                    fontSize: windowWidth > 400 ? 14 : 12,
-                    paddingHorizontal: 5,
-                    overflow: 'hidden',
-                    color: colorTheme.mainColor,
-                    fontFamily: 'Roboto_100Thin',
-                    fontSize: 10,
-                }} >Pull Down To Refresh</Text>
-            </View>
-        </SafeAreaView >
-    );
+          </Suspense>
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
+  );
 };
 
 //make this component available to the app

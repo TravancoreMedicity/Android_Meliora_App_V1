@@ -2,6 +2,7 @@
 import React, { memo } from "react";
 import { View, Text, useWindowDimensions } from "react-native";
 import { ActivityIndicator, useTheme } from "react-native-paper";
+import CustomActivityIndicator from "../../../../Components/CustomActivityIndicator";
 
 // create a component
 const NoNewTicketCmp = () => {
@@ -20,11 +21,12 @@ const NoNewTicketCmp = () => {
         bottom: 0,
       }}
     >
-      <ActivityIndicator
+      {/* <ActivityIndicator
         color={theme.colors.logoCol2}
         size={40}
         animating={true}
-      />
+      /> */}
+      <CustomActivityIndicator />
     </View>
   );
 };

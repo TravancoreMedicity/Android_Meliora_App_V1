@@ -10,6 +10,7 @@ import { store } from "./src/Redux/Store";
 import AppNav from "./src/Navigation/AppNav";
 import { View, Text } from "react-native";
 import ToastManager from "toastify-react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const quieryClient = new QueryClient();
 
@@ -17,12 +18,14 @@ const quieryClient = new QueryClient();
 const App = () => {
   return (
     <QueryClientProvider client={quieryClient}>
-      <Provider store={store}>
-        <GestureHandlerRootView>
-          <ToastManager />
-          <AppNav />
-        </GestureHandlerRootView>
-      </Provider>
+      <SafeAreaProvider>
+        <Provider store={store}>
+          <GestureHandlerRootView>
+            <ToastManager />
+            <AppNav />
+          </GestureHandlerRootView>
+        </Provider>
+      </SafeAreaProvider>
     </QueryClientProvider>
   );
 };

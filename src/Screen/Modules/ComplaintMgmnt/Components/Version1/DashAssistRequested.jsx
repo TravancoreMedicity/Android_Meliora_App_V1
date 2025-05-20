@@ -25,7 +25,7 @@ const DashAssistRequested = () => {
   const pendingAssistCount = data?.data?.[0]?.assist_req_count;
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("notAssign")}>
+    <TouchableOpacity onPress={() => navigation.navigate("Assistance")}>
       <View
         style={{
           backgroundColor: theme.colors.cardBgColor,

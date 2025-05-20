@@ -10,12 +10,13 @@ import React, {
 } from "react";
 import {
   View,
-  //   Text,
+  Text,
   //   StyleSheet,
   //   ScrollView,
   SafeAreaView,
   KeyboardAvoidingView,
   useWindowDimensions,
+  StatusBar,
 } from "react-native";
 import { useTheme } from "react-native-paper";
 import HearderSecondary from "../../../Components/HearderSecondary";
@@ -43,14 +44,17 @@ const FlashListAssign = ({ navigation }) => {
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
 
+  const statusBarHeight = StatusBar.currentHeight;
+
+  const headerHeight = height > 790 ? 100 : 75;
+  const headerHeightWithStatusBar = height - headerHeight;
+
   // user logged information
   const empId = useSelector((state) => getLogiEmployeeID(state));
   const emId = useMemo(() => empId, [empId]);
 
   //   get the assigned list only employee wise
   const { data, isError, isLoading, isSuccess } = UseGetAssignedList(emId);
-
-  const [assignedList, setAssignedList] = useState(data?.data ?? []);
 
   //   const [loding, setLoading] = useState(true);
   //   useEffect(() => {
@@ -66,12 +70,11 @@ const FlashListAssign = ({ navigation }) => {
   return (
     <KeyboardAvoidingView enabled behavior="height">
       <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
-        {/* Header  */}
         <HearderSecondary navigation={navigation} name="Assigned Tickets" />
 
         <View
           style={{
-            height: height / 1.2,
+            height: headerHeightWithStatusBar,
             width: width,
             paddingHorizontal: 15,
           }}
@@ -79,56 +82,18 @@ const FlashListAssign = ({ navigation }) => {
           {isLoading && !isSuccess && !isError && <CustomActivityIndicator />}
 
           <Suspense fallback={<CustomActivityIndicator />}>
-            <FlashListCmp
-              FlashRenderCmp={AssignedListCmp}
-              Assigned={data?.data ?? []}
-            />
+            <View style={{ flex: 1 }}>
+              <FlashListCmp
+                FlashRenderCmp={AssignedListCmp}
+                Assigned={data?.data ?? []}
+              />
+            </View>
           </Suspense>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
-
-// define your styles
-// const styles = StyleSheet.create({
-//   container: {
-//     backgroundColor: bgColor.cardBg,
-//     height: windowHeight,
-//   },
-//   scrollView: {
-//     padding: 8,
-//   },
-//   dashBord: {
-//     // flex: 1,
-//     flexDirection: "row",
-//   },
-//   card: {
-//     flex: 1,
-//     backgroundColor: "#fffdff",
-//     borderRadius: 5,
-//     overflow: "hidden",
-//   },
-//   cardHeader: {
-//     backgroundColor: bgColor.cardBg,
-//     // backgroundColor: "powderblue",
-//     minHeight: (windowHeight * 3) / 100,
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     padding: 5,
-//     flexDirection: "row",
-//     overflow: "hidden",
-//     borderTopLeftRadius: 5,
-//     borderTopLeftRadius: 5,
-//   },
-//   cardTitle: {
-//     fontFamily: "Roboto_500Medium",
-//     fontSize: windowWidth > 400 ? 14 : 12,
-//     paddingHorizontal: 5,
-//     overflow: "hidden",
-//     color: fontColor.inActiveFont,
-//   },
-// });
 
 //make this component available to the app
 export default memo(FlashListAssign);

@@ -56,6 +56,9 @@ const FlashListNotAssigns = ({ navigation }) => {
 
   const [notAssignedData] = useState(data?.data ?? []);
 
+  const headerHeight = height > 790 ? 100 : 75;
+  const headerHeightWithStatusBar = height - headerHeight;
+
   // console.log(data?.data);
 
   // console.log(pendingTicketList?.data?.data);
@@ -71,7 +74,7 @@ const FlashListNotAssigns = ({ navigation }) => {
       {/* Header End */}
       <View
         style={{
-          height: height,
+          height: headerHeightWithStatusBar,
           width: width,
           paddingHorizontal: 15,
         }}

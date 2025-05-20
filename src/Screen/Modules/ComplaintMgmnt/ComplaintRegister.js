@@ -28,22 +28,14 @@ import { useSelector, useDispatch } from "react-redux";
 
 // import { getAssignedTicketList, getAssistTicketList, getNotAssignedComplaintList } from '../../../Redux/Actions/complaintMagmt.action';
 // import { getEmployeeDetlLoggedDeptWise } from '../../../Redux/Actions/common.action';
-import ApiGetFun from "./func/ApiGetFun";
+// import ApiGetFun from "./func/ApiGetFun";
 
-const FlashListNotAssign = lazy(() =>
-  import("./Components/FlashListNotAssign")
-);
+// const FlashListNotAssign = lazy(() =>
+//   import("./Components/FlashListNotAssign")
+// );
 const DashBoardView = lazy(() => import("./DashBoardView"));
-const MyTicketDash = lazy(() => import("./Components/MyTicketDash"));
 
-import { XCircleIcon } from "react-native-heroicons/solid";
-import {
-  getComplaintdeptData,
-  getEmployeeDetlLoggedDeptWise,
-} from "../../../Redux/ReduxSlice/commonSlice";
-import { getComplaintPriority } from "../../../Redux/ReduxSlice/ComplaintPrioritySlice";
 import { useTheme } from "react-native-paper";
-import Skeleton from "../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
 import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 import NewTicketDash from "./Components/Version1/NewTicketDash";
 import DashAssistRequested from "./Components/Version1/DashAssistRequested";
@@ -56,16 +48,6 @@ const ComplaintRegister = ({ navigation }) => {
   const theme = useTheme();
   const { width } = useWindowDimensions();
 
-  useEffect(() => {
-    if (windowHeight > 750) {
-      setCustomHeight(windowHeight - 280);
-    } else if (windowHeight < 737 && windowHeight > 724) {
-      setCustomHeight(windowHeight - 240);
-    } else if (windowHeight < 738) {
-      setCustomHeight(windowHeight - 250);
-    }
-  }, [windowHeight]);
-
   const dispatch = useDispatch();
 
   //   Login INformation
@@ -75,18 +57,11 @@ const ComplaintRegister = ({ navigation }) => {
   const loggedDetl = useMemo(() => loggedEmpDetl, [loggedEmpDetl]);
   const { emp_id, emp_dept } = loggedDetl;
 
-  const [refresh, setRefresh] = useState(false);
-  const [count, setCount] = useState(0);
-
   // const { dismiss, dismissAll } = useBottomSheetModal();
-
-  const [customHeight, setCustomHeight] = useState(0);
   //not asssigned list from database
-  useEffect(() => {
-    dispatch(getEmployeeDetlLoggedDeptWise(emp_dept));
-    dispatch(getComplaintPriority());
-    dispatch(getComplaintdeptData());
-  }, [emp_dept, count, emp_id, dispatch]);
+  // useEffect(() => {
+  //   dispatch(getEmployeeDetlLoggedDeptWise(emp_dept));
+  // }, [emp_dept, emp_id, dispatch]);
 
   return (
     <SafeAreaView
@@ -95,7 +70,7 @@ const ComplaintRegister = ({ navigation }) => {
         backgroundColor: theme.colors.appBgInside,
       }}
     >
-      <ApiGetFun />
+      {/* <ApiGetFun /> */}
 
       {/* Header Component  Start*/}
       <HearderSecondary navigation={navigation} name="Ticket Management" />
@@ -120,6 +95,7 @@ const ComplaintRegister = ({ navigation }) => {
               <DashAssistRequested />
             </View>
 
+            {/* Dash Bord View Start  */}
             <View style={{ marginTop: 18 }}>
               <DashBoardView navigation={navigation} />
             </View>

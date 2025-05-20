@@ -17,67 +17,67 @@ const DashCountTile = lazy(() => import("./DashCountTile"));
 // create a component
 const DashBoardView = ({ navigation }) => {
   const theme = useTheme();
-  const superId = useSelector(getSuperVisor);
-  const [newTicket, setNewTicket] = useState(0);
-  const [secondLvl, setSecondLvl] = useState(0);
-  const [ticktCount, setTicktCount] = useState({
-    assigned: 0,
-    assit: 0,
-    onHold: 0,
-    forVerify: 0,
-    completed: 0,
-    pending: 0,
-    superPending: 0,
-  });
+  // const superId = useSelector(getSuperVisor);
+  // const [newTicket, setNewTicket] = useState(0);
+  // const [secondLvl, setSecondLvl] = useState(0);
+  // const [ticktCount, setTicktCount] = useState({
+  //   assigned: 0,
+  //   assit: 0,
+  //   onHold: 0,
+  //   forVerify: 0,
+  //   completed: 0,
+  //   pending: 0,
+  //   superPending: 0,
+  // });
 
-  const tickectCount = useSelector(getTicketCount);
-  const notAssignedCount = useSelector(getNotAssignedCount);
-  const secondListCount = useSelector(secondLevelCount);
+  // const tickectCount = useSelector(getTicketCount);
+  // const notAssignedCount = useSelector(getNotAssignedCount);
+  // const secondListCount = useSelector(secondLevelCount);
 
-  //FOR ASSIGN THE NOT ASSIGNED TICKET COUNT
-  useEffect(() => {
-    setNewTicket(notAssignedCount);
-    setSecondLvl(secondListCount);
-  }, [notAssignedCount, secondListCount]);
-  //FOT ASSIGN THE ALL TICKET COUNT OTHER THAN NOT ASSIGN
-  const tiktCountFrmDb = useMemo(() => tickectCount, [tickectCount]);
+  // //FOR ASSIGN THE NOT ASSIGNED TICKET COUNT
+  // useEffect(() => {
+  //   setNewTicket(notAssignedCount);
+  //   setSecondLvl(secondListCount);
+  // }, [notAssignedCount, secondListCount]);
+  // //FOT ASSIGN THE ALL TICKET COUNT OTHER THAN NOT ASSIGN
+  // const tiktCountFrmDb = useMemo(() => tickectCount, [tickectCount]);
 
-  useEffect(() => {
-    tiktCountFrmDb?.map((val) => {
-      if (val.countype === "AC")
-        setTicktCount({ ...ticktCount, ...(ticktCount.assigned = val.total) });
-      if (val.countype === "AA")
-        setTicktCount({ ...ticktCount, ...(ticktCount.assit = val.total) });
-      if (val.countype === "HC")
-        setTicktCount({ ...ticktCount, ...(ticktCount.onHold = val.total) });
-      if (val.countype === "PC")
-        setTicktCount({ ...ticktCount, ...(ticktCount.pending = val.total) });
-      if (val.countype === "RC")
-        setTicktCount({ ...ticktCount, ...(ticktCount.forVerify = val.total) });
-      if (val.countype === "CC")
-        setTicktCount({ ...ticktCount, ...(ticktCount.completed = val.total) });
-      if (val.countype === "SP")
-        setTicktCount({
-          ...ticktCount,
-          ...(ticktCount.superPending = val.total),
-        });
-    });
-  }, [tiktCountFrmDb]);
+  // useEffect(() => {
+  //   tiktCountFrmDb?.map((val) => {
+  //     if (val.countype === "AC")
+  //       setTicktCount({ ...ticktCount, ...(ticktCount.assigned = val.total) });
+  //     if (val.countype === "AA")
+  //       setTicktCount({ ...ticktCount, ...(ticktCount.assit = val.total) });
+  //     if (val.countype === "HC")
+  //       setTicktCount({ ...ticktCount, ...(ticktCount.onHold = val.total) });
+  //     if (val.countype === "PC")
+  //       setTicktCount({ ...ticktCount, ...(ticktCount.pending = val.total) });
+  //     if (val.countype === "RC")
+  //       setTicktCount({ ...ticktCount, ...(ticktCount.forVerify = val.total) });
+  //     if (val.countype === "CC")
+  //       setTicktCount({ ...ticktCount, ...(ticktCount.completed = val.total) });
+  //     if (val.countype === "SP")
+  //       setTicktCount({
+  //         ...ticktCount,
+  //         ...(ticktCount.superPending = val.total),
+  //       });
+  //   });
+  // }, [tiktCountFrmDb]);
 
-  const {
-    assigned,
-    assit,
-    completed,
-    forVerify,
-    onHold,
-    pending,
-    superPending,
-  } = ticktCount;
+  // const {
+  //   assigned,
+  //   assit,
+  //   completed,
+  //   forVerify,
+  //   onHold,
+  //   pending,
+  //   superPending,
+  // } = ticktCount;
 
   const ticketDataCount = [
     { id: 1, route: "notAssign", title: "New Tickets", count: 56 },
     { id: 2, route: "AssignList", title: "Assigned", count: 10 },
-    { id: 3, route: "Assistance", title: "Assisted", count: 25 },
+    { id: 3, route: "Assistance", title: "Assist Request", count: 25 },
     { id: 4, route: "OnHold", title: "On Hold", count: 456 },
     { id: 5, route: "Verify", title: "Rectified", count: 5 },
     { id: 6, route: "Completed", title: "Verified", count: 121 },
