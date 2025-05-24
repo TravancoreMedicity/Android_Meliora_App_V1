@@ -7,7 +7,6 @@ import NoNewTicketCmp from "./NoNewTicketCmp";
 
 // create a component
 const FlashListCmp = ({ Assigned, FlashRenderCmp }) => {
-  const legth = Object.keys(Assigned).length;
   return (
     <FlashList
       data={Assigned}
@@ -15,7 +14,7 @@ const FlashListCmp = ({ Assigned, FlashRenderCmp }) => {
       estimatedItemSize={100}
       showsVerticalScrollIndicator={false}
       keyExtractor={(Assigned, index) => index}
-      ListEmptyComponent={<NoNewTicketCmp legth={legth} />}
+      ListEmptyComponent={<NoNewTicketCmp />}
       ItemSeparatorComponent={() => (
         <View style={{ height: 20, width: "100%" }} />
       )}

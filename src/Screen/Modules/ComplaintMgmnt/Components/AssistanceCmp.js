@@ -1,6 +1,6 @@
 //import liraries
 import React, { memo, useCallback, useMemo } from "react";
-import { View, Text, Pressable, Alert } from "react-native";
+import { View, Text, Pressable, Alert, TouchableOpacity } from "react-native";
 import { bgColor, colorTheme, fontColor } from "../../../../Constant/Colors";
 import { styles } from "../Style/Style";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,8 @@ import { reduxUpdation } from "../../../../Redux/ReduxSlice/commonSlice";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LiveCmpTimeDiffrenceClock from "./Modals/LiveCmpTimeDiffrenceClock";
+import CenteredButton from "./Version1/Common/CenteredButton";
+import Feather from "react-native-vector-icons/Feather";
 
 // create a component
 const AssistanceCmp = ({ data }) => {
@@ -19,7 +21,6 @@ const AssistanceCmp = ({ data }) => {
 
   const compDetlData = useMemo(() => data, [data]);
 
-  console.log(compDetlData);
   const emp_id = useSelector(getLogiEmployeeID);
 
   const {
@@ -420,9 +421,67 @@ const AssistanceCmp = ({ data }) => {
       </View>
       {/* Middle Components End */}
 
-      <View className="pb-1 pt-1">
-        <Pressable
-          onPress={onRectifyModal}
+      <View
+        style={{
+          flexDirection: "row",
+          //   backgroundColor: "green",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingVertical: 5,
+        }}
+      >
+        <View style={{ width: "30%", alignItems: "center" }}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: theme.colors.logoCol2, // green
+              padding: 15,
+              borderRadius: 50, // circular
+              alignItems: "center",
+              justifyContent: "center",
+              shadowColor: "#000",
+              opacity: 0.8,
+              shadowOffset: { width: 0, height: 2 }, // iOS shadow
+              shadowOpacity: 0.2,
+              shadowRadius: 3,
+              elevation: 4, // Android shadow
+            }}
+            onPress={() => console.log("ddd")}
+            activeOpacity={0.7}
+          >
+            <Feather name="thumbs-up" size={22} color="white" />
+          </TouchableOpacity>
+          <View>
+            <Text>Accept</Text>
+          </View>
+        </View>
+
+        <View style={{ width: "30%", alignItems: "center" }}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: theme.colors.logoCol2, // green
+              padding: 15,
+              borderRadius: 50, // circular
+              alignItems: "center",
+              justifyContent: "center",
+              shadowColor: "#000",
+              opacity: 0.8,
+              shadowOffset: { width: 0, height: 2 }, // iOS shadow
+              shadowOpacity: 0.2,
+              shadowRadius: 3,
+              elevation: 4, // Android shadow
+            }}
+            onPress={() => console.log("ddd")}
+            activeOpacity={0.7}
+          >
+            <Feather name="slash" size={22} color="white" />
+          </TouchableOpacity>
+          <View>
+            <Text>Reject</Text>
+          </View>
+        </View>
+
+        {/* <Pressable
+          onPress={() => console.log("dddd")}
           className="flex"
           style={{
             borderWidth: 0.3,
@@ -436,7 +495,7 @@ const AssistanceCmp = ({ data }) => {
           <Text className="text-center text-white">
             Press to accept the Assistance
           </Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </View>
   );

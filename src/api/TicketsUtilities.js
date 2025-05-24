@@ -186,7 +186,6 @@ const getAssitRequestList = async (emId) => {
   const response = await axiosApi.get(
     `/complaintassign/individual/assist/${emId}`
   );
-  console.log(response);
   return await response.data;
 };
 
