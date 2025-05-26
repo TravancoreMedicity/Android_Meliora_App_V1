@@ -9,14 +9,32 @@ import {
 } from "../../../Redux/ReduxSlice/ticketMagmntSlice";
 import { styles } from "./Style/Style";
 import { secondLevelCount } from "../../../Redux/ReduxSlice/ticketMagmentDeptSlice";
-import { getSuperVisor } from "../../../Redux/ReduxSlice/LoginSLice";
+import {
+  getLogiEmpDEPT,
+  getLogiEmployeeID,
+  getSuperVisor,
+} from "../../../Redux/ReduxSlice/LoginSLice";
 import { useTheme } from "react-native-paper";
+import {
+  UseGetPendingAssistTicketCount,
+  UseGetPendingTicketsCount,
+} from "../../../api/TicketsUtilities";
 
 const DashCountTile = lazy(() => import("./DashCountTile"));
 
 // create a component
 const DashBoardView = ({ navigation }) => {
   const theme = useTheme();
+
+  const empID = useSelector((state) => getLogiEmployeeID(state));
+  const deptID = useSelector((state) => getLogiEmpDEPT(state));
+
+  // GET THE ASSIT REQUEST COUNT
+  const { data, isError, isLoading, isSuccess } =
+    UseGetPendingAssistTicketCount(empID);
+  // GET THE PENDING TICKET COUNT
+  const {} = UseGetPendingTicketsCount(deptID);
+
   // const superId = useSelector(getSuperVisor);
   // const [newTicket, setNewTicket] = useState(0);
   // const [secondLvl, setSecondLvl] = useState(0);

@@ -26,11 +26,11 @@ const getPendingAssistRequestCount = async (empID) => {
 };
 
 export const UseGetPendingAssistTicketCount = (empID) => {
-  const { data, isError, isLoading, isSuccess } = useQuery({
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
     queryKey: ["getAssistpendingCount", empID],
     queryFn: () => getPendingAssistRequestCount(empID),
   });
-  return { data, isLoading, isError, isSuccess };
+  return { data, isLoading, isError, isSuccess, refetch };
 };
 
 // PENDING TICKET LIST COUNT
@@ -193,6 +193,44 @@ export const UsegetAssitRequestList = (emId) => {
   const { data, isError, isLoading, isSuccess, refetch } = useQuery({
     queryKey: ["assitedRequestList", emId],
     queryFn: () => getAssitRequestList(emId),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  return { data, isLoading, isError, isSuccess, refetch };
+};
+
+//EMPLOYEE  ASSIGNED TICKET COUNT
+const getEmpAssignedTicket = async (emId) => {
+  const response = await axiosApi.get(
+    `/cmdashboard/empAssignTicketCount/${emId}`
+  );
+  return await response.data;
+};
+
+export const UsegetEmpAssignedTicket = (emId) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["empAssignedTicket", emId],
+    queryFn: () => getEmpAssignedTicket(emId),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  return { data, isLoading, isError, isSuccess, refetch };
+};
+
+//EMPLOYEE  HOLD TICKET COUNT
+const getEmpHoldTicket = async (emId) => {
+  const response = await axiosApi.get(
+    `/cmdashboard/empHoldTicketCount/${emId}`
+  );
+  return await response.data;
+};
+
+export const UsegetgetEmpHoldTicket = (emId) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["empHoldTicket", emId],
+    queryFn: () => getEmpHoldTicket(emId),
     // refetchOnMount: false, // refetch data on mount cmp -> false
     // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
     // enabled: false, // disable the query running  when cmp on mount

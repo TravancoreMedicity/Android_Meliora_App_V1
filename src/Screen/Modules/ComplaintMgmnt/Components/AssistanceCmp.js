@@ -1,5 +1,5 @@
 //import liraries
-import React, { memo, useCallback, useMemo } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { View, Text, Pressable, Alert, TouchableOpacity } from "react-native";
 import { bgColor, colorTheme, fontColor } from "../../../../Constant/Colors";
 import { styles } from "../Style/Style";
@@ -8,16 +8,19 @@ import { format } from "date-fns";
 import { getLogiEmployeeID } from "../../../../Redux/ReduxSlice/LoginSLice";
 import { axiosApi } from "../../../../config/Axiox";
 import { reduxUpdation } from "../../../../Redux/ReduxSlice/commonSlice";
-import { useTheme } from "react-native-paper";
+import { TextInput, useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LiveCmpTimeDiffrenceClock from "./Modals/LiveCmpTimeDiffrenceClock";
 import CenteredButton from "./Version1/Common/CenteredButton";
 import Feather from "react-native-vector-icons/Feather";
+import { Toast } from "toastify-react-native";
+import { useQueryClient } from "@tanstack/react-query";
 
 // create a component
 const AssistanceCmp = ({ data }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const compDetlData = useMemo(() => data, [data]);
 
@@ -81,7 +84,17 @@ const AssistanceCmp = ({ data }) => {
     return `${compDetlData.rm_room_name} ${location}`;
   }, [compDetlData]);
 
-  const onRectifyModal = useCallback(async () => {
+  const [remark, setRemark] = useState("");
+  const [visible, setVisible] = useState(false);
+
+  const handleRemarkChange = (text) => {
+    setRemark(text);
+  };
+  //  ACCEPT THE TICKETS
+
+  const acceptTheTicket = useCallback(async () => {
+    setVisible(false);
+
     const postData = {
       assigned_date: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
       assist_receive: 1,
@@ -89,18 +102,128 @@ const AssistanceCmp = ({ data }) => {
       assigned_emp: emp_id,
     };
 
-    const result = await axiosApi.patch(
+    const response = await axiosApi.patch(
       "/complaintassign/assistant/recieved",
       postData
     );
-    const { success } = result.data;
+
+    const { success } = await response.data;
     if (success === 1) {
-      Alert.alert("Assistance Accepted");
-      dispatch(reduxUpdation());
+      Toast.show({
+        type: "success",
+        text1: "Ticket Accepted",
+        text2: "Ticket Accepted Successfully !",
+        onHide: () => {
+          // PENDING assitance TICKET LIST
+          queryClient.invalidateQueries({
+            queryKey: ["assitedRequestList", emp_id],
+            refetchType: "active",
+          });
+
+          queryClient.invalidateQueries({
+            queryKey: ["assitedRequestCount", emp_id],
+            refetchType: "active",
+          });
+        },
+      });
     } else {
-      Alert.alert("Error ! , Contact System Administrator");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Something went wrong !",
+        visibilityTime: 2000,
+        onHide: () => {
+          // PENDING assitance TICKET LIST
+          setVisible(false);
+        },
+      });
     }
-  }, [emp_id, complaint_slno]);
+    // Alert.alert("Accept the Ticket");
+  }, [complaint_slno, emp_id]);
+
+  // REJECT THE TICKETS
+
+  const rejectTheTicket = useCallback(async () => {
+    setVisible(true);
+
+    if (visible === true && remark.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Warning",
+        text2: "Please Enter the Reason",
+        visibilityTime: 2000,
+      });
+      return;
+    }
+
+    const postData = {
+      assist_flag: 2,
+      assist_req_reject_reason: remark,
+      complaint_slno: complaint_slno,
+      assigned_emp: emp_id,
+    };
+
+    if (remark.length === 0) {
+      Toast.show({
+        type: "error",
+        text1: "Warning",
+        text2: "Please Enter the Reason",
+        visibilityTime: 2000,
+      });
+      return;
+    } else {
+      const response = await axiosApi.patch(
+        "/complaintassign/assistant/reject",
+        postData
+      );
+
+      const { success } = await response.data;
+      if (success === 1) {
+        Toast.show({
+          type: "success",
+          text1: "Ticket Rejected",
+          text2: "Ticket Rejected Successfully !",
+          visibilityTime: 2000,
+          onHide: () => {
+            // PENDING assitance TICKET LIST
+            setRemark("");
+            setVisible(false);
+            queryClient.invalidateQueries({
+              queryKey: ["assitedRequestList", emp_id],
+              refetchType: "active",
+            });
+
+            queryClient.invalidateQueries({
+              queryKey: ["assitedRequestCount", emp_id],
+              refetchType: "active",
+            });
+          },
+        });
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Something went wrong !",
+          visibilityTime: 2000,
+          onHide: () => {
+            // PENDING assitance TICKET LIST
+            setVisible(false);
+          },
+        });
+      }
+    }
+
+    // Alert.alert("Reject the Ticket");
+  }, [emp_id, complaint_slno, remark, visible]);
+
+  // UPDATION ON UNMOUNT
+
+  useEffect(() => {
+    return () => {
+      setRemark("");
+      setVisible(false);
+    };
+  }, []);
 
   return (
     <View
@@ -427,7 +550,7 @@ const AssistanceCmp = ({ data }) => {
           //   backgroundColor: "green",
           justifyContent: "center",
           alignItems: "center",
-          paddingVertical: 5,
+          paddingVertical: 10,
         }}
       >
         <View style={{ width: "30%", alignItems: "center" }}>
@@ -445,13 +568,20 @@ const AssistanceCmp = ({ data }) => {
               shadowRadius: 3,
               elevation: 4, // Android shadow
             }}
-            onPress={() => console.log("ddd")}
+            onPress={acceptTheTicket}
             activeOpacity={0.7}
           >
             <Feather name="thumbs-up" size={22} color="white" />
           </TouchableOpacity>
           <View>
-            <Text>Accept</Text>
+            <Text
+              style={{
+                fontFamily: "Roboto_500Medium",
+                color: theme.colors.lightBlueFont,
+              }}
+            >
+              Accept
+            </Text>
           </View>
         </View>
 
@@ -470,32 +600,41 @@ const AssistanceCmp = ({ data }) => {
               shadowRadius: 3,
               elevation: 4, // Android shadow
             }}
-            onPress={() => console.log("ddd")}
+            onPress={rejectTheTicket}
             activeOpacity={0.7}
           >
             <Feather name="slash" size={22} color="white" />
           </TouchableOpacity>
           <View>
-            <Text>Reject</Text>
+            <Text
+              style={{
+                fontFamily: "Roboto_500Medium",
+                color: theme.colors.lightBlueFont,
+              }}
+            >
+              Reject
+            </Text>
           </View>
         </View>
-
-        {/* <Pressable
-          onPress={() => console.log("dddd")}
-          className="flex"
-          style={{
-            borderWidth: 0.3,
-            borderRadius: 10,
-            marginHorizontal: 25,
-            height: 30,
-            justifyContent: "center",
-            backgroundColor: colorTheme.switchTrack,
-          }}
-        >
-          <Text className="text-center text-white">
-            Press to accept the Assistance
-          </Text>
-        </Pressable> */}
+      </View>
+      <View
+        style={{
+          padding: 10,
+          paddingBottom: 20,
+          display: (visible && "flex") || "none",
+          pointerEvents: (visible && "auto") || "none",
+        }}
+      >
+        <TextInput
+          label="Reject Reason"
+          value={remark}
+          //   style={{ height: 60 }}
+          onChangeText={handleRemarkChange}
+          on
+          multiline
+          dense={true}
+          numberOfLines={3}
+        />
       </View>
     </View>
   );

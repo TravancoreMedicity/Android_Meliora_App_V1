@@ -4,11 +4,11 @@ import {
   useWindowDimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { getLogiEmployeeID } from "../../../../../Redux/ReduxSlice/LoginSLice";
 import { UseGetPendingAssistTicketCount } from "../../../../../api/TicketsUtilities";
@@ -19,10 +19,16 @@ const DashAssistRequested = () => {
   const navigation = useNavigation();
   const empID = useSelector((state) => getLogiEmployeeID(state));
 
-  const { data, isError, isLoading, isSuccess } =
+  const { data, isError, isLoading, isSuccess, refetch } =
     UseGetPendingAssistTicketCount(empID);
 
   const pendingAssistCount = data?.data?.[0]?.assist_req_count;
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [])
+  );
 
   return (
     <TouchableOpacity onPress={() => navigation.navigate("Assistance")}>
