@@ -4,7 +4,7 @@ import { View, ActivityIndicator } from "react-native";
 import { useTheme } from "react-native-paper";
 
 // create a component
-const CustomActivityIndicator = () => {
+const CustomActivityIndicator = ({ size }) => {
   const theme = useTheme();
   return (
     <View
@@ -19,7 +19,7 @@ const CustomActivityIndicator = () => {
         alignItems: "center",
       }}
     >
-      <ActivityIndicator color={theme.colors.logoCol1} size="large" />
+      <ActivityIndicator color={theme.colors.logoCol1} size={size || "large"} />
     </View>
   );
 };

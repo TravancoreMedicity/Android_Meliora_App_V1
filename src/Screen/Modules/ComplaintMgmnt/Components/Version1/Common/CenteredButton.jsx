@@ -62,9 +62,9 @@ const CenteredButton = ({ hangleOnPress, label }) => {
             style={{
               color: theme.colors.logoCol2,
               fontSize: 12,
-              fontFamily: "Roboto_500Medium",
+              // fontFamily: "Roboto_500Medium",
               textAlign: "center",
-              fontWeight: "bold",
+              fontWeight: "900",
             }}
           >
             {label}

@@ -85,7 +85,6 @@ const getAssignedList = async (empID) => {
 };
 
 export const UseGetAssignedList = (empID) => {
-  console.log(empID);
   const { data, isError, isLoading, isSuccess } = useQuery({
     queryKey: ["assignedList", empID],
     queryFn: () => getAssignedList(empID),
@@ -231,6 +230,64 @@ export const UsegetgetEmpHoldTicket = (emId) => {
   const { data, isError, isLoading, isSuccess, refetch } = useQuery({
     queryKey: ["empHoldTicket", emId],
     queryFn: () => getEmpHoldTicket(emId),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  return { data, isLoading, isError, isSuccess, refetch };
+};
+
+//EMPLOYEE  RECTIFIED TODAY TICKET COUNT
+const getEmpRectifyTodayTicket = async (emId) => {
+  const response = await axiosApi.get(
+    `/cmdashboard/empTodayRectifyTicketCount/${emId}`
+  );
+  return await response.data;
+};
+
+export const UsegetEmpRectifyTodayTicket = (emId) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["empRectifyTodayTicket", emId],
+    queryFn: () => getEmpRectifyTodayTicket(emId),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  return { data, isLoading, isError, isSuccess, refetch };
+};
+
+//EMPLOYEE  VERIFY PENDING TODAY TICKET COUNT
+const getEmpVerifiedTodayTicket = async (emId) => {
+  const response = await axiosApi.get(
+    `/cmdashboard/empTodayVerifiedTicketCount/${emId}`
+  );
+  return await response.data;
+};
+
+export const UsegetEmpVerifiedTodayTicket = (emId) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["empVerifiedTodayTicket", emId],
+    queryFn: () => getEmpVerifiedTodayTicket(emId),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  return { data, isLoading, isError, isSuccess, refetch };
+};
+
+//EMPLOYEE  VERIFY PENDING TODAY TICKET COUNT
+const getEmpHoldTicketList = async (postData) => {
+  const response = await axiosApi.post(
+    `/Rectifycomplit/getEmplHoldList`,
+    postData
+  );
+  return await response.data;
+};
+
+export const UsegetEmpHoldTicketList = (postData) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["empHoldTicketList", postData],
+    queryFn: () => getEmpHoldTicketList(postData),
     // refetchOnMount: false, // refetch data on mount cmp -> false
     // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
     // enabled: false, // disable the query running  when cmp on mount

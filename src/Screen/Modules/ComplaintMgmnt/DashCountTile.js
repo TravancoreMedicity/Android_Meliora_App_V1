@@ -13,8 +13,9 @@ import { MegaphoneIcon } from "react-native-heroicons/outline";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 // create a component
-const DashCountTile = ({ name, count, id, route }) => {
+const DashCountTile = ({ name, count, id, route, loading }) => {
   const theme = useTheme();
   const { width } = useWindowDimensions();
 
@@ -80,9 +81,17 @@ const DashCountTile = ({ name, count, id, route }) => {
                 fontFamily: "Roboto_500Medium",
                 fontWeight: "900",
                 color: theme.colors.fontColor1,
+                // backgroundColor: "green",
+                flex: 1,
+                textAlign: "right",
+                paddingRight: 20,
               }}
             >
-              20
+              {loading ? (
+                <CustomActivityIndicator size={20} />
+              ) : (
+                (loading === false && count) || 0
+              )}
             </Text>
           </View>
           <View

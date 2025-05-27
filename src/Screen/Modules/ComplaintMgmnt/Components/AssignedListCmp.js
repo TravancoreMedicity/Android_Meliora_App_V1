@@ -25,10 +25,12 @@ import { format } from "date-fns";
 import Feather from "react-native-vector-icons/Feather";
 import TicketRectifyModal from "./Version1/TicketRectifyModal";
 import AssistRequestedModal from "./Version1/AssistRequestedModal";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import {
   getLogiEmployeeID,
   getLogiEmpDEPT,
 } from "../../../../Redux/ReduxSlice/LoginSLice";
+import FadeColorBox from "./Version1/Common/FadeInOutCmp";
 
 // create a component
 const AssignedListCmp = ({ data }) => {
@@ -59,9 +61,16 @@ const AssignedListCmp = ({ data }) => {
     create_employee,
     sec_name,
     priority_reason,
+    rejected,
+    accepted,
+    pending,
   } = assignTickData;
 
-  // console.log(assignTickData);
+  const assisted = useMemo(() => {
+    return accepted > 0 || rejected > 0 || pending > 0 ? true : false;
+  }, [accepted, rejected, pending]);
+
+  console.log(assisted);
 
   const year = format(new Date(compalint_date), "yyyy");
 
@@ -425,7 +434,7 @@ const AssignedListCmp = ({ data }) => {
           <View
             style={{
               paddingVertical: 8,
-              //   backgroundColor: "#4CAF50",
+              // backgroundColor: "#4CAF50",
               width: "100%",
               alignItems: "flex-start",
               flexDirection: "row",
@@ -472,6 +481,18 @@ const AssignedListCmp = ({ data }) => {
               >
                 <Ionicons name="headset-outline" size={22} color="white" />
               </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "flex-end",
+                flex: 1,
+                // backgroundColor: "green",
+                padding: 12,
+                // borderRadius: 50,
+              }}
+            >
+              {assisted && <FadeColorBox />}
             </View>
           </View>
         </View>

@@ -21,12 +21,17 @@ const NoNewTicketCmp = () => {
         bottom: 0,
       }}
     >
-      {/* <ActivityIndicator
-        color={theme.colors.logoCol2}
-        size={40}
-        animating={true}
-      /> */}
       <CustomActivityIndicator />
+      <Text
+        style={{
+          color: theme.colors.logoCol2,
+          paddingTop: 50,
+          fontSize: 12,
+          fontWeight: "900",
+        }}
+      >
+        No tickets data found !
+      </Text>
     </View>
   );
 };
