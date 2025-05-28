@@ -1,18 +1,10 @@
 //import liraries
 import React, { memo, useState, lazy, useMemo, useEffect } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 import { useSelector } from "react-redux";
-import _ from "underscore";
-import {
-  getNotAssignedCount,
-  getTicketCount,
-} from "../../../Redux/ReduxSlice/ticketMagmntSlice";
-import { styles } from "./Style/Style";
-import { secondLevelCount } from "../../../Redux/ReduxSlice/ticketMagmentDeptSlice";
 import {
   getLogiEmpDEPT,
   getLogiEmployeeID,
-  getSuperVisor,
 } from "../../../Redux/ReduxSlice/LoginSLice";
 import { useTheme } from "react-native-paper";
 import {
@@ -29,15 +21,6 @@ const DashCountTile = lazy(() => import("./DashCountTile"));
 // create a component
 const DashBoardView = ({ navigation }) => {
   const theme = useTheme();
-
-  const ticketDataCount = [
-    { id: 1, route: "notAssign", title: "New Tickets", count: 56 },
-    { id: 2, route: "AssignList", title: "Assigned", count: 10 },
-    { id: 3, route: "Assistance", title: "Assist Request", count: 25 },
-    { id: 4, route: "OnHold", title: "On Hold", count: 456 },
-    { id: 5, route: "Verify", title: "Rectified", count: 5 },
-    { id: 6, route: "Completed", title: "Verified", count: 121 },
-  ];
 
   const [tickData, setTickData] = useState([
     { id: 1, route: "notAssign", title: "New Tickets", count: 56 },

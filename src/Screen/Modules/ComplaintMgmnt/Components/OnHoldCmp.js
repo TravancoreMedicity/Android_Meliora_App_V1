@@ -6,93 +6,36 @@ import React, {
   Suspense,
   useCallback,
   useMemo,
-  useEffect,
 } from "react";
-import { View, Text, Pressable } from "react-native";
-import { bgColor, colorTheme, fontColor } from "../../../../Constant/Colors";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import { Button, Divider, useTheme } from "react-native-paper";
-import { styles } from "../Style/Style";
-import { useDispatch } from "react-redux";
-import { getTheActualEmployee } from "../../../../Redux/Actions/complaintMagmt.action";
-import OnholdTicketRectify from "./Modals/OnholdTicketRectify";
-import { getActualTicketAssingedEmp } from "../../../../Redux/ReduxSlice/ticketMagmntSlice";
+import { View, Text } from "react-native";
+import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { format } from "date-fns";
 import LiveCmpTimeDiffrenceClock from "./Modals/LiveCmpTimeDiffrenceClock";
 import CenteredButton from "./Version1/Common/CenteredButton";
-import TicketRectifyModal from "./Version1/TicketRectifyModal";
+import CustomActivityIndicator from "../../../../Components/CustomActivityIndicator";
 
-const RectifyModal = lazy(() => import("./RectifyModal"));
+const HoldTicketRectifyModal = lazy(() =>
+  import("./Version1/HoldTicketRectifyModal")
+);
 
 // create a component
 const OnHoldCmp = ({ data }) => {
   const theme = useTheme();
-
-  const dispatch = useDispatch();
   const compDetlData = useMemo(() => data, [data]);
   const {
-    accepted,
-    aprrox_date,
     assigned_date,
-    assigned_employees,
-    assinged_user,
-    cm_asset_status,
-    cm_complaint_location,
-    cm_file_status,
     cm_hold_reason,
-    cm_hold_reason_slno,
-    cm_location,
-    cm_query_status,
-    cm_rectify_status,
-    cm_rectify_status1,
     comp_reg_emp,
     compalint_date,
-    compalint_priority,
-    compalint_status,
-    compalint_status1,
-    compdept_message,
-    compdept_message_flag,
-    complaint_dept_name,
-    complaint_dept_secslno,
-    complaint_deptslno,
     complaint_desc,
-    complaint_hicslno,
-    complaint_remark,
-    complaint_request_slno,
     complaint_slno,
     complaint_type_name,
-    complaint_typeslno,
-    create_user,
-    hic_policy_name,
-    hic_policy_status,
     holduser,
-    location,
-    message_reply_emp,
-    pending,
     pending_onhold_time,
-    pending_onhold_user,
-    priority,
     priority_check,
     priority_reason,
-    read_user,
-    rectify_pending_hold_remarks,
-    rectify_pending_hold_remarks1,
-    rejected,
-    req_type_name,
-    rm_floor_name,
-    rm_insidebuildblock_name,
-    rm_insidebuilldblock_slno,
-    rm_room_floor_slno,
-    rm_room_name,
-    rm_room_slno,
-    rm_roomtype_name,
-    rm_roomtype_slno,
     sec_name,
-    send_user,
-    verify_spervsr,
-    verify_spervsr_remarks,
   } = compDetlData;
 
   const year = format(new Date(compalint_date), "yyyy");
@@ -147,17 +90,13 @@ const OnHoldCmp = ({ data }) => {
             : theme.colors.cardBgColor,
       }}
     >
-      <TicketRectifyModal
-        setModalVisible={setVisible}
-        openState={visible}
-        data={compDetlData}
-      />
-
-      {/* <OnholdTicketRectify
-        openModelState={setVisible}
-        openState={visible}
-        data={complaint_slno}
-      /> */}
+      <Suspense fallback={<CustomActivityIndicator />}>
+        <HoldTicketRectifyModal
+          setModalVisible={setVisible}
+          openState={visible}
+          data={compDetlData}
+        />
+      </Suspense>
       <View
         style={{
           marginBottom: 3,

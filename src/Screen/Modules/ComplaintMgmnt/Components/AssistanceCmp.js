@@ -1,17 +1,13 @@
 //import liraries
 import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
-import { View, Text, Pressable, Alert, TouchableOpacity } from "react-native";
-import { bgColor, colorTheme, fontColor } from "../../../../Constant/Colors";
-import { styles } from "../Style/Style";
-import { useDispatch, useSelector } from "react-redux";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { getLogiEmployeeID } from "../../../../Redux/ReduxSlice/LoginSLice";
 import { axiosApi } from "../../../../config/Axiox";
-import { reduxUpdation } from "../../../../Redux/ReduxSlice/commonSlice";
 import { TextInput, useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LiveCmpTimeDiffrenceClock from "./Modals/LiveCmpTimeDiffrenceClock";
-import CenteredButton from "./Version1/Common/CenteredButton";
 import Feather from "react-native-vector-icons/Feather";
 import { Toast } from "toastify-react-native";
 import { useQueryClient } from "@tanstack/react-query";
@@ -19,7 +15,6 @@ import { useQueryClient } from "@tanstack/react-query";
 // create a component
 const AssistanceCmp = ({ data }) => {
   const theme = useTheme();
-  const dispatch = useDispatch();
   const queryClient = useQueryClient();
 
   const compDetlData = useMemo(() => data, [data]);
@@ -27,39 +22,15 @@ const AssistanceCmp = ({ data }) => {
   const emp_id = useSelector(getLogiEmployeeID);
 
   const {
-    Time, //"Time": null,
     assigned_date, //"assigned_date": null,
-    assist_assign_date, //"assist_assign_date": "2025-05-20 17:21:27",
-    assist_receive, //"assist_receive": 0,
-    cm_asset_status, //"cm_asset_status": 0,
-    cm_complaint_location, //"cm_complaint_location": null,
     comp_reg_emp, //"comp_reg_emp": "AJIMINSHA S",
     compalint_date, //"compalint_date": "2025-04-18 15:52:55",
-    compalint_priority, //"compalint_priority": null,
-    complaint_dept_name, //"complaint_dept_name": "IT",
     complaint_desc, //"complaint_desc": ,
     complaint_slno, //"complaint_slno": 63551,
     complaint_type_name, //"complaint_type_name": "SOFTWARE",
-    date, //"date": null,
-    detl_slno, //"detl_slno": 93641,
-    em_name, //"em_name": "AJIMINSHA S",
-    empdept, //"empdept": "INFORMATION TECHNOLOGY",
-    hic_policy_name, //"hic_policy_name": null,
-    location, //"location": "INFORMATION TECHNOLOGY",
-    priority, //"priority": "Not Updated",
     priority_check, //"priority_check": 0,
     priority_reason, //"priority_reason": null,
-    req_type_name, //"req_type_name": "New Ticket Registration",
-    rm_floor_name, //"rm_floor_name": "FOURTH FLOOR",
-    rm_insidebuildblock_name, //"rm_insidebuildblock_name": "BLOCK",
-    rm_insidebuilldblock_slno, //"rm_insidebuilldblock_slno": 1,
-    rm_room_floor_slno, //"rm_room_floor_slno": 1,
-    rm_room_name, //"rm_room_name": "ED403",
-    rm_room_slno, //"rm_room_slno": 269,
-    rm_roomtype_name, //"rm_roomtype_name": "IT DUCT",
-    rm_roomtype_slno, //"rm_roomtype_slno": 3,
     sec_name, //"sec_name": "INFORMATION TECHNOLOGY",
-    verify_spervsr, //"verify_spervsr": 0
   } = compDetlData;
 
   const year = format(new Date(compalint_date), "yyyy");

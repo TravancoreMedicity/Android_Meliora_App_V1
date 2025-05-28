@@ -1,22 +1,16 @@
-import React, { memo, Suspense, useMemo, useState, lazy } from "react";
+import React, { memo, Suspense, useMemo, lazy } from "react";
 import {
   View,
-  Text,
   SafeAreaView,
   KeyboardAvoidingView,
   useWindowDimensions,
 } from "react-native";
 import { ActivityIndicator, useTheme } from "react-native-paper";
 import { useSelector } from "react-redux";
-import _ from "underscore";
 import HearderSecondary from "../../../Components/HearderSecondary";
-import { bgColor, colorTheme } from "../../../Constant/Colors";
-import { getOnholdCompList } from "../../../Redux/ReduxSlice/ticketMagmntSlice";
-import { windowHeight, windowWidth } from "../../../utils/Dimentions";
-import { styles } from "./Style/Style";
-import OverLayLoading from "./Components/OverLayLoading";
 import { UsegetEmpHoldTicketList } from "../../../api/TicketsUtilities";
 import { getLogiEmployeeID } from "../../../Redux/ReduxSlice/LoginSLice";
+import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 
 const FlashListCmp = lazy(() => import("./Components/FlashListCmp"));
 const OnHoldCmp = lazy(() => import("./Components/OnHoldCmp"));
@@ -62,7 +56,7 @@ const FlashListOnHold = ({ navigation }) => {
             paddingHorizontal: 15,
           }}
         >
-          <Suspense fallback={<ActivityIndicator />}>
+          <Suspense fallback={<CustomActivityIndicator />}>
             <FlashListCmp FlashRenderCmp={OnHoldCmp} Assigned={onHoldTickt} />
           </Suspense>
         </View>
