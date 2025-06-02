@@ -294,3 +294,61 @@ export const UsegetEmpHoldTicketList = (postData) => {
   });
   return { data, isLoading, isError, isSuccess, refetch };
 };
+
+//EMPLOYEE  TICKET RECTIFIED LIST
+const getTicketRectifyList = async (postData) => {
+  const response = await axiosApi.post(
+    `/Rectifycomplit/getEmplRectfiedList`,
+    postData
+  );
+  return await response.data;
+};
+
+export const UsegetTicketRectifyList = (postData) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["empRectifyTicketList", postData],
+    queryFn: () => getTicketRectifyList(postData),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  return { data, isLoading, isError, isSuccess, refetch };
+};
+
+//SUPER VISOR VERIFICATION COUNT
+const getSuperVisorVerificationCount = async (deptID) => {
+  const response = await axiosApi.get(
+    `/cmdashboard/superviPendingVerifiTicketCount/${deptID}`
+  );
+  return await response.data;
+};
+
+export const UsegetSuperVisorVerificationCount = (deptID) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["superVisorVerificationCount", deptID],
+    queryFn: () => getSuperVisorVerificationCount(deptID),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  return { data, isLoading, isError, isSuccess, refetch };
+};
+
+//SUPER VISOR VERIFICATION LIST
+const getSuperVisorVerificationList = async (deptID) => {
+  const response = await axiosApi.get(
+    `/complaintassign/SupervsrVerifyPending/${deptID}`
+  );
+  return await response.data;
+};
+
+export const UsegetSuperVisorVerificationList = (deptID) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["superVisorVerificationList", deptID],
+    queryFn: () => getSuperVisorVerificationList(deptID),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  return { data, isLoading, isError, isSuccess, refetch };
+};

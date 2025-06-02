@@ -1,77 +1,133 @@
 //import liraries
-import React, { memo, Suspense, useMemo, useState } from 'react';
-import { View, Text, SafeAreaView } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
-import { useSelector } from 'react-redux';
-import _ from 'underscore';
-import HearderSecondary from '../../../Components/HearderSecondary';
-import { bgColor, colorTheme } from '../../../Constant/Colors';
-import { getOnProgressList } from '../../../Redux/ReduxSlice/ticketMagmntSlice';
-import { windowHeight, windowWidth } from '../../../utils/Dimentions';
-// import AssignedListCmp from './Components/AssignedListCmp';
-import FlashListCmp from './Components/FlashListCmp';
-import { styles } from './Style/Style';
-import OnProgressListCmp from './Components/OnProgressListCmp';
-import OverLayLoading from './Components/OverLayLoading';
+import React, { memo } from "react";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  useWindowDimensions,
+} from "react-native";
+import { useTheme } from "react-native-paper";
+import HearderSecondary from "../../../Components/HearderSecondary";
+import { colorTheme } from "../../../Constant/Colors";
 
 // create a component
 const FlashListCompleted = ({ navigation }) => {
-    /*****
-     * THIS COMPONENT CHANGED FOR PROGRESS TICKETS
-     * FROM COMPLETED TOICKETS LIST
-     */
-    const [count, setCount] = useState(0)
-    const [refresh, setRefresh] = useState(false)
-    const [loding, setLoading] = useState(true)
+  const theme = useTheme();
+  const { height, width } = useWindowDimensions();
+  //   Main view height
+  const headerHeight = height > 790 ? 100 : 75;
+  const headerHeightWithStatusBar = height - headerHeight;
 
-    const onProgressList = useSelector(getOnProgressList);
-    const onProgressTicket = useMemo(() => onProgressList, [onProgressList])
+  const data = [
+    {
+      id: 1,
+      name: "Information Technology",
+      age: 100,
+    },
+    {
+      id: 2,
+      name: "Fourth Payward A Side",
+      age: 20,
+    },
+    {
+      id: 3,
+      name: "Fourth Payward B Side",
+      age: 38,
+    },
+    {
+      id: 4,
+      name: "Fourth Payward C Side",
+      age: 128,
+    },
+    {
+      id: 5,
+      name: "Fourth Payward D Side",
+      age: 78,
+    },
+  ];
 
-    return (
-        <SafeAreaView style={styles.container}>
-            {/* Header  */}
-            <HearderSecondary
-                navigation={navigation}
-                name="On Progress Tickets"
-                goBackButton={false}
-            />
-            <View style={styles.card} >
-                {loding && <OverLayLoading />}
-                <View style={{
-                    flex: 1,
-                    maxWidth: windowWidth,
-                    height: (windowHeight * 70 / 100)
-                }} >
-                    <Suspense fallback={<ActivityIndicator />} >
-                        <FlashListCmp
-                            FlashRenderCmp={OnProgressListCmp}
-                            Assigned={onProgressTicket}
-                            setCount={setCount}
-                            refresh={refresh}
-                            count={count}
-                            setLoading={setLoading}
-                        />
-                    </Suspense>
+  return (
+    <KeyboardAvoidingView enabled behavior="height">
+      <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
+        {/* Header  */}
+        <HearderSecondary
+          navigation={navigation}
+          name="Today Verified ticket"
+        />
+        {/* {loding && <OverLayLoading />} */}
+        <View
+          style={{
+            height: headerHeightWithStatusBar,
+            width: width,
+            paddingHorizontal: 15,
+          }}
+        >
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: colorTheme.secondaryBgColor,
+              padding: 10,
+              borderRadius: 10,
+            }}
+          >
+            {data?.map((item, index) => {
+              const lastIndex = data.length - 1;
+              return (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    marginBottom: lastIndex === index ? 0 : 10,
+                    height: 50,
+                    alignItems: "center",
+                    padding: 10,
+                    borderWidth: 1,
+                    borderColor: colorTheme.secondaryBgColor,
+                    borderRadius: 15,
+                  }}
+                >
+                  <View style={{ flexGrow: 1 }}>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontFamily: "Roboto_500Medium",
+                        color: theme.colors.logoCol2,
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontFamily: "Roboto_500Medium",
+                        color: theme.colors.logoCol2,
+                      }}
+                    >
+                      {item.age}
+                    </Text>
+                  </View>
                 </View>
-            </View>
-            <View style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: colorTheme.mainBgColor,
-            }} >
-                <Text style={{
-                    fontFamily: 'Roboto_500Medium',
-                    fontSize: windowWidth > 400 ? 14 : 12,
-                    paddingHorizontal: 5,
-                    overflow: 'hidden',
-                    color: colorTheme.mainColor,
-                    fontFamily: 'Roboto_100Thin',
-                    fontSize: 10,
-                }} >Pull Down To Refresh</Text>
-            </View>
-        </SafeAreaView>
-    )
+              );
+            })}
+          </View>
+          {/* <Suspense fallback={<CustomActivityIndicator />}>
+            <FlashListCmp
+              FlashRenderCmp={OnProgressListCmp}
+              Assigned={onProgressTicket}
+            />
+          </Suspense> */}
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
+  );
 };
 
 //make this component available to the app

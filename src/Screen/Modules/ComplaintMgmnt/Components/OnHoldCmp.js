@@ -97,6 +97,17 @@ const OnHoldCmp = ({ data }) => {
           data={compDetlData}
         />
       </Suspense>
+      {/* <TicketRectifyModal
+        setModalVisible={setVisible}
+        openState={visible}
+        data={compDetlData}
+      /> */}
+
+      {/* <OnholdTicketRectify
+        openModelState={setVisible}
+        openState={visible}
+        data={complaint_slno}
+      /> */}
       <View
         style={{
           marginBottom: 3,

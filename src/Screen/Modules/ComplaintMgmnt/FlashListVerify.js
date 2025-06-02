@@ -1,12 +1,5 @@
 //import liraries
-import React, {
-  lazy,
-  memo,
-  Suspense,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { lazy, memo, Suspense, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -26,6 +19,8 @@ import OverLayLoading from "./Components/OverLayLoading";
 import { secondLevelList } from "../../../Redux/ReduxSlice/ticketMagmentDeptSlice";
 import { getLogiEmployeeID } from "../../../Redux/ReduxSlice/LoginSLice";
 import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
+import { format } from "date-fns";
+import { UsegetTicketRectifyList } from "../../../api/TicketsUtilities";
 // import ForVerifyCmp from './Components/ForVerifyCmp';
 
 const FlashListCmp = lazy(() => import("./Components/FlashListCmp"));
@@ -34,23 +29,25 @@ const ForVerifyCmp = lazy(() => import("./Components/ForVerifyCmp"));
 // create a component
 const FlashListVerify = ({ navigation }) => {
   const theme = useTheme();
-  const { height } = useWindowDimensions();
-
-  const [viewHeight, setViewHeight] = useState(height);
-
-  useEffect(() => {
-    //   Main view height
-    if (height > 0) {
-      const headerHeight = height > 790 ? 100 : 75;
-      const headerHeightWithStatusBar = height - headerHeight;
-      setViewHeight(headerHeightWithStatusBar);
-    }
-  }, []);
+  const { height, width } = useWindowDimensions();
+  //   Main view height
+  const headerHeight = height > 790 ? 100 : 75;
+  const headerHeightWithStatusBar = height - headerHeight;
 
   // GET THE LOGGED EMP ID
   const emId = useSelector((state) => getLogiEmployeeID(state));
 
-  const forVerifiedList = [];
+  const searchDate = useMemo(() => {
+    return {
+      from: format(new Date(), "yyyy-MM-dd 00:00:00"),
+      to: format(new Date(), "yyyy-MM-dd 23:59:59"),
+      assigned_emp: emId,
+    };
+  }, [emId]);
+
+  const { data, isError, isLoading, isSuccess } =
+    UsegetTicketRectifyList(searchDate);
+
   return (
     <KeyboardAvoidingView enabled behavior="height">
       <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
@@ -59,14 +56,15 @@ const FlashListVerify = ({ navigation }) => {
         {/* {loding && <OverLayLoading />} */}
         <View
           style={{
-            height: viewHeight,
+            height: headerHeightWithStatusBar,
+            width: width,
             paddingHorizontal: 15,
           }}
         >
           <Suspense fallback={<CustomActivityIndicator />}>
             <FlashListCmp
               FlashRenderCmp={ForVerifyCmp}
-              Assigned={forVerifiedList}
+              Assigned={data?.data ?? []}
             />
           </Suspense>
         </View>

@@ -8,11 +8,23 @@ import React, { memo } from "react";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import { UsegetSuperVisorVerificationCount } from "../../../../../api/TicketsUtilities";
+import { useSelector } from "react-redux";
+import { getLogiEmpDEPT } from "../../../../../Redux/ReduxSlice/LoginSLice";
 
 const DashSuperVisorChekList = () => {
   const theme = useTheme();
   const { width } = useWindowDimensions();
   const navigation = useNavigation();
+
+  const deptID = useSelector(getLogiEmpDEPT);
+
+  console.log(deptID, "deptID");
+
+  const { data, isError, isLoading, isSuccess } =
+    UsegetSuperVisorVerificationCount(deptID);
+
+  console.log(data);
 
   return (
     <TouchableOpacity onPress={() => navigation.navigate("notAssign")}>

@@ -22,17 +22,10 @@ import {
 } from "react-native";
 import _ from "underscore";
 import HearderSecondary from "../../../Components/HearderSecondary";
-import { bgColor, colorTheme, fontColor } from "../../../Constant/Colors";
+import { colorTheme } from "../../../Constant/Colors";
 import { windowHeight, windowWidth } from "../../../utils/Dimentions";
 import { useSelector, useDispatch } from "react-redux";
 
-// import { getAssignedTicketList, getAssistTicketList, getNotAssignedComplaintList } from '../../../Redux/Actions/complaintMagmt.action';
-// import { getEmployeeDetlLoggedDeptWise } from '../../../Redux/Actions/common.action';
-// import ApiGetFun from "./func/ApiGetFun";
-
-// const FlashListNotAssign = lazy(() =>
-//   import("./Components/FlashListNotAssign")
-// );
 const DashBoardView = lazy(() => import("./DashBoardView"));
 
 import { useTheme } from "react-native-paper";
@@ -42,6 +35,7 @@ import DashAssistRequested from "./Components/Version1/DashAssistRequested";
 import DashSuperVisorChekList from "./Components/Version1/DashSuperVisorChekList";
 import DashRoomCheckList from "./Components/Version1/DashRoomCheckList";
 import DashChart from "./Components/Version1/DashChart";
+import { getSuperVisor } from "../../../Redux/ReduxSlice/LoginSLice";
 
 // create a component
 const ComplaintRegister = ({ navigation }) => {
@@ -57,6 +51,8 @@ const ComplaintRegister = ({ navigation }) => {
   const loggedDetl = useMemo(() => loggedEmpDetl, [loggedEmpDetl]);
   const { emp_id, emp_dept } = loggedDetl;
 
+  const supervisor = useSelector(getSuperVisor);
+  console.log(supervisor, "supervisor");
   // const { dismiss, dismissAll } = useBottomSheetModal();
   //not asssigned list from database
   // useEffect(() => {
@@ -70,8 +66,6 @@ const ComplaintRegister = ({ navigation }) => {
         backgroundColor: theme.colors.appBgInside,
       }}
     >
-      {/* <ApiGetFun /> */}
-
       {/* Header Component  Start*/}
       <HearderSecondary navigation={navigation} name="Ticket Management" />
       {/* Header Component  End*/}
@@ -107,21 +101,19 @@ const ComplaintRegister = ({ navigation }) => {
                 backgroundColor: theme.colors.cardBgSecond,
                 borderRadius: 13,
                 padding: 10,
-                // paddingHorizontal: 12,
+                gap: 10,
                 flexDirection: "column",
                 justifyContent: "space-between",
               }}
             >
-              <View style={{}}>
-                <TouchableOpacity onPress={() => {}}>
+              {supervisor === 1 && (
+                <View>
                   <DashSuperVisorChekList />
-                </TouchableOpacity>
-              </View>
+                </View>
+              )}
 
-              <View style={{ marginTop: 10 }}>
-                <TouchableOpacity onPress={() => {}}>
-                  <DashRoomCheckList />
-                </TouchableOpacity>
+              <View>
+                <DashRoomCheckList />
               </View>
             </View>
 
@@ -132,7 +124,6 @@ const ComplaintRegister = ({ navigation }) => {
                 backgroundColor: theme.colors.cardBgSecond,
                 borderRadius: 13,
                 padding: 7,
-                // paddingHorizontal: 12,
                 flexDirection: "column",
                 justifyContent: "space-between",
               }}
