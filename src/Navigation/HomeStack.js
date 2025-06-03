@@ -2,7 +2,6 @@
 import React, { lazy, Suspense } from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ActivityIndicator } from "react-native-paper";
 import CustomActivityIndicator from "../Components/CustomActivityIndicator";
 
 const TabNavigator = lazy(() => import("./TabNavigator"));
@@ -29,29 +28,42 @@ const FalshlistNotAssign = lazy(() =>
   import("../Screen/Modules/ComplaintMgmnt/FlashListNotAssigns")
 );
 
+const SuperVerify = lazy(() =>
+  import("../Screen/Modules/ComplaintMgmnt/FlashListSuperVerify")
+);
+
+const SuperVerifyComponent = lazy(() =>
+  import(
+    "../Screen/Modules/ComplaintMgmnt/Components/Version1/SuperVerifyedComp"
+  )
+);
+
 // create a component
 const HomeStack = () => {
   const Stack = createNativeStackNavigator();
 
   return (
-    <Suspense fallback={<CustomActivityIndicator />}>
-      <Stack.Navigator
-        screenOptions={{
-          headerShown: false,
-          animationTypeForReplace: "pop",
-        }}
-      >
-        <Stack.Screen name="HomeStack" component={TabNavigator} />
-        <Stack.Screen name="ComplaintRegister" component={ComplaintRegister} />
-        <Stack.Screen name="AssignList" component={FlashListAssign} />
-        <Stack.Screen name="Assistance" component={FlashListAssistance} />
-        <Stack.Screen name="OnHold" component={FlashListOnHold} />
-        <Stack.Screen name="Verify" component={FlashListVerify} />
-        <Stack.Screen name="Completed" component={FlashListCompleted} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="notAssign" component={FalshlistNotAssign} />
-      </Stack.Navigator>
-    </Suspense>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationTypeForReplace: "pop",
+      }}
+    >
+      <Stack.Screen name="HomeStack" component={TabNavigator} />
+      <Stack.Screen name="ComplaintRegister" component={ComplaintRegister} />
+      <Stack.Screen name="AssignList" component={FlashListAssign} />
+      <Stack.Screen name="Assistance" component={FlashListAssistance} />
+      <Stack.Screen name="OnHold" component={FlashListOnHold} />
+      <Stack.Screen name="Verify" component={FlashListVerify} />
+      <Stack.Screen name="Completed" component={FlashListCompleted} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="notAssign" component={FalshlistNotAssign} />
+      <Stack.Screen name="SuperVerify" component={SuperVerify} />
+      <Stack.Screen
+        name="SuperVerifyComponent"
+        component={SuperVerifyComponent}
+      />
+    </Stack.Navigator>
   );
 };
 

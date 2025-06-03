@@ -4,11 +4,12 @@ import { View, Text, TouchableOpacity } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useTheme } from "react-native-paper";
 import { format } from "date-fns";
-
-// create a component
-const ForVerifyCmp = ({ data }) => {
+import { useNavigation } from "@react-navigation/native";
+const SuperVisorVerify = ({ data }) => {
   const theme = useTheme();
   const compDetlData = useMemo(() => data, [data]);
+
+  const navigation = useNavigation();
 
   const {
     cm_rectify_time,
@@ -21,26 +22,6 @@ const ForVerifyCmp = ({ data }) => {
   } = compDetlData;
 
   const year = format(new Date(compalint_date), "yyyy");
-
-  const locationName = useMemo(() => {
-    const location =
-      compDetlData.rm_roomtype_name ||
-      compDetlData.rm_insidebuildblock_name ||
-      compDetlData.rm_floor_name
-        ? `(${compDetlData.rm_roomtype_name || ""}${
-            compDetlData.rm_roomtype_name &&
-            compDetlData.rm_insidebuildblock_name
-              ? " - "
-              : ""
-          }${compDetlData.rm_insidebuildblock_name || ""}${
-            compDetlData.rm_insidebuildblock_name && compDetlData.rm_floor_name
-              ? " - "
-              : ""
-          }${compDetlData.rm_floor_name || ""})`
-        : compDetlData.cm_complaint_location || null;
-
-    return `${compDetlData.rm_room_name} ${location}`;
-  }, [compDetlData]);
 
   return (
     <View
@@ -279,7 +260,7 @@ const ForVerifyCmp = ({ data }) => {
       </View>
       <View style={{ backgroundColor: "rgba(124,81,161,0.8)" }}>
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={() => navigation.navigate("SuperVerifyComponent", { data })}
           style={{
             justifyContent: "center",
             alignItems: "center",
@@ -293,5 +274,4 @@ const ForVerifyCmp = ({ data }) => {
   );
 };
 
-//make this component available to the app
-export default memo(ForVerifyCmp);
+export default memo(SuperVisorVerify);

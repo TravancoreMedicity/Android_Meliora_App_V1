@@ -331,7 +331,14 @@ export const UsegetSuperVisorVerificationCount = (deptID) => {
     // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
     // enabled: false, // disable the query running  when cmp on mount
   });
-  return { data, isLoading, isError, isSuccess, refetch };
+  let count = 0;
+
+  if (isSuccess) {
+    let count = data?.data[0]?.supervisor_verification_pending_ticket_count;
+    return { count, isLoading, isError, isSuccess, refetch };
+  }
+
+  return { count, isLoading, isError, isSuccess, refetch };
 };
 
 //SUPER VISOR VERIFICATION LIST

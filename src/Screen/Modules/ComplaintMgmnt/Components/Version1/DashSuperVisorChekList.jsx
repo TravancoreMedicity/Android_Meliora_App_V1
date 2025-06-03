@@ -7,6 +7,7 @@ import {
 import React, { memo } from "react";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { UsegetSuperVisorVerificationCount } from "../../../../../api/TicketsUtilities";
 import { useSelector } from "react-redux";
@@ -21,13 +22,11 @@ const DashSuperVisorChekList = () => {
 
   console.log(deptID, "deptID");
 
-  const { data, isError, isLoading, isSuccess } =
+  const { count, isError, isLoading, isSuccess } =
     UsegetSuperVisorVerificationCount(deptID);
 
-  console.log(data);
-
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("notAssign")}>
+    <TouchableOpacity onPress={() => navigation.navigate("SuperVerify")}>
       <View
         style={{
           backgroundColor: theme.colors.cardBgColor,
@@ -53,8 +52,8 @@ const DashSuperVisorChekList = () => {
               alignItems: "center",
             }}
           >
-            <Ionicons
-              name="ticket-outline"
+            <MaterialCommunityIcons
+              name="account-cowboy-hat-outline"
               size={30}
               color={theme.colors.logoCol2}
             />
@@ -74,7 +73,9 @@ const DashSuperVisorChekList = () => {
           <View
             style={{
               flex: 0.3,
-              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "flex-end",
+              paddingRight: 20,
             }}
           >
             <Text
@@ -85,7 +86,7 @@ const DashSuperVisorChekList = () => {
                 color: theme.colors.logoCol2,
               }}
             >
-              2000
+              {count}
             </Text>
           </View>
         </View>

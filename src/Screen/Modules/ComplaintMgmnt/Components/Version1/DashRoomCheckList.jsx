@@ -7,6 +7,7 @@ import {
 import React, { memo } from "react";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 
 const DashRoomCheckList = () => {
@@ -41,8 +42,8 @@ const DashRoomCheckList = () => {
               alignItems: "center",
             }}
           >
-            <Ionicons
-              name="ticket-outline"
+            <MaterialIcons
+              name="room-preferences"
               size={30}
               color={theme.colors.logoCol2}
             />
@@ -62,7 +63,9 @@ const DashRoomCheckList = () => {
           <View
             style={{
               flex: 0.3,
-              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "flex-end",
+              paddingRight: 20,
             }}
           >
             <Text
