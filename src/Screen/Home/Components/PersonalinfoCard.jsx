@@ -49,10 +49,7 @@ const PersonalinfoCard = () => {
           alignItems: "center",
         }}
       >
-        <Image
-          source={image[randomIndex]}
-          style={{ height: 100, width: 100 }}
-        />
+        <Image source={image[randomIndex]} style={{ height: 75, width: 75 }} />
       </View>
       <View
         style={{
@@ -61,6 +58,7 @@ const PersonalinfoCard = () => {
           padding: 10,
           paddingVertical: 15,
           paddingTop: 25,
+          justifyContent: "center",
         }}
       >
         <Text
@@ -106,8 +104,9 @@ const PersonalinfoCard = () => {
         >
           {emp_sec?.toLowerCase() ?? null}
         </Text>
-        <View
+        {/* <View
           style={{
+            display: "none",
             flex: 1,
             flexDirection: "row",
             justifyContent: "space-between",
@@ -166,7 +165,7 @@ const PersonalinfoCard = () => {
               0
             </Text>
           </View>
-        </View>
+        </View> */}
       </View>
       {/* Card Content section */}
       {/* <View style={{ flexGrow: 1 }}>

@@ -79,7 +79,7 @@ const FlashListAssign = ({ navigation }) => {
             paddingHorizontal: 15,
           }}
         >
-          {isLoading && !isSuccess && !isError && <CustomActivityIndicator />}
+          {/* {isLoading && !isSuccess && !isError && <CustomActivityIndicator />} */}
 
           <Suspense fallback={<CustomActivityIndicator />}>
             <View style={{ flex: 1 }}>

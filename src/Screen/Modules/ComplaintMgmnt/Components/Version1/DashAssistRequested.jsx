@@ -54,15 +54,17 @@ const DashAssistRequested = () => {
             style={{
               flex: 1,
               flexDirection: "row",
-              justifyContent: "center",
+              // justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <MaterialIcons
-              name="support-agent"
-              size={30}
-              color={theme.colors.logoCol2}
-            />
+            <View style={{ alignItems: "center", paddingHorizontal: 10 }}>
+              <MaterialIcons
+                name="support-agent"
+                size={30}
+                color={theme.colors.logoCol2}
+              />
+            </View>
             {/* </View> */}
             <Text
               style={{

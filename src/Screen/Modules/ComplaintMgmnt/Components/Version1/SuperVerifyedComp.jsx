@@ -4,12 +4,20 @@ import {
   KeyboardAvoidingView,
   useWindowDimensions,
 } from "react-native";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useRoute, useTheme } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import HearderSecondary from "../../../../../Components/HearderSecondary";
 import { format, intervalToDuration, parse } from "date-fns";
+import { RadioButton, TextInput } from "react-native-paper";
+import NtivePaperInput from "./Common/NtivePaperInput";
+import CenteredButton from "./Common/CenteredButton";
+import { getLogiEmployeeID } from "../../../../../Redux/ReduxSlice/LoginSLice";
+import { useSelector } from "react-redux";
+import { axiosApi } from "../../../../../config/Axiox";
+import { Toast } from "toastify-react-native";
+import { tr } from "date-fns/locale";
 
 const SuperVerifyedComp = ({ navigation }) => {
   const route = useRoute();
@@ -20,9 +28,10 @@ const SuperVerifyedComp = ({ navigation }) => {
   const headerHeight = height > 790 ? 100 : 75;
   const headerHeightWithStatusBar = height - headerHeight;
 
+  const empID = useSelector(getLogiEmployeeID);
+
   const { data } = route.params;
   const compDetlData = useMemo(() => data, [data]);
-  console.log(compDetlData);
   const {
     cm_rectify_time,
     comp_reg_emp,
@@ -64,7 +73,68 @@ const SuperVerifyedComp = ({ navigation }) => {
   const end = parse(cm_rectify_time, "yyyy-MM-dd HH:mm:ss", new Date());
   const duration = intervalToDuration({ start, end });
   const { days, hours, minutes, seconds } = duration;
-  const durationString = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  const durationString = `${days} Day ${hours} hour ${minutes} minits ${seconds} seconds`;
+
+  const [value, setValue] = useState(1);
+  const [remark, setRemark] = useState("");
+  const handleRemarkChange = (text) => {
+    setRemark(text);
+  };
+
+  const handleSubmitSuperVisorVerify = async () => {
+    try {
+      if (remark === "") {
+        Toast.show({
+          type: "info",
+          text1: "Warning",
+          text2: "Please enter remark",
+        });
+        //   return;
+      }
+
+      const postVerifyData = {
+        complaint_slno: complaint_slno,
+        verify_spervsr: value,
+        verify_spervsr_remarks: remark,
+        compalint_status: value === 1 ? 2 : 1,
+        verify_spervsr_user: empID,
+        suprvsr_verify_time:
+          value === 1 ? format(new Date(), "yyyy-MM-dd HH:mm:ss") : null,
+      };
+
+      //   console.log(remarkdd);
+      console.log(postVerifyData);
+
+      const response = await axiosApi.patch(
+        `/complaintassign/SupervsrVerify`,
+        postVerifyData
+      );
+      const { message, success } = await response.data;
+
+      if (success === 1) {
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: message,
+        });
+        navigation.goBack();
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: message,
+        });
+      }
+
+      console.log(data?.data);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "error",
+        text2: error?.message || "Something went wrong!",
+      });
+    }
+  };
 
   return (
     <KeyboardAvoidingView enabled behavior="height">
@@ -366,19 +436,90 @@ const SuperVerifyedComp = ({ navigation }) => {
                       color: theme.colors.inactiveFont,
                     }}
                   >
-                    Complaint Rectification Duration :
+                    Ticket Duration :
                   </Text>
                   <Text
                     style={{
                       fontSize: 12,
-                      fontFamily: "Roboto_500Medium",
+                      //   fontFamily: "Roboto_500Medium",
                       fontWeight: "900",
-                      color: theme.colors.lightBlueFont,
+                      color: theme.colors.logoCol1,
                     }}
                     textBreakStrategy="highQuality"
                   >
                     {durationString}
                   </Text>
+                </View>
+              </View>
+              <View style={{ marginTop: 15 }}>
+                <RadioButton.Group
+                  onValueChange={(newValue) => setValue(newValue)}
+                  value={value}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-evenly",
+                    }}
+                  >
+                    <RadioButton.Item
+                      label="Verified"
+                      value={1}
+                      color={theme.colors.logoCol1}
+                      uncheckedColor={theme.colors.logoCol2}
+                      position="leading"
+                      style={{
+                        //backgroundColor: "green",
+                        height: 40,
+                        borderRadius: 18,
+                        minWidth: (width * 40) / 100,
+                        borderWidth: 1.5,
+                        borderColor: theme.colors.logoCol2,
+                        color: theme.colors.logoCol1,
+                      }}
+                      labelStyle={{
+                        fontSize: 15.5,
+                        fontFamily: "Roboto_500Medium",
+                        color: theme.colors.logoCol2,
+                        textAlign: "justify",
+                        // fontWeight: "bold",
+                      }}
+                    />
+                    <RadioButton.Item
+                      label="Not Verified"
+                      value={2}
+                      color={theme.colors.logoCol1}
+                      uncheckedColor={theme.colors.logoCol2}
+                      position="leading"
+                      style={{
+                        //backgroundColor: "green",
+                        height: 40,
+                        borderRadius: 18,
+                        minWidth: (width * 40) / 100,
+                        borderWidth: 1.5,
+                        borderColor: theme.colors.logoCol2,
+                        color: theme.colors.logoCol1,
+                      }}
+                      labelStyle={{
+                        fontSize: 15.5,
+                        fontFamily: "Roboto_500Medium",
+                        color: theme.colors.logoCol2,
+                        // textAlignVertical: "top",
+                        // backgroundColor: "red",
+                        textAlign: "justify",
+                        // fontWeight: "bold",
+                      }}
+                    />
+                  </View>
+                </RadioButton.Group>
+
+                <View style={{ marginTop: 30, paddingHorizontal: 15 }}>
+                  <NtivePaperInput handleRemarkChange={handleRemarkChange} />
+                </View>
+                <View>
+                  <CenteredButton
+                    hangleOnPress={handleSubmitSuperVisorVerify}
+                  />
                 </View>
               </View>
             </View>

@@ -1,16 +1,21 @@
 import { Text, useWindowDimensions, View } from "react-native";
-import React, { memo, useRef } from "react";
+import React, { memo, useEffect, useRef, useState } from "react";
 import { useSharedValue } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { useTheme } from "react-native-paper";
+import { UsegetNotificationMessages } from "../../../api/CommonUtilities";
+import Skeleton from "../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
 
-const data = [100, 200, 300, 400, 500];
+// const data = [100, 200, 300, 400, 500];
 
 const NotificationBoard = () => {
   const theme = useTheme();
   const ref = useRef(null);
   const { width } = useWindowDimensions();
   const progress = useSharedValue(0);
+
+  const [visible, setVisible] = useState(true);
+  const [notificationData, setNotificationData] = useState([]);
 
   const onPressPagination = (index) => {
     if (ref.current) {
@@ -20,21 +25,25 @@ const NotificationBoard = () => {
       });
     }
   };
+  const { data, isError, isSuccess } = UsegetNotificationMessages();
 
-  const notification = [
-    {
-      title: "Ticket Management",
-      body: "Ticket management software is a tool used to efficiently track, prioritize, assign, and resolve customer or internal support requests. It helps teams streamline communication, improve response times, and ensure no issue falls through the cracks—ideal for customer service, IT support, and help desks",
-      time: "07-04-2025 02:34 PM",
-    },
-    {
-      title: "CRF Management",
-      body: "Central Asset Request Management is a unified system that streamlines how teams request, approve, track, and manage organizational assets—such as equipment, devices, software, or facilities—ensuring transparency, accountability, and faster fulfillment.",
-      time: "07-04-2025 02:34 PM",
-    },
-  ];
+  useEffect(() => {
+    if (isError) {
+      setVisible(true);
+    }
 
-  return (
+    if (isSuccess) {
+      setVisible(false);
+      setNotificationData(data?.data);
+    }
+  }, [isSuccess]);
+
+  // if (isLoading) return;
+  // if (isError) return;
+
+  return visible ? (
+    <Skeleton height={110} />
+  ) : (
     <View
       style={{
         flex: 1,
@@ -64,7 +73,7 @@ const NotificationBoard = () => {
           width: width,
         }}
         // vertical={true}
-        data={notification}
+        data={notificationData}
         onProgressChange={progress}
         renderItem={(data) => (
           <View
@@ -99,7 +108,7 @@ const NotificationBoard = () => {
                 lineBreakMode="middle"
                 textBreakStrategy="balanced"
               >
-                {data?.item?.title}
+                {data?.item?.notification_heading}
               </Text>
             </View>
             <View
@@ -121,7 +130,7 @@ const NotificationBoard = () => {
                 }}
                 numberOfLines={3}
               >
-                {data?.item?.body}
+                {data?.item?.notification_remarks}
               </Text>
             </View>
           </View>

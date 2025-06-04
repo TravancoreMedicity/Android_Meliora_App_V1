@@ -238,7 +238,7 @@ const HomeScreen = ({ navigation }) => {
       >
         <Suspense fallback={<CustomActivityIndicator />}>
           {/* Profile information Start*/}
-          <View style={{ height: 180, paddingHorizontal: 13 }}>
+          <View style={{ height: 140, paddingHorizontal: 13 }}>
             <PersonalinfoCard />
           </View>
           {/* Profile information End*/}

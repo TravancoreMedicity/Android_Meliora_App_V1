@@ -20,8 +20,6 @@ const DashSuperVisorChekList = () => {
 
   const deptID = useSelector(getLogiEmpDEPT);
 
-  console.log(deptID, "deptID");
-
   const { count, isError, isLoading, isSuccess } =
     UsegetSuperVisorVerificationCount(deptID);
 

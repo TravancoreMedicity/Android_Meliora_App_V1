@@ -16,7 +16,7 @@ const DashRoomCheckList = () => {
   const navigation = useNavigation();
 
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("notAssign")}>
+    <TouchableOpacity onPress={() => {}}>
       <View
         style={{
           backgroundColor: theme.colors.cardBgColor,
@@ -76,7 +76,7 @@ const DashRoomCheckList = () => {
                 color: theme.colors.logoCol2,
               }}
             >
-              2000
+              0
             </Text>
           </View>
         </View>

@@ -9,11 +9,11 @@ const Skeleton = ({ height }) => {
     <SkeletonLoading background={"#eae1f2"} highlight={"#f8f8fa"}>
       <View
         style={{
-          marginHorizontal: 15,
+          marginHorizontal: 22,
           borderRadius: 20,
           flexDirection: "row",
           justifyContent: "space-between",
-          backgroundColor: theme.colors.logoCol2,
+          // backgroundColor: theme.colors.logoCol2,
         }}
       >
         <View

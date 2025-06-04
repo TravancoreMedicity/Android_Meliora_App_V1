@@ -49,15 +49,17 @@ const NewTicketDash = () => {
             style={{
               flex: 1,
               flexDirection: "row",
-              justifyContent: "space-evenly",
+              // justifyContent: "space-evenly",
               alignItems: "center",
             }}
           >
-            <Ionicons
-              name="ticket-outline"
-              size={30}
-              color={theme.colors.logoCol2}
-            />
+            <View style={{ alignItems: "center", paddingHorizontal: 10 }}>
+              <Ionicons
+                name="ticket-outline"
+                size={30}
+                color={theme.colors.logoCol2}
+              />
+            </View>
             {/* </View> */}
             <Text
               style={{
@@ -68,7 +70,7 @@ const NewTicketDash = () => {
                 color: theme.colors.logoCol2,
               }}
             >
-              New Tickets
+              Pending Tickets
             </Text>
           </View>
           <Text

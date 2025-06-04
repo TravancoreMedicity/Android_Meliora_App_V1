@@ -5,13 +5,15 @@ import {
   SafeAreaView,
   useWindowDimensions,
 } from "react-native";
-import React, { Suspense, memo, lazy } from "react";
+import React, { Suspense, memo, lazy, useCallback } from "react";
 import HearderSecondary from "../../../Components/HearderSecondary";
 import { useTheme } from "react-native-paper";
 import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 import { useSelector } from "react-redux";
 import { getLogiEmpDEPT } from "../../../Redux/ReduxSlice/LoginSLice";
 import { UsegetSuperVisorVerificationList } from "../../../api/TicketsUtilities";
+import { useFocusEffect } from "@react-navigation/native";
+import { useQueryClient } from "@tanstack/react-query";
 
 const FlashListCmp = lazy(() => import("./Components/FlashListCmp"));
 const ForVerifyCmp = lazy(() =>
@@ -21,6 +23,7 @@ const ForVerifyCmp = lazy(() =>
 const FlashListSuperVerify = ({ navigation }) => {
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
+  const queryClient = useQueryClient();
   //   Main view height
   const headerHeight = height > 790 ? 100 : 75;
   const headerHeightWithStatusBar = height - headerHeight;
@@ -28,8 +31,15 @@ const FlashListSuperVerify = ({ navigation }) => {
   // GET THE LOGGED EMP ID
   const deptID = useSelector(getLogiEmpDEPT);
 
-  const { data, isError, isLoading, isSuccess } =
+  const { data, isError, isLoading, isSuccess, refetch } =
     UsegetSuperVisorVerificationList(deptID);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+      queryClient.invalidateQueries(["superVisorVerificationCount"]);
+    }, [])
+  );
 
   return (
     <KeyboardAvoidingView enabled behavior="height">

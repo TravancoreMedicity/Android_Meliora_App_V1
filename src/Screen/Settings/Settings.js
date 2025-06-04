@@ -1,39 +1,35 @@
 //import liraries
 import React, { lazy, Suspense, memo } from "react";
-import { View, StyleSheet, SafeAreaView, ScrollView } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { View, SafeAreaView, ScrollView } from "react-native";
 import HeaderMain from "../../Components/HeaderMain";
-import { bgColor } from "../../Constant/Colors";
+import CustomActivityIndicator from "../../Components/CustomActivityIndicator";
+import { useTheme } from "react-native-paper";
 
-const SettingsCmp = lazy(() => import('./SettingsCmp'))
+const SettingsCmp = lazy(() => import("./SettingsCmp"));
 
 // create a component
 const Settings = ({ navigation }) => {
-
+  const theme = useTheme();
   return (
-    <SafeAreaView style={styles.container} >
+    <SafeAreaView
+      style={{
+        backgroundColor: theme.colors.appBgInside,
+        flex: 1,
+      }}
+    >
       {/* Header Component */}
       <HeaderMain navigation={navigation} name="Common Settings" />
 
       <ScrollView>
-        <View style={{ flex: 1, padding: 5 }} >
-          <Suspense fallback={<ActivityIndicator />} >
+        <View style={{ flex: 1, padding: 5 }}>
+          <Suspense fallback={<CustomActivityIndicator />}>
             <SettingsCmp title={"Enable Push Notification"} />
           </Suspense>
         </View>
       </ScrollView>
-
     </SafeAreaView>
   );
 };
-
-// define your styles
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: bgColor.mainBgColor,
-    flex: 1,
-  },
-});
 
 //make this component available to the app
 export default memo(Settings);
