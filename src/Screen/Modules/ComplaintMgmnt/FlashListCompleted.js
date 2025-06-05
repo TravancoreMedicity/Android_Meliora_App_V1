@@ -1,5 +1,5 @@
 //import liraries
-import React, { memo } from "react";
+import React, { memo, useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,6 +10,15 @@ import {
 import { useTheme } from "react-native-paper";
 import HearderSecondary from "../../../Components/HearderSecondary";
 import { colorTheme } from "../../../Constant/Colors";
+import {
+  UsegetDeptWiseVerifiedCount,
+  UsegetEmplWiseTicketVerifiedCount,
+} from "../../../api/TicketsUtilities";
+import { useSelector } from "react-redux";
+import {
+  getLogiEmpDEPT,
+  getLogiEmployeeID,
+} from "../../../Redux/ReduxSlice/LoginSLice";
 
 // create a component
 const FlashListCompleted = ({ navigation }) => {
@@ -19,33 +28,26 @@ const FlashListCompleted = ({ navigation }) => {
   const headerHeight = height > 790 ? 100 : 75;
   const headerHeightWithStatusBar = height - headerHeight;
 
-  const data = [
-    {
-      id: 1,
-      name: "Information Technology",
-      age: 100,
-    },
-    {
-      id: 2,
-      name: "Fourth Payward A Side",
-      age: 20,
-    },
-    {
-      id: 3,
-      name: "Fourth Payward B Side",
-      age: 38,
-    },
-    {
-      id: 4,
-      name: "Fourth Payward C Side",
-      age: 128,
-    },
-    {
-      id: 5,
-      name: "Fourth Payward D Side",
-      age: 78,
-    },
-  ];
+  const empID = useSelector((state) => getLogiEmployeeID(state));
+  const deptID = useSelector((state) => getLogiEmpDEPT(state));
+
+  const { data: userVerifiedList, isSuccess: userVerifiedSuccess } =
+    UsegetEmplWiseTicketVerifiedCount(empID);
+
+  const { data: deptVerifiedList, isSuccess: deptVerifiedSuccess } =
+    UsegetDeptWiseVerifiedCount(deptID);
+
+  const [useList, setUseList] = useState([]);
+  const [deptList, setDeptList] = useState([]);
+
+  useEffect(() => {
+    if (userVerifiedSuccess) {
+      setUseList(userVerifiedList?.data);
+    }
+    if (deptVerifiedSuccess) {
+      setDeptList(deptVerifiedList?.data);
+    }
+  }, [userVerifiedSuccess, deptVerifiedSuccess]);
 
   return (
     <KeyboardAvoidingView enabled behavior="height">
@@ -63,6 +65,16 @@ const FlashListCompleted = ({ navigation }) => {
             paddingHorizontal: 15,
           }}
         >
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontFamily: "Roboto_500Medium",
+              color: theme.colors.logoCol2,
+              padding: 5,
+            }}
+          >
+            User wise verified ticket
+          </Text>
           <View
             style={{
               borderWidth: 1,
@@ -71,8 +83,8 @@ const FlashListCompleted = ({ navigation }) => {
               borderRadius: 10,
             }}
           >
-            {data?.map((item, index) => {
-              const lastIndex = data.length - 1;
+            {useList?.map((item, index) => {
+              const lastIndex = useList.length - 1;
               return (
                 <View
                   key={index}
@@ -95,7 +107,7 @@ const FlashListCompleted = ({ navigation }) => {
                         color: theme.colors.logoCol2,
                       }}
                     >
-                      {item.name}
+                      {item.sec_name}
                     </Text>
                   </View>
                   <View
@@ -111,7 +123,7 @@ const FlashListCompleted = ({ navigation }) => {
                         color: theme.colors.logoCol2,
                       }}
                     >
-                      {item.age}
+                      {item.complaint_count}
                     </Text>
                   </View>
                 </View>
@@ -124,6 +136,72 @@ const FlashListCompleted = ({ navigation }) => {
               Assigned={onProgressTicket}
             />
           </Suspense> */}
+
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontFamily: "Roboto_500Medium",
+              color: theme.colors.logoCol2,
+              padding: 5,
+            }}
+          >
+            Department wise verified ticket
+          </Text>
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: colorTheme.secondaryBgColor,
+              padding: 10,
+              borderRadius: 10,
+            }}
+          >
+            {deptList?.map((item, index) => {
+              const lastIndex = deptList.length - 1;
+              return (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: "row",
+                    marginBottom: lastIndex === index ? 0 : 10,
+                    height: 50,
+                    alignItems: "center",
+                    padding: 10,
+                    borderWidth: 1,
+                    borderColor: colorTheme.secondaryBgColor,
+                    borderRadius: 15,
+                  }}
+                >
+                  <View style={{ flexGrow: 1 }}>
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontFamily: "Roboto_500Medium",
+                        color: theme.colors.logoCol2,
+                      }}
+                    >
+                      {item.sec_name}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontFamily: "Roboto_500Medium",
+                        color: theme.colors.logoCol2,
+                      }}
+                    >
+                      {item.complaint_count}
+                    </Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>

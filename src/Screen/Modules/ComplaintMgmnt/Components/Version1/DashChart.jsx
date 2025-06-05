@@ -19,13 +19,20 @@ const DashChart = () => {
   return (
     <View>
       <BarChart
+        // horizontal
         barWidth={22}
-        noOfSections={3}
+        noOfSections={5}
         barBorderRadius={4}
         frontColor="lightgray"
         data={barData}
         yAxisThickness={0}
-        xAxisThickness={0}
+        xAxisThickness={0.5}
+        height={150}
+        initialSpacing={0.5}
+        spacing={7}
+        //isThreeD={true}
+        // showBarTops
+        isAnimated
       />
     </View>
   );

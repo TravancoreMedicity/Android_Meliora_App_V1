@@ -146,40 +146,19 @@ const ForVerifyCmp = ({ data }) => {
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
+                  // flexGrow: 1,
                 }}
               >
                 <Text
                   style={{
-                    fontSize: 12,
+                    fontSize: 11,
                     fontFamily: "Roboto_500Medium",
                     fontWeight: "800",
                     color: theme.colors.lightBlueFont,
                   }}
-                  numberOfLines={1}
+                  numberOfLines={2}
                 >
-                  {comp_reg_emp}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontFamily: "Roboto_500Medium",
-                    fontWeight: "800",
-                    paddingHorizontal: 2,
-                    color: theme.colors.lightBlueFont,
-                  }}
-                >
-                  /
-                </Text>
-                <Text
-                  numberOfLines={1}
-                  style={{
-                    fontSize: 12,
-                    fontFamily: "Roboto_500Medium",
-                    fontWeight: "800",
-                    color: theme.colors.lightBlueFont,
-                  }}
-                >
-                  {sec_name}
+                  {`${comp_reg_emp} - `} {sec_name}
                 </Text>
               </View>
             </View>
@@ -277,7 +256,8 @@ const ForVerifyCmp = ({ data }) => {
           </View>
         </View>
       </View>
-      <View style={{ backgroundColor: "rgba(124,81,161,0.8)" }}>
+      {/* hide for temporary */}
+      {/* <View style={{ backgroundColor: "rgba(124,81,161,0.8)" }}>
         <TouchableOpacity
           onPress={() => {}}
           style={{
@@ -288,7 +268,7 @@ const ForVerifyCmp = ({ data }) => {
         >
           <Ionicons name="chevron-forward-outline" size={50} color="white" />
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

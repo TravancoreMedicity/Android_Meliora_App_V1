@@ -21,7 +21,7 @@ const FlashListNotAssign = ({ notAssigned }) => {
       ListEmptyComponent={<NoNewTicketCmp legth={legth} />}
       showsVerticalScrollIndicator={false}
       keyExtractor={(Assigned) => Assigned.complaint_slno}
-      contentContainerStyle={{ paddingBottom: 50 }}
+      contentContainerStyle={{ paddingBottom: 110 }}
       // estimatedListSize={
       //     {
       //         height: 300,

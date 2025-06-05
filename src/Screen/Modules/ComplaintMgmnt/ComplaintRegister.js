@@ -75,6 +75,7 @@ const ComplaintRegister = ({ navigation }) => {
           paddingHorizontal: width > 450 ? 35 : 15,
           paddingTop: 5,
         }}
+        showsVerticalScrollIndicator={false}
       >
         {/* Dash Bord Veiw Start */}
 
@@ -117,7 +118,7 @@ const ComplaintRegister = ({ navigation }) => {
               </View>
             </View>
 
-            <View
+            {/* <View
               style={{
                 flexGrow: 1,
                 marginTop: 18,
@@ -131,7 +132,7 @@ const ComplaintRegister = ({ navigation }) => {
               <View style={{ marginTop: 10, padding: 10 }}>
                 <DashChart />
               </View>
-            </View>
+            </View> */}
           </Suspense>
         </View>
         {/* Dash Bord View End  */}

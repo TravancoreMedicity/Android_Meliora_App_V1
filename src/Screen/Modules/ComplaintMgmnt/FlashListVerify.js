@@ -35,7 +35,7 @@ const FlashListVerify = ({ navigation }) => {
   const headerHeightWithStatusBar = height - headerHeight;
 
   // GET THE LOGGED EMP ID
-  const emId = useSelector((state) => getLogiEmployeeID(state));
+  const emId = useSelector(getLogiEmployeeID);
 
   const searchDate = useMemo(() => {
     return {

@@ -14,6 +14,8 @@ import {
   UsegetgetEmpHoldTicket,
   UseGetPendingAssistTicketCount,
   UseGetPendingTicketsCount,
+  UsegetEmplWiseTicketVerifiedCount,
+  UsegetDeptWiseVerifiedCount,
 } from "../../../api/TicketsUtilities";
 
 const DashCountTile = lazy(() => import("./DashCountTile"));
@@ -98,7 +100,7 @@ const DashBoardView = ({ navigation }) => {
         id: 6,
         route: "Completed",
         title: "Verified",
-        count: verifiedCount?.data[0]?.employee_ticket_rectified_count,
+        count: verifiedCount?.data[0]?.employee_ticket_verified_count,
         loading: verifiedLoading,
       },
     ]);

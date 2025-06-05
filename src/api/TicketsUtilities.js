@@ -359,3 +359,43 @@ export const UsegetSuperVisorVerificationList = (deptID) => {
   });
   return { data, isLoading, isError, isSuccess, refetch };
 };
+
+//EMPLOYEE WISE TICKET VERIFIED LIST
+const getEmplWiseTicketVerifiedCount = async (empID) => {
+  const response = await axiosApi.get(
+    `/cmdashboard/getVerifyTicketCountEmployeeDeptWise/${empID}`
+  );
+  return await response.data;
+};
+
+export const UsegetEmplWiseTicketVerifiedCount = (empID) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["emplWiseTicketVerifiedCount", empID],
+    queryFn: () => getEmplWiseTicketVerifiedCount(empID),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  // console.log(data);
+  return { data, isLoading, isError, isSuccess, refetch };
+};
+
+//DEPARTMENT WISE TICKET VERIFIED COUNT
+const getDeptWiseVerifiedCount = async (deptID) => {
+  const response = await axiosApi.get(
+    `/cmdashboard/getVerifyTicketCountCompDeptWise/${deptID}`
+  );
+  return await response.data;
+};
+
+export const UsegetDeptWiseVerifiedCount = (deptID) => {
+  const { data, isError, isLoading, isSuccess, refetch } = useQuery({
+    queryKey: ["deptWiseVerifiedCount", deptID],
+    queryFn: () => getDeptWiseVerifiedCount(deptID),
+    // refetchOnMount: false, // refetch data on mount cmp -> false
+    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
+    // enabled: false, // disable the query running  when cmp on mount
+  });
+  // console.log(data);
+  return { data, isLoading, isError, isSuccess, refetch };
+};

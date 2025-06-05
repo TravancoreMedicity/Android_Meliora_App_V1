@@ -49,22 +49,28 @@ const HeaderMain = ({ navigation, name }) => {
         {/* Open Drawer Menu Section Start here */}
         <View
           style={{
-            flex: 1,
+            // flex: 1,
+            // height: "100%",
+            // alignItems: "center",
+            // flexDirection: "row",
             height: "100%",
-            alignItems: "center",
-            flexDirection: "row",
+            width: width / 7,
+            justifyContent: "center",
+            alignItems: width > 450 ? "center" : "flex-end",
           }}
         >
           <TouchableOpacity
             onPress={() => navigation.openDrawer()}
-            style={{
-              paddingLeft: 30,
-              paddingRight: 10,
-            }}
+            // style={{
+            //   paddingLeft: 30,
+            //   paddingRight: 10,
+            // }}
           >
             <Ionicons
               name="apps"
-              size={height > 760 ? 40 : 30}
+              // size={height > 760 ? 40 : 30}
+              // color={theme.colors.logoCol2}
+              size={30}
               color={theme.colors.logoCol2}
             />
           </TouchableOpacity>
@@ -72,7 +78,32 @@ const HeaderMain = ({ navigation, name }) => {
         {/* Open Drawer section menu end here */}
 
         {/* Header Name Section Start here *************/}
+
         <View
+          style={{
+            flex: 1,
+            paddingTop: 8,
+            justifyContent: "center",
+            alignItems: "flex-start",
+            paddingLeft: width > 450 ? 0 : 10,
+          }}
+        >
+          <Text
+            style={{
+              // fontFamily: "Roboto_500Medium",
+              // fontSize: 14.4,
+              // color: theme.colors.logoCol2,
+              color: theme.colors.logoCol2,
+              marginTop: Platform.OS === "ios" ? 0 : 13,
+              fontFamily: "AkayaKanadaka_400Regular",
+              fontSize: height > 760 ? 30 : 26,
+            }}
+          >
+            Meliora
+          </Text>
+        </View>
+
+        {/* <View
           style={{
             flex: 3,
             height: "100%",
@@ -91,7 +122,7 @@ const HeaderMain = ({ navigation, name }) => {
           >
             Meliora
           </Text>
-        </View>
+        </View> */}
         {/* Header Section Name end Here */}
 
         {/* LOgout Button Section start here */}

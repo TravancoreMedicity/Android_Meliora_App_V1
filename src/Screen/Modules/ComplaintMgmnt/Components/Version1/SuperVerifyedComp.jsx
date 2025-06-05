@@ -3,6 +3,8 @@ import {
   Text,
   KeyboardAvoidingView,
   useWindowDimensions,
+  ScrollView,
+  Platform,
 } from "react-native";
 import React, { useMemo, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -18,6 +20,7 @@ import { useSelector } from "react-redux";
 import { axiosApi } from "../../../../../config/Axiox";
 import { Toast } from "toastify-react-native";
 import { tr } from "date-fns/locale";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const SuperVerifyedComp = ({ navigation }) => {
   const route = useRoute();
@@ -103,7 +106,6 @@ const SuperVerifyedComp = ({ navigation }) => {
       };
 
       //   console.log(remarkdd);
-      console.log(postVerifyData);
 
       const response = await axiosApi.patch(
         `/complaintassign/SupervsrVerify`,
@@ -137,18 +139,23 @@ const SuperVerifyedComp = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView enabled behavior="height">
+    <KeyboardAvoidingView
+      enabled
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
       <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
         {/* Header  */}
         <HearderSecondary
           navigation={navigation}
           name="Supervisor Verification"
         />
-        <View
-          style={{
-            height: headerHeightWithStatusBar,
-            width: width,
+        <KeyboardAwareScrollView
+          keyboardShouldPersistTaps="handled"
+          enableOnAndroid={true}
+          extraScrollHeight={100} // Optional tweak
+          contentContainerStyle={{
             paddingHorizontal: 15,
+            height: headerHeightWithStatusBar,
           }}
         >
           <View
@@ -514,7 +521,11 @@ const SuperVerifyedComp = ({ navigation }) => {
                 </RadioButton.Group>
 
                 <View style={{ marginTop: 30, paddingHorizontal: 15 }}>
-                  <NtivePaperInput handleRemarkChange={handleRemarkChange} />
+                  <NtivePaperInput
+                    handleRemarkChange={handleRemarkChange}
+                    label="Remarks"
+                    // lines={5}
+                  />
                 </View>
                 <View>
                   <CenteredButton
@@ -524,7 +535,7 @@ const SuperVerifyedComp = ({ navigation }) => {
               </View>
             </View>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
