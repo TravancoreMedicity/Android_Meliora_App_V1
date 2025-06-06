@@ -98,6 +98,8 @@ const HomeScreen = ({ navigation }) => {
       }
 
       const pushTokenData = await Notifications.getExpoPushTokenAsync();
+
+      console.log("pushTokenData", pushTokenData);
       // dispatch({ type: FETCH_PUSH_TOKEN, payload: pushTokenData })
 
       dispatch(getExpoPushToken(pushTokenData));
