@@ -24,7 +24,6 @@
     "core-js": "^3.27.1",
     "date-fns": "^2.29.3",
     "expo": "^52.0.40",
-    "expo-app-loading": "~2.1.1",
     "expo-checkbox": "~4.0.1",
     "expo-dev-client": "~5.0.14",
     "expo-file-system": "~18.0.11",
@@ -72,5 +71,16 @@
     "@babel/core": "^7.24.0",
     "metro-react-native-babel-transformer": "^0.77.0"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-keyboard-aware-scroll-view",
+          "react-native-sectioned-multi-select"
+        ],
+        "listUnknownPackages": false
+      }
+    }
+  }
 }

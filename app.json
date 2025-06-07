@@ -14,14 +14,8 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/c950e698-575e-4c32-a62d-6ed415f3c5ee"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "assetBundlePatterns": ["**/*"],
+    "platforms": ["ios", "android", "web"],
     "newArchEnabled": true,
     "ios": {
       "buildNumber": "1.0.0",
@@ -38,14 +32,23 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-       "bundler": "metro"
+      "bundler": "metro"
+    },
+    "notification": {
+      "icon": "./assets/Notificon2.png",
+      "color": "#edf2eb",
+      "androidMode": "default",
+      "androidCollapsedTitle": "You have new messages"
     },
     "plugins": [
       [
         "expo-notifications",
         {
           "icon": "./assets/Notificon2.png",
-          "color": "#edf2eb"
+          "color": "#00AA00",
+          "defaultChannel": "defaultExpoChannel",
+          "sounds": ["./assets/pop_sound.wav", "./assets/bells_sound.wav"],
+          "enableBackgroundRemoteNotifications": true
         }
       ],
       "expo-font"
