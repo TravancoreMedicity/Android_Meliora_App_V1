@@ -10,8 +10,8 @@ import { useTheme } from "react-native-paper";
 import { UseGetPendingTicketsCount } from "../../../../../api/TicketsUtilities";
 import { getLogiEmpDEPT } from "../../../../../Redux/ReduxSlice/LoginSLice";
 import { useSelector } from "react-redux";
-import Skeleton from "../../../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
 import { useNavigation } from "@react-navigation/native";
+import SkeletonExpo from "../../../../../Components/V1_Cmp/Skeleton-Cmp/SkeletonExpo";
 
 const NewTicketDash = () => {
   const theme = useTheme();
@@ -83,7 +83,7 @@ const NewTicketDash = () => {
               textAlign: "center",
             }}
           >
-            {isLoading === true ? <Skeleton /> : pendingTicketCount}
+            {isLoading === true ? <SkeletonExpo /> : pendingTicketCount}
           </Text>
           <Ionicons
             name="chevron-forward"

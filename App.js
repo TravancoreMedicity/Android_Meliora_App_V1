@@ -1,5 +1,7 @@
 //import liraries
 import "./global.css";
+import "react-native-reanimated";
+import "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import React from "react";
 import { Provider } from "react-redux";
@@ -20,7 +22,7 @@ const App = () => {
     <QueryClientProvider client={quieryClient}>
       <SafeAreaProvider>
         <Provider store={store}>
-          <GestureHandlerRootView>
+          <GestureHandlerRootView style={{ flex: 1 }}>
             <ToastManager />
             <AppNav />
           </GestureHandlerRootView>

@@ -99,20 +99,35 @@ const HomeScreen = ({ navigation }) => {
 
       const pushTokenData = await Notifications.getExpoPushTokenAsync();
 
-      console.log("pushTokenData", pushTokenData);
+      // console.log("pushTokenData", pushTokenData);
       // dispatch({ type: FETCH_PUSH_TOKEN, payload: pushTokenData })
 
       dispatch(getExpoPushToken(pushTokenData));
       // setExpoPushToken(pushTokenData);
 
       if (Platform.OS === "android") {
-        Notifications.setNotificationChannelAsync("default", {
-          name: "default",
+        Notifications.setNotificationChannelAsync("custom-sound-channel", {
+          name: "Custom Sound Channel",
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: "#FF231F7C",
-          sound: "./assets/notification-sound.wav",
+          sound: "pop_sound.wav",
+          enableVibrate: true,
+          showBadge: true,
         });
+
+        Notifications.setNotificationChannelAsync(
+          "custom-sound-channel-warning",
+          {
+            name: "Custom Sound Channel two",
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: "#FF231F7C",
+            sound: "warning.wav",
+            enableVibrate: true,
+            showBadge: true,
+          }
+        );
       }
     };
 

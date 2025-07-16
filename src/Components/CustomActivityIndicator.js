@@ -17,6 +17,7 @@ const CustomActivityIndicator = ({ size }) => {
         right: 0,
         bottom: 0,
         alignItems: "center",
+        zIndex: 9999,
       }}
     >
       <ActivityIndicator color={theme.colors.logoCol1} size={size || "large"} />

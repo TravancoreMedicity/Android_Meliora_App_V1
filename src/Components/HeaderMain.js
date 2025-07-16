@@ -1,5 +1,5 @@
 //import liraries
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import {
   View,
   Text,
@@ -19,15 +19,27 @@ import { useTheme } from "react-native-paper";
 
 import Octicons from "react-native-vector-icons/Octicons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import CustomActivityIndicator from "./CustomActivityIndicator";
+import { Toast } from "toastify-react-native";
 
 // create a component
 const HeaderMain = ({ navigation, name }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
+  const [loading, setLoading] = useState(false);
   const logOut = async () => {
     //CLEAR THE LOGIN INFORMATION
-    dispatch(clearLoggedInformation());
-    AsyncStorage.clear();
+    Toast.show({
+      type: "info",
+      text1: "Logout",
+      text2: "Logout Successfully !",
+      position: "center",
+      visibilityTime: 2000,
+    });
+    setTimeout(() => {
+      dispatch(clearLoggedInformation());
+      AsyncStorage.clear();
+    }, 2000);
   };
 
   const { height, width } = useWindowDimensions();

@@ -22,8 +22,9 @@ import { Toast } from "toastify-react-native";
 import { axiosApi } from "../../../../../config/Axiox";
 import { useQueryClient } from "@tanstack/react-query";
 import { UsegetAssitedEmpList } from "../../../../../api/TicketsUtilities";
-import Skeleton from "../../../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
 import AssitReqListComp from "./AssitReqListComp";
+import CustomActivityIndicator from "../../../../../Components/CustomActivityIndicator";
+import SkeletonExpo from "../../../../../Components/V1_Cmp/Skeleton-Cmp/SkeletonExpo";
 
 const AssistRequestedModal = ({
   openState,
@@ -414,7 +415,7 @@ const AssistRequestedModal = ({
                         Assistance Status
                       </Text>
                       {loading === true ? (
-                        <Skeleton height={50} />
+                        <SkeletonExpo />
                       ) : (
                         <View style={{ marginVertical: 10, rowGap: 5 }}>
                           {searchDataList?.map((item, index) => {

@@ -57,19 +57,25 @@ const Login = () => {
     try {
       setErrorMesg(false);
       const loginCred = {
-        emp_username: useCode,
-        emp_password: passCode,
+        userName: useCode,
+        passWord: passCode,
       };
+      // console.log(loginCred);
+      const result = await axiosApi.post("/user/checkUserCres", loginCred);
 
-      const result = await axiosApi.post("/employee/login", loginCred);
-      const { success } = result.data;
-      if (success === 1) {
-        const token = await JSON.stringify(result.data.token);
-        const userInfo = await JSON.stringify(result.data);
+      // console.log(result);
+      const { success, userInfo, message } = result.data;
+
+      if (success === 2) {
+        const userData = JSON.parse(userInfo);
+        const token = JSON.stringify(userData?.token);
+        const empdtl_slno = JSON.stringify(userData?.empdtl_slno);
+
         AsyncStorage.setItem("@token:", token);
-        AsyncStorage.setItem("@userInfo:", userInfo);
-        // dispatch the login info
-        dispatch(loggedInfomration(result.data));
+        AsyncStorage.setItem("@auth_id:", empdtl_slno);
+        // AsyncStorage.setItem("@userInfo:", data);
+        // // dispatch the login info
+        dispatch(loggedInfomration(userData));
         setLoading(false);
       } else {
         setModalMessage("Invalid user code or passcode. Please try again.");
@@ -77,7 +83,7 @@ const Login = () => {
         setLoading(false);
       }
     } catch (error) {
-      // console.log(error);
+      console.log("error1111", error);
       setErrorMesg(true);
     }
   };

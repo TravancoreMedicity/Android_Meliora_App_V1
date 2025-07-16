@@ -4,7 +4,8 @@ import { useSharedValue } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { useTheme } from "react-native-paper";
 import { UsegetNotificationMessages } from "../../../api/CommonUtilities";
-import Skeleton from "../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
+import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
+import SkeletonExpo from "../../../Components/V1_Cmp/Skeleton-Cmp/SkeletonExpo";
 
 // const data = [100, 200, 300, 400, 500];
 
@@ -28,21 +29,26 @@ const NotificationBoard = () => {
   const { data, isError, isSuccess } = UsegetNotificationMessages();
 
   useEffect(() => {
-    if (isError) {
-      setVisible(true);
-    }
+    // if (isError) {
+    //   setVisible(true);
+    // }
 
+    // if (isSuccess) {
+    //   setVisible(false);
+    //   setNotificationData(data?.data);
+    // }
+    if (isError) setVisible(true);
     if (isSuccess) {
       setVisible(false);
-      setNotificationData(data?.data);
+      setNotificationData(data?.data ?? []);
     }
-  }, [isSuccess]);
+  }, [isSuccess, isError]);
 
   // if (isLoading) return;
   // if (isError) return;
 
   return visible ? (
-    <Skeleton height={110} />
+    <SkeletonExpo />
   ) : (
     <View
       style={{
@@ -75,15 +81,12 @@ const NotificationBoard = () => {
         // vertical={true}
         data={notificationData}
         onProgressChange={progress}
-        renderItem={(data) => (
+        renderItem={({ item }) => (
           <View
             style={{
               flex: 1,
-              // borderWidth: 1,
-              // borderColor: "red",
               borderRadius: 15,
               backgroundColor: theme.colors.cardBgColor,
-              //   width: "100%",
               justifyContent: "center",
               overflow: "hidden",
             }}
@@ -91,7 +94,6 @@ const NotificationBoard = () => {
             <View
               style={{
                 height: 30,
-                // backgroundColor: "green",
                 paddingLeft: 18,
                 alignItems: "flex-start",
                 justifyContent: "flex-end",
@@ -108,32 +110,87 @@ const NotificationBoard = () => {
                 lineBreakMode="middle"
                 textBreakStrategy="balanced"
               >
-                {data?.item?.notification_heading}
+                {item?.notification_heading}
               </Text>
             </View>
             <View
               style={{
                 flex: 1,
                 marginHorizontal: 20,
-                // backgroundColor: "blue",
               }}
             >
               <Text
                 style={{
-                  fontSize: 30,
-                  textAlign: "justify",
                   fontSize: 16,
+                  textAlign: "justify",
                   textTransform: "capitalize",
                   fontFamily: "Roboto_300Light",
                   color: "#fff",
-                  // paddingHorizontal: 10,
                 }}
                 numberOfLines={3}
               >
-                {data?.item?.notification_remarks}
+                {item?.notification_remarks}
               </Text>
             </View>
           </View>
+          // <View
+          //   style={{
+          //     flex: 1,
+          //     // borderWidth: 1,
+          //     // borderColor: "red",
+          //     borderRadius: 15,
+          //     backgroundColor: theme.colors.cardBgColor,
+          //     //   width: "100%",
+          //     justifyContent: "center",
+          //     overflow: "hidden",
+          //   }}
+          // >
+          //   <View
+          //     style={{
+          //       height: 30,
+          //       // backgroundColor: "green",
+          //       paddingLeft: 18,
+          //       alignItems: "flex-start",
+          //       justifyContent: "flex-end",
+          //     }}
+          //   >
+          //     <Text
+          //       style={{
+          //         textAlign: "center",
+          //         fontSize: 18,
+          //         textTransform: "capitalize",
+          //         fontFamily: "Roboto_900Black",
+          //         color: theme.colors.logoCol2,
+          //       }}
+          //       lineBreakMode="middle"
+          //       textBreakStrategy="balanced"
+          //     >
+          //       {item?.notification_heading}
+          //     </Text>
+          //   </View>
+          //   <View
+          //     style={{
+          //       flex: 1,
+          //       marginHorizontal: 20,
+          //       // backgroundColor: "blue",
+          //     }}
+          //   >
+          //     <Text
+          //       style={{
+          //         fontSize: 30,
+          //         textAlign: "justify",
+          //         fontSize: 16,
+          //         textTransform: "capitalize",
+          //         fontFamily: "Roboto_300Light",
+          //         color: "#fff",
+          //         // paddingHorizontal: 10,
+          //       }}
+          //       numberOfLines={3}
+          //     >
+          //       {item?.notification_remarks}
+          //     </Text>
+          //   </View>
+          // </View>
         )}
       />
 

@@ -22,6 +22,7 @@ import { clearLoggedInformation } from "../Redux/ReduxSlice/LoginSLice";
 import { Avatar, useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ThemeContext } from "../Context/ThemeContext";
+import { Toast } from "toastify-react-native";
 
 // create a component
 const CustomDrawer = (props) => {
@@ -40,8 +41,17 @@ const CustomDrawer = (props) => {
   }, [loggedUserDetl]);
 
   const logOut = async () => {
-    dispatch(clearLoggedInformation());
-    AsyncStorage.clear();
+    Toast.show({
+      type: "info",
+      text1: "Logout",
+      text2: "Logout Successfully !",
+      position: "center",
+      visibilityTime: 2000,
+    });
+    setTimeout(() => {
+      dispatch(clearLoggedInformation());
+      AsyncStorage.clear();
+    }, 2000);
   };
 
   const { height } = useWindowDimensions();

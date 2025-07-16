@@ -1,8 +1,9 @@
 import { View, Text } from "react-native";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { UseGetEmpWithOutLoginUser } from "../../../../../../api/TicketsUtilities";
-import Skeleton from "../../../../../../Components/V1_Cmp/Skeleton-Cmp/Skeleton";
 import { Checkbox, useTheme } from "react-native-paper";
+import CustomActivityIndicator from "../../../../../../Components/CustomActivityIndicator";
+import SkeletonExpo from "../../../../../../Components/V1_Cmp/Skeleton-Cmp/SkeletonExpo";
 
 const EmpListWithOutLoggedUser = ({
   postData,
@@ -50,7 +51,7 @@ const EmpListWithOutLoggedUser = ({
   }, [setSelectedEmpNos]);
 
   return loading || isLoading || isError ? (
-    <Skeleton height={50} />
+    <SkeletonExpo />
   ) : (
     <View style={{ padding: 12.5 }}>
       {employees.length > 0 &&
