@@ -34,8 +34,14 @@ const LiveCmpTimeDiffrenceClock = ({ compalint_date }) => {
   );
 
   return (
-    <View className="flex">
-      <View className="flex flex-row items-center">
+    <View style={{ flex: 1, flexDirection: "row" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Text
           style={{
             fontFamily: "Roboto_500Medium",
@@ -53,7 +59,7 @@ const LiveCmpTimeDiffrenceClock = ({ compalint_date }) => {
           style={{
             fontFamily: "Roboto_500Medium",
             color: theme.colors.logoCol1,
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: "700",
           }}
         />

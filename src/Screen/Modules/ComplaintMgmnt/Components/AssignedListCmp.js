@@ -1,31 +1,14 @@
 //import liraries
-import React, {
-  memo,
-  useState,
-  lazy,
-  Suspense,
-  useCallback,
-  useMemo,
-} from "react";
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
-import { bgColor, colorTheme, fontColor } from "../../../../Constant/Colors";
-import { styles } from "../Style/Style";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getDayDiffrenceIncludeTheTime,
-  getTimeDiffrenceForLiveClock,
-} from "../func/UtilityFun";
+import { memo, useState, useCallback, useMemo } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 import LiveCmpTimeDiffrenceClock from "./Modals/LiveCmpTimeDiffrenceClock";
-import RectifyTicketModal from "./Modals/RectifyTicketModal";
-import { getActualTicketAssingedEmp } from "../../../../Redux/ReduxSlice/ticketMagmntSlice";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
 import { format } from "date-fns";
 import Feather from "react-native-vector-icons/Feather";
 import TicketRectifyModal from "./Version1/TicketRectifyModal";
 import AssistRequestedModal from "./Version1/AssistRequestedModal";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import {
   getLogiEmployeeID,
   getLogiEmpDEPT,
@@ -70,8 +53,6 @@ const AssignedListCmp = ({ data }) => {
     return accepted > 0 || rejected > 0 || pending > 0 ? true : false;
   }, [accepted, rejected, pending]);
 
-  console.log(assisted);
-
   const year = format(new Date(compalint_date), "yyyy");
 
   // location name mapping
@@ -102,32 +83,11 @@ const AssignedListCmp = ({ data }) => {
     openModelState(!openState);
   }, []);
 
-  //   const dispatch = useDispatch();
-
-  //   //LIVE CLOCK FUNCTIONS
-  //   const newDates = getTimeDiffrenceForLiveClock(compalint_date);
-  //   const dayDiffrence = getDayDiffrenceIncludeTheTime(compalint_date);
-
-  //   const cmpNewDate = useMemo(() => newDates, [newDates]);
-  //   const newDayDiffrence = useMemo(() => dayDiffrence, [dayDiffrence]);
-
-  //   const onRectifyModal = useCallback(async () => {
-  //     // dispatch(getTheActualEmployee(complaint_slno))
-  //     dispatch(getActualTicketAssingedEmp(complaint_slno));
-  //     openModelState(!openState);
-  //   }, [complaint_slno]);
-
   const [modalVisible, setModalVisible] = useState(false);
   const [assistModalVisible, setAssistModalVisible] = useState(false);
 
   return (
     <View>
-      {/* <RectifyTicketModal
-        openState={openState}
-        openModelState={handleModal}
-        data={assignTickData}
-      /> */}
-
       <TicketRectifyModal
         openState={modalVisible}
         setModalVisible={setModalVisible}

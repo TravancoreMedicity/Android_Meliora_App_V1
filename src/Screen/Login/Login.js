@@ -10,6 +10,7 @@ import {
   StatusBar,
   Dimensions,
   useColorScheme,
+  Alert,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -26,6 +27,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { loggedInfomration } from "../../Redux/ReduxSlice/LoginSLice";
 import OverLayLoading from "../Modules/ComplaintMgmnt/Components/OverLayLoading";
+// import { Toast } from "toastify-react-native";
+// import * as FileSystem from "expo-file-system";
 
 const { height, width } = Dimensions.get("window");
 // create a component
@@ -41,6 +44,8 @@ const Login = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const [passError, setPassError] = useState("");
+
   const IternalServerErr = () => {
     return (
       <View>
@@ -52,14 +57,33 @@ const Login = () => {
     );
   };
 
-  const onSubmitFun = async (useCode, passCode) => {
-    setLoading(true);
+  // const logErrorToFile = async (message) => {
+  //   try {
+  //     const logPath = FileSystem.documentDirectory + "login_error_log.txt";
+  //     const timestamp = new Date().toISOString();
+  //     const logMessage = `${timestamp} - ${message}\n`;
+
+  //     await FileSystem.writeAsStringAsync(logPath, logMessage, {
+  //       encoding: FileSystem.EncodingType.UTF8,
+  //       append: true,
+  //     });
+
+  //     console.log("Error logged to file");
+  //   } catch (err) {
+  //     console.log("Failed to write error log:", err.message);
+  //   }
+  // };
+
+  const onSubmitFun = async () => {
+    // setLoading(true);
     try {
       setErrorMesg(false);
       const loginCred = {
         userName: useCode,
         passWord: passCode,
       };
+
+      // Alert.alert(JSON.stringify(loginCred));
       // console.log(loginCred);
       const result = await axiosApi.post("/user/checkUserCres", loginCred);
 
@@ -71,8 +95,8 @@ const Login = () => {
         const token = JSON.stringify(userData?.token);
         const empdtl_slno = JSON.stringify(userData?.empdtl_slno);
 
-        AsyncStorage.setItem("@token:", token);
-        AsyncStorage.setItem("@auth_id:", empdtl_slno);
+        await AsyncStorage.setItem("@token:", token);
+        await AsyncStorage.setItem("@auth_id:", empdtl_slno);
         // AsyncStorage.setItem("@userInfo:", data);
         // // dispatch the login info
         dispatch(loggedInfomration(userData));
@@ -84,6 +108,7 @@ const Login = () => {
       }
     } catch (error) {
       console.log("error1111", error);
+      setPassError(JSON.stringify(error));
       setErrorMesg(true);
     }
   };
@@ -160,12 +185,7 @@ const Login = () => {
             />
 
             {/* Login BUtton */}
-            <CustomButtonL1
-              label="Login"
-              buttonFuntion={() => {
-                onSubmitFun(useCode, passCode);
-              }}
-            />
+            <CustomButtonL1 label="Login" buttonFuntion={() => onSubmitFun()} />
 
             <Text style={styles.contactText}>
               For User Code Contact HR Department !!
