@@ -34,7 +34,6 @@ const FlashListAssign = ({ navigation }) => {
     <KeyboardAvoidingView enabled behavior="height">
       <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
         <HearderSecondary navigation={navigation} name="Assigned Tickets" />
-
         <View
           style={{
             height: headerHeightWithStatusBar,

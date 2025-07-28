@@ -1,4 +1,12 @@
-import React, { memo, Suspense, useMemo, lazy } from "react";
+import React, {
+  memo,
+  Suspense,
+  useMemo,
+  lazy,
+  useRef,
+  useState,
+  useEffect,
+} from "react";
 import {
   View,
   SafeAreaView,
@@ -11,13 +19,27 @@ import HearderSecondary from "../../../Components/HearderSecondary";
 import { UsegetEmpHoldTicketList } from "../../../api/TicketsUtilities";
 import { getLogiEmployeeID } from "../../../Redux/ReduxSlice/LoginSLice";
 import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
+import FlashListOnholdListCmp from "./Components/FlashListOnholdListCmp";
 
 const FlashListCmp = lazy(() => import("./Components/FlashListCmp"));
-const OnHoldCmp = lazy(() => import("./Components/OnHoldCmp"));
+// const OnHoldCmp = lazy(() => import("./Components/OnHoldCmp"));
+
+// import OnHoldCmp from "./Components/OnHoldCmp";
 
 // create a component
 const FlashListOnHold = ({ navigation }) => {
   const theme = useTheme();
+
+  const [onHoldTickt, setOnHoldTickt] = useState([]);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    isMounted.current = true;
+
+    return () => {
+      isMounted.current = false; // Cleanup on unmount
+    };
+  }, []);
 
   const { height, width } = useWindowDimensions();
   //   Main view height
@@ -36,32 +58,44 @@ const FlashListOnHold = ({ navigation }) => {
   const { data, isError, isLoading, isSuccess } =
     UsegetEmpHoldTicketList(searchData);
 
-  const onHoldTickt = useMemo(() => {
-    if (!isError && !isLoading && isSuccess) {
-      return data?.data ?? [];
-    } else {
-      return [];
+  useEffect(() => {
+    if (!isLoading && isSuccess && !isError && isMounted.current) {
+      setOnHoldTickt(data?.data ?? []);
     }
   }, [data, isLoading, isSuccess, isError]);
 
+  // const onHoldTickt = useMemo(() => {
+  //   if (!isError && !isLoading && isSuccess) {
+  //     return data?.data ?? [];
+  //   } else {
+  //     return [];
+  //   }
+  // }, [data, isLoading, isSuccess, isError]);
+
   return (
-    <KeyboardAvoidingView enabled behavior="height">
-      <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
-        {/* Header  */}
-        <HearderSecondary navigation={navigation} name="Hold tickets" />
-        <View
-          style={{
-            height: headerHeightWithStatusBar,
-            width: width,
-            paddingHorizontal: 15,
-          }}
-        >
-          <Suspense fallback={<CustomActivityIndicator />}>
-            <FlashListCmp FlashRenderCmp={OnHoldCmp} Assigned={onHoldTickt} />
-          </Suspense>
-        </View>
-      </SafeAreaView>
-    </KeyboardAvoidingView>
+    // <KeyboardAvoidingView enabled behavior="height">
+    <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
+      {/* Header  */}
+      <HearderSecondary navigation={navigation} name="Hold tickets" />
+      <View
+        style={{
+          height: headerHeightWithStatusBar,
+          width: width,
+          paddingHorizontal: 15,
+        }}
+      >
+        <Suspense fallback={<CustomActivityIndicator />}>
+          <FlashListOnholdListCmp
+            onHooldTickets={isLoading ? [] : onHoldTickt ?? []}
+          />
+          {/* <FlashListCmp
+            // FlashRenderCmp={OnHoldCmp}
+            // onHooldTickets={isLoading ? [] : onHoldTickt ?? []}
+          /> */}
+        </Suspense>
+      </View>
+    </SafeAreaView>
+    // </KeyboardAvoidingView>
   );
 };
 

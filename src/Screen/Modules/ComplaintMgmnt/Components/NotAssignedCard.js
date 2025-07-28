@@ -1,30 +1,16 @@
 //import liraries
 import React, { memo, useState, lazy, useCallback, useMemo } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-// import { bgColor, colorTheme, fontColor } from "../../../../Constant/Colors";
-// import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-// import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Button, Dialog, Portal, useTheme } from "react-native-paper";
-// import { styles } from "../Style/Style";
 import _ from "underscore";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { axiosApi } from "../../../../config/Axiox";
-// import { useNavigation } from "@react-navigation/native";
-// import Modal from "react-native-modal";
-// import AlertModal from "./Modals/AlertModal";
-// import TicketAssignModal from "./Modals/TicketAssignModal";
-// import BaseModal from "../../../../Components/BaseModal";
-// import ComplainDeptTransfer from "./Modals/ComplainDeptTransfer";
 import { useQueryClient } from "@tanstack/react-query";
 import { Toast } from "toastify-react-native";
 import DetailedAssignedTicket from "./Version1/DetailedAssignedTicket";
-
-const CustmDIalog = lazy(() => import("./CustmDIalog"));
-const CmpTransfer = lazy(() => import("./CmpTransfer"));
-
 // create a component
 const NotAssignedCard = ({ data }) => {
   const theme = useTheme();
@@ -33,9 +19,6 @@ const NotAssignedCard = ({ data }) => {
 
   // STATE MANAGMENT
   const [visible, setVisible] = useState(false);
-  // const [modalVisible, setModalVisible] = useState(false);
-  // const [trVisible, setTrVisible] = useState(false);
-
   // DATA FETCHING AND MEMORIZATION
   const loggedEmpDetl = useSelector(
     (state) => state.loginFuntion.loginInfo.loginDetl,
@@ -78,54 +61,6 @@ const NotAssignedCard = ({ data }) => {
 
     return `${pendingAssinData.rm_room_name} ${location}`;
   }, [pendingAssinData]);
-
-  // console.log(locationName);
-
-  // const assignData = useMemo(() => data, [data]);
-
-  // const postData = useMemo(() => {
-  //   return {
-  //     complaint_slno: complaint_slno,
-  //     assigned_emp: emp_id,
-  //     assigned_date: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-  //     assign_rect_status: 0,
-  //     assigned_user: emp_id,
-  //     assign_status: 1,
-  //   };
-  // }, [complaint_slno, emp_id]);
-
-  //quick assign function
-  // const quickAssignMent = useCallback(async () => {
-  //   setModalVisible(true);
-  //   // const result = await axiosApi.post('/complaintassign', postData);
-  //   // const { message, success } = result.data;
-  //   // if (success === 1) {
-  //   //     setCount(complaint_slno)
-  //   //     setModalVisible(true)
-  //   // } else if (success === 0) {
-  //   //     Alert.alert('Caution !!', message, [
-  //   //         { text: 'OK' },
-  //   //     ]);
-  //   // } else {
-  //   //     Alert.alert('Caution !!', message, [
-  //   //         { text: 'OK' },
-  //   //     ]);
-  //   // }
-  // }, []);
-
-  // const quickAsign = useCallback(() => quickAssignMent, [quickAssignMent]);
-
-  // detailed assignment
-  // const assign = useCallback(() => {
-  //   setVisible(true);
-  // }, [assignData]);
-
-  //complaint deparemnt transfer
-  // const transferFun = useCallback(() => {
-  //   // navigation.navigate('AssignCompDetl')
-  //   // setModalVisible(true)
-  //   setTrVisible(true);
-  // });
 
   // *************New Code ******************
 

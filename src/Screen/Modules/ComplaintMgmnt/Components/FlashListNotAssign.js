@@ -4,13 +4,10 @@ import { RefreshControl, View, Text } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import NotAssignedCard from "./NotAssignedCard";
 import NoNewTicketCmp from "./NoNewTicketCmp";
-import { useQueryClient } from "@tanstack/react-query";
 
 // create a component
 const FlashListNotAssign = ({ notAssigned }) => {
   const legth = Object.keys(notAssigned)?.length;
-
-  const queryClient = useQueryClient();
 
   return (
     <FlashList
@@ -18,7 +15,7 @@ const FlashListNotAssign = ({ notAssigned }) => {
       keyboardShouldPersistTaps="always"
       renderItem={({ item }) => <NotAssignedCard data={item} />}
       estimatedItemSize={legth || 5}
-      ListEmptyComponent={<NoNewTicketCmp legth={legth} />}
+      ListEmptyComponent={<NoNewTicketCmp />}
       showsVerticalScrollIndicator={false}
       keyExtractor={(Assigned) => Assigned.complaint_slno}
       contentContainerStyle={{ paddingBottom: 110 }}

@@ -29,8 +29,7 @@
         "backgroundColor": "#c9e265"
       },
       "package": "com.ajithajeesh.Meliora",
-      "googleServicesFile": "./google-services.json",
-      "usesCleartextTraffic": true
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png",

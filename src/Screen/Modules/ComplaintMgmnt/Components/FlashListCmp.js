@@ -7,13 +7,15 @@ import NoNewTicketCmp from "./NoNewTicketCmp";
 
 // create a component
 const FlashListCmp = ({ Assigned, FlashRenderCmp }) => {
+  const legth = Object.keys(Assigned)?.length;
   return (
     <FlashList
-      data={Assigned}
+      data={Assigned ?? []}
+      keyboardShouldPersistTaps="always"
       renderItem={({ item }) => <FlashRenderCmp data={item} />}
-      estimatedItemSize={100}
+      estimatedItemSize={legth || 5}
       showsVerticalScrollIndicator={false}
-      keyExtractor={(Assigned, index) => index}
+      keyExtractor={(Assigned) => Assigned.complaint_slno}
       ListEmptyComponent={<NoNewTicketCmp />}
       ItemSeparatorComponent={() => (
         <View style={{ height: 20, width: "100%" }} />
