@@ -1,7 +1,7 @@
 //import liraries
-import React, { memo } from "react";
+import React from "react";
 import { View, Text, useWindowDimensions } from "react-native";
-import { ActivityIndicator, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import CustomActivityIndicator from "../../../../Components/CustomActivityIndicator";
 
 // create a component
@@ -37,4 +37,4 @@ const NoNewTicketCmp = () => {
 };
 
 //make this component available to the app
-export default memo(NoNewTicketCmp);
+export default React.memo(NoNewTicketCmp);

@@ -21,11 +21,11 @@ import {
   Roboto_900Black,
   Roboto_900Black_Italic,
 } from "@expo-google-fonts/roboto";
-import { colorTheme } from "../Constant/Colors";
 import SettingStack from "./SettingStack";
 import HomeStack from "./HomeStack";
 import NewTickets from "../Screen/Modules/ComplaintMgmnt/NewTickets";
 import DownloadsFile from "../Screen/Modules/DownLoads/DownloadsFile";
+import ChatMain from "../Screen/Chat/ChatMain";
 import {
   PencilSquareIcon,
   CalendarDaysIcon,
@@ -103,7 +103,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="My Tasks"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <CalendarDaysIcon name="person" size={22} color={color} />
@@ -112,7 +112,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="My Projects"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <ClipboardDocumentListIcon size={22} color={color} />
@@ -121,7 +121,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="My Attendance Info"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <DeviceTabletIcon size={22} color={color} />
@@ -130,7 +130,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="Messages"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <ChatBubbleLeftEllipsisIcon size={22} color={color} />
@@ -139,28 +139,28 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="Notifications"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => <BellIcon size={22} color={color} />,
         }}
       />
       <Drawer.Screen
         name="Escalations"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => <BellAlertIcon size={22} color={color} />,
         }}
       />
       <Drawer.Screen
         name="News & Events"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => <NewspaperIcon size={22} color={color} />,
         }}
       />
       <Drawer.Screen
         name="Downloads"
-        component={DownloadsFile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <CloudArrowDownIcon size={22} color={color} />
@@ -169,7 +169,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="Profile"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <UserIcon name="person" size={22} color={color} />

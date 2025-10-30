@@ -53,6 +53,7 @@ const CenteredButton = ({ hangleOnPress, label }) => {
             }}
             onPress={hangleOnPress}
             activeOpacity={0.7}
+            accessibilityLabel="Learn more about this purple button"
           >
             <Feather name="thumbs-up" size={22} color="white" />
           </TouchableOpacity>

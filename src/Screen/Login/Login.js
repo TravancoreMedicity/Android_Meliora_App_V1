@@ -10,7 +10,6 @@ import {
   StatusBar,
   Dimensions,
   useColorScheme,
-  Alert,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -22,13 +21,11 @@ import CustomTextInputWithLabel from "../../Components/CustomTextInputWithLabel"
 import { axiosApi } from "../../config/Axiox";
 import { useDispatch } from "react-redux";
 
-import CustomModal from "../../Components/CustomModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { loggedInfomration } from "../../Redux/ReduxSlice/LoginSLice";
 import OverLayLoading from "../Modules/ComplaintMgmnt/Components/OverLayLoading";
-// import { Toast } from "toastify-react-native";
-// import * as FileSystem from "expo-file-system";
+import { ShowToastMessage } from "../../Components/V1_Cmp/Toaster/ToasterMessages";
 
 const { height, width } = Dimensions.get("window");
 // create a component
@@ -36,15 +33,11 @@ const Login = () => {
   const dispatch = useDispatch();
   const colorScheme = useColorScheme();
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [useCode, setUserCode] = useState("");
   const [passCode, setPassCode] = useState("");
   const [errorMesg, setErrorMesg] = useState(false);
 
   const [loading, setLoading] = useState(false);
-
-  const [passError, setPassError] = useState("");
 
   const IternalServerErr = () => {
     return (
@@ -57,26 +50,10 @@ const Login = () => {
     );
   };
 
-  // const logErrorToFile = async (message) => {
-  //   try {
-  //     const logPath = FileSystem.documentDirectory + "login_error_log.txt";
-  //     const timestamp = new Date().toISOString();
-  //     const logMessage = `${timestamp} - ${message}\n`;
-
-  //     await FileSystem.writeAsStringAsync(logPath, logMessage, {
-  //       encoding: FileSystem.EncodingType.UTF8,
-  //       append: true,
-  //     });
-
-  //     console.log("Error logged to file");
-  //   } catch (err) {
-  //     console.log("Failed to write error log:", err.message);
-  //   }
-  // };
-
   const onSubmitFun = async () => {
     // setLoading(true);
     try {
+      setLoading(true);
       setErrorMesg(false);
       const loginCred = {
         userName: useCode,
@@ -102,14 +79,21 @@ const Login = () => {
         dispatch(loggedInfomration(userData));
         setLoading(false);
       } else {
-        setModalMessage("Invalid user code or passcode. Please try again.");
-        setModalVisible(true);
+        ShowToastMessage(
+          "warnToast",
+          "Warn",
+          message || "Invalid user code or passcode. Please try again."
+        );
         setLoading(false);
       }
     } catch (error) {
-      console.log("error1111", error);
       setPassError(JSON.stringify(error));
-      setErrorMesg(true);
+      ShowToastMessage(
+        "warnToast",
+        "Warn",
+        error.message || "Invalid user code or passcode. Please try again."
+      );
+      setLoading(false);
     }
   };
 
@@ -129,11 +113,6 @@ const Login = () => {
           justifyContent: "space-evenly",
         }}
       >
-        <CustomModal
-          setModalVisible={setModalVisible}
-          modalVisible={modalVisible}
-          modalMessage={modalMessage}
-        />
         <View
           style={{
             flex: 1,

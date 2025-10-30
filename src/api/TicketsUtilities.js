@@ -191,10 +191,13 @@ const getAssitRequestList = async (emId) => {
 export const UsegetAssitRequestList = (emId) => {
   const { data, isError, isLoading, isSuccess, refetch } = useQuery({
     queryKey: ["assitedRequestList", emId],
-    queryFn: () => getAssitRequestList(emId),
-    // refetchOnMount: false, // refetch data on mount cmp -> false
-    // staleTime: 1000 * 60 * 5, // 10 minutes  -> after every 10 minits its refetch when cmp on mount
-    // enabled: false, // disable the query running  when cmp on mount
+    queryFn: async () => {
+      if (!emId) throw new Error("emId is required");
+      return await getAssitRequestList(emId);
+    },
+    enabled: !!emId, // Only run query if emId is truthy
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
+    refetchOnMount: false, // Prevent refetch on mount
   });
   return { data, isLoading, isError, isSuccess, refetch };
 };
@@ -398,4 +401,72 @@ export const UsegetDeptWiseVerifiedCount = (deptID) => {
   });
   // console.log(data);
   return { data, isLoading, isError, isSuccess, refetch };
+};
+
+const getDepartmentSectionList = async () => {
+  try {
+    const response = await axiosApi.get(`/deptsecmaster/status`);
+    return response.data?.data;
+  } catch (error) {
+    console.error("Error fetching department sections:", error);
+    throw error; // Let React Query handle the error
+  }
+};
+
+// Custom hook for fetching department sections
+export const useGetDepartmentSection = () => {
+  const { data, isLoading, isError, error, isSuccess, refetch } = useQuery({
+    queryKey: ["departmentSectionList"],
+    queryFn: () => getDepartmentSectionList(),
+    // enabled: !!emId || emId === undefined, // Run query if emId is provided or undefined
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
+    cacheTime: 1000 * 60 * 10, // 10 minutes cache retention
+    refetchOnMount: false,
+    refetchOnWindowFocus: false, // Prevent refetch on window focus
+    retry: 2, // Retry failed requests twice
+  });
+
+  return {
+    data: data || [], // Default to empty array to avoid undefined checks
+    isLoading,
+    isError,
+    error, // Return error for custom handling
+    isSuccess,
+    refetch,
+  };
+};
+
+const getDepartmentLocationList = async (sectID) => {
+  try {
+    const response = await axiosApi.get(
+      `/complaintreg/getRoomsNameNdTypeList/${sectID}`
+    );
+    return response.data?.data;
+  } catch (error) {
+    console.error("Error fetching department location:", error);
+    throw error; // Let React Query handle the error
+  }
+};
+
+// Custom hook for fetching department location
+export const useGetDepartmentLocation = (sectID) => {
+  const { data, isLoading, isError, error, isSuccess, refetch } = useQuery({
+    queryKey: ["departmentSectionList", sectID],
+    queryFn: () => getDepartmentLocationList(sectID),
+    enabled: !!sectID, // Run query if emId is provided or undefined
+    staleTime: 1000 * 60 * 5, // 5 minutes cache
+    cacheTime: 1000 * 60 * 10, // 10 minutes cache retention
+    refetchOnMount: false,
+    refetchOnWindowFocus: false, // Prevent refetch on window focus
+    retry: 2, // Retry failed requests twice
+  });
+
+  return {
+    data: data || [], // Default to empty array to avoid undefined checks
+    isLoading,
+    isError,
+    error, // Return error for custom handling
+    isSuccess,
+    refetch,
+  };
 };

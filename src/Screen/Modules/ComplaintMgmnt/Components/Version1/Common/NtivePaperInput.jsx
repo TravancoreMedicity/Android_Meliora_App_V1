@@ -3,7 +3,6 @@ import React, { memo } from "react";
 import { TextInput } from "react-native-paper";
 
 const NtivePaperInput = ({ handleRemarkChange, label, value, lines }) => {
-  console.log(lines);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <TextInput

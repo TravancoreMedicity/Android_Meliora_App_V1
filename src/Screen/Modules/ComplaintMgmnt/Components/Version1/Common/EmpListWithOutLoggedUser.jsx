@@ -51,7 +51,7 @@ const EmpListWithOutLoggedUser = ({
   }, [setSelectedEmpNos]);
 
   return loading || isLoading || isError ? (
-    <SkeletonExpo />
+    <SkeletonExpo height={110} />
   ) : (
     <View style={{ padding: 12.5 }}>
       {employees.length > 0 &&

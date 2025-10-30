@@ -47,7 +47,7 @@ const CheckBoxEmployeeSelection = ({
   }, [setSelectedEmpNos]);
 
   return loading || isLoading || isError ? (
-    <SkeletonExpo />
+    <SkeletonExpo height={100} />
   ) : (
     <View style={{ padding: 12.5 }}>
       {employees.length > 0 &&

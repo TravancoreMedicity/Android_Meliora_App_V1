@@ -1,5 +1,5 @@
 //import liraries
-import React, { memo } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -104,4 +104,4 @@ const HearderSecondary = ({ navigation, name }) => {
 // define your styles
 
 //make this component available to the app
-export default memo(HearderSecondary);
+export default React.memo(HearderSecondary);

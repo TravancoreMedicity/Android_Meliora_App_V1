@@ -52,7 +52,6 @@ const ComplaintRegister = ({ navigation }) => {
   const { emp_id, emp_dept } = loggedDetl;
 
   const supervisor = useSelector(getSuperVisor);
-  console.log(supervisor, "supervisor");
   // const { dismiss, dismissAll } = useBottomSheetModal();
   //not asssigned list from database
   // useEffect(() => {

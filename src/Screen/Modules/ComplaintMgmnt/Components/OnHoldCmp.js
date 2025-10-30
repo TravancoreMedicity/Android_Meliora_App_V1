@@ -1,23 +1,15 @@
 //import liraries
-import React, {
-  memo,
-  useState,
-  lazy,
-  Suspense,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { memo, useState, lazy, useCallback, useMemo } from "react";
 import { View, Text } from "react-native";
 import { useTheme } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { format } from "date-fns";
-// import LiveCmpTimeDiffrenceClock from "./Modals/LiveCmpTimeDiffrenceClock";
-// import CenteredButton from "./Version1/Common/CenteredButton";
-// import CustomActivityIndicator from "../../../../Components/CustomActivityIndicator";
+import LiveCmpTimeDiffrenceClock from "./Modals/LiveCmpTimeDiffrenceClock";
+import CenteredButton from "./Version1/Common/CenteredButton";
 
-// const HoldTicketRectifyModal = lazy(() =>
-//   import("./Version1/HoldTicketRectifyModal")
-// );
+const HoldTicketRectifyModal = lazy(() =>
+  import("./Version1/HoldTicketRectifyModal")
+);
 
 // create a component
 const OnHoldCmp = ({ data }) => {
@@ -61,13 +53,6 @@ const OnHoldCmp = ({ data }) => {
   }, [compDetlData]);
 
   const [visible, setVisible] = useState(false);
-
-  // useEffect(() => {
-  //     return () => {
-  //         dispatch(getTheActualEmployee(0))
-  //     }
-  // }, [getTheActualEmployee, dispatch])
-
   const onRectifyModal = useCallback(async () => {
     // dispatch(getTheActualEmployee(complaint_slno))
     // dispatch(getActualTicketAssingedEmp(complaint_slno));
@@ -76,11 +61,11 @@ const OnHoldCmp = ({ data }) => {
 
   return (
     <View>
-      {/* <HoldTicketRectifyModal
+      <HoldTicketRectifyModal
         setModalVisible={setVisible}
         openState={visible}
         data={compDetlData}
-      /> */}
+      />
       <View
         style={{
           minHeight: 150,
@@ -96,17 +81,6 @@ const OnHoldCmp = ({ data }) => {
               : theme.colors.cardBgColor,
         }}
       >
-        {/* <TicketRectifyModal
-        setModalVisible={setVisible}
-        openState={visible}
-        data={compDetlData}
-      /> */}
-
-        {/* <OnholdTicketRectify
-        openModelState={setVisible}
-        openState={visible}
-        data={complaint_slno}
-      /> */}
         <View
           style={{
             marginBottom: 3,
@@ -239,9 +213,9 @@ const OnHoldCmp = ({ data }) => {
         </View>
 
         {/* live clock */}
-        {/* <View style={{ alignItems: "flex-end" }}>
+        <View style={{ alignItems: "flex-end" }}>
           <LiveCmpTimeDiffrenceClock compalint_date={compalint_date} />
-        </View> */}
+        </View>
 
         {/* Middle Components Start */}
         <View
@@ -455,10 +429,10 @@ const OnHoldCmp = ({ data }) => {
         {/* Middle Components End */}
 
         <View className="pb-1 pt-1">
-          {/* <CenteredButton
+          <CenteredButton
             hangleOnPress={onRectifyModal}
             label={"Rectify Hold Tickets"}
-          /> */}
+          />
 
           {/* <Pressable
           onPress={onRectifyModal}

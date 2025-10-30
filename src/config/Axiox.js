@@ -39,8 +39,13 @@ axiosApi.interceptors.response.use(
         const userId = await AsyncStorage.getItem("@auth_id");
         const refreshed = await axiosApi.get(`/user/getRefershToken/${userId}`);
 
+        console.log(refreshed);
+        console.log(userId);
+
         // Optionally store new token
         if (refreshed.data?.token) {
+          console.log(refreshed.data.token);
+
           await AsyncStorage.setItem(
             "@token:",
             JSON.stringify(refreshed.data.token)
@@ -52,10 +57,10 @@ axiosApi.interceptors.response.use(
         Alert.alert("Session Expired", "Please login again");
         await AsyncStorage.clear();
         // If you're using React Navigation:
-        // navigationRef.current?.reset({ index: 0, routes: [{ name: 'Login' }] });
-        // if (navigationRef.isReady()) {
-        //   navigationRef.reset({ index: 0, routes: [{ name: "Login" }] });
-        // }
+        navigationRef.current?.reset({ index: 0, routes: [{ name: "Login" }] });
+        if (navigationRef.isReady()) {
+          navigationRef.reset({ index: 0, routes: [{ name: "Login" }] });
+        }
       }
     }
 
@@ -63,9 +68,9 @@ axiosApi.interceptors.response.use(
     if (error.response?.status === 403) {
       Alert.alert("Access Denied", "You don’t have permission to access this.");
       await AsyncStorage.clear();
-      // if (navigationRef.isReady()) {
-      //   navigationRef.reset({ index: 0, routes: [{ name: "Login" }] });
-      // }
+      if (navigationRef.isReady()) {
+        navigationRef.reset({ index: 0, routes: [{ name: "Login" }] });
+      }
     }
 
     return Promise.reject(error);

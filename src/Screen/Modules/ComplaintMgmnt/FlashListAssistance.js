@@ -1,21 +1,15 @@
 //import liraries
-import React, { lazy, memo, Suspense, useMemo, useState } from "react";
+import React, { lazy, Suspense, useMemo, useRef, useEffect } from "react";
 import {
   View,
-  Text,
-  ScrollView,
   KeyboardAvoidingView,
   useWindowDimensions,
+  Text,
 } from "react-native";
-import { ActivityIndicator, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { useSelector } from "react-redux";
 import _ from "underscore";
 import HearderSecondary from "../../../Components/HearderSecondary";
-import { bgColor, colorTheme } from "../../../Constant/Colors";
-import { assistListUserWise } from "../../../Redux/ReduxSlice/ticketMagmntSlice";
-import { windowHeight, windowWidth } from "../../../utils/Dimentions";
-import { styles } from "./Style/Style";
-import OverLayLoading from "./Components/OverLayLoading";
 import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { UsegetAssitRequestList } from "../../../api/TicketsUtilities";
@@ -28,6 +22,7 @@ const AssistanceCmp = lazy(() => import("./Components/AssistanceCmp"));
 const FlashListAssistance = ({ navigation }) => {
   const theme = useTheme();
   const { height, width } = useWindowDimensions();
+  const isMounted = useRef(false);
   //   Main view height
   const headerHeight = height > 790 ? 100 : 75;
   const headerHeightWithStatusBar = height - headerHeight;
@@ -38,12 +33,18 @@ const FlashListAssistance = ({ navigation }) => {
   const { data, isError, isLoading, isSuccess } = UsegetAssitRequestList(emId);
 
   const assitedList = useMemo(() => {
-    if (!isError && !isLoading && isSuccess) {
+    if (isMounted.current && !isError && !isLoading && isSuccess && data) {
       return data?.data ?? [];
-    } else {
-      return [];
     }
+    return [];
   }, [data, isLoading, isSuccess, isError]);
+
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   return (
     <KeyboardAvoidingView enabled behavior="height">
@@ -71,4 +72,4 @@ const FlashListAssistance = ({ navigation }) => {
 };
 
 //make this component available to the app
-export default memo(FlashListAssistance);
+export default React.memo(FlashListAssistance);

@@ -1,14 +1,7 @@
 //import liraries
 import React, { memo } from "react";
-import { View, StyleSheet, Modal, Pressable } from "react-native";
-import { bgColor, buttonColor, fontColor } from "../Constant/Colors";
-import {
-  Button,
-  Dialog,
-  Portal,
-  PaperProvider,
-  Text,
-} from "react-native-paper";
+import { View } from "react-native";
+import { Button, Dialog, Portal, Text } from "react-native-paper";
 
 // create a component
 const CustomModal = ({ setModalVisible, modalVisible, modalMessage }) => {

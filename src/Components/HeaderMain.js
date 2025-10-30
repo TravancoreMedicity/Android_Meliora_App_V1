@@ -30,7 +30,7 @@ const HeaderMain = ({ navigation, name }) => {
   const logOut = async () => {
     //CLEAR THE LOGIN INFORMATION
     Toast.show({
-      type: "info",
+      type: "infoToast",
       text1: "Logout",
       text2: "Logout Successfully !",
       position: "center",

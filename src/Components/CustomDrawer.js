@@ -42,7 +42,7 @@ const CustomDrawer = (props) => {
 
   const logOut = async () => {
     Toast.show({
-      type: "info",
+      type: "infoToast",
       text1: "Logout",
       text2: "Logout Successfully !",
       position: "center",

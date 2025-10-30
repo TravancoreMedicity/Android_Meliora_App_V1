@@ -12,6 +12,7 @@ import ChatStack from "./ChatStack";
 import Feather from "react-native-vector-icons/Feather";
 import { useTheme } from "react-native-paper";
 import { Platform, useWindowDimensions } from "react-native";
+import ChatMain from "../Screen/Chat/ChatMain";
 
 const Tab = createBottomTabNavigator();
 
@@ -49,7 +50,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="DashBoard"
-        component={Profile}
+        component={ChatMain}
         // component={DashBoard}
         options={{
           // tabBarBadge: 9,

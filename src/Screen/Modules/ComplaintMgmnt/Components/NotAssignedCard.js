@@ -88,7 +88,7 @@ const NotAssignedCard = ({ data }) => {
     const { success, message } = response.data;
     if (success === 1) {
       Toast.show({
-        type: "success",
+        type: "successToast",
         text1: "Ticket Assigned",
         text2: message,
         onHide: () => {
@@ -112,7 +112,7 @@ const NotAssignedCard = ({ data }) => {
 
     if (success === 7) {
       Toast.show({
-        type: "warning",
+        type: "warnToast",
         text1: "Ticket Already Assigned",
         text2: message,
         onHide: () => {
@@ -135,7 +135,7 @@ const NotAssignedCard = ({ data }) => {
 
     if (success === 2) {
       Toast.show({
-        type: "error",
+        type: "errorToast",
         text1: "Caution !!",
         text2: message,
         onHide: () => {

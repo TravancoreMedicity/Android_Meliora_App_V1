@@ -88,7 +88,7 @@ const SuperVerifyedComp = ({ navigation }) => {
     try {
       if (remark === "") {
         Toast.show({
-          type: "info",
+          type: "infoToast",
           text1: "Warning",
           text2: "Please enter remark",
         });
@@ -115,23 +115,21 @@ const SuperVerifyedComp = ({ navigation }) => {
 
       if (success === 1) {
         Toast.show({
-          type: "success",
+          type: "successToast",
           text1: "Success",
           text2: message,
         });
         navigation.goBack();
       } else {
         Toast.show({
-          type: "error",
+          type: "errorToast",
           text1: "Error",
           text2: message,
         });
       }
-
-      console.log(data?.data);
     } catch (error) {
       Toast.show({
-        type: "error",
+        type: "errorToast",
         text1: "error",
         text2: error?.message || "Something went wrong!",
       });

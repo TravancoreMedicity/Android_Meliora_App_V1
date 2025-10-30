@@ -13,6 +13,7 @@ import AppNav from "./src/Navigation/AppNav";
 import { View, Text } from "react-native";
 import ToastManager from "toastify-react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { toastConfig } from "./src/Components/V1_Cmp/Toaster/ToasterMessages";
 
 const quieryClient = new QueryClient();
 
@@ -23,7 +24,15 @@ const App = () => {
       <SafeAreaProvider>
         <Provider store={store}>
           <GestureHandlerRootView style={{ flex: 1 }}>
-            <ToastManager />
+            <ToastManager
+              config={toastConfig}
+              position="top"
+              isRTL={false}
+              progressBarStyle={{ backgroundColor: "#fff", height: 3 }}
+              showProgressBar={true}
+              showCloseIcon={true}
+              animationStyle="fade"
+            />
             <AppNav />
           </GestureHandlerRootView>
         </Provider>

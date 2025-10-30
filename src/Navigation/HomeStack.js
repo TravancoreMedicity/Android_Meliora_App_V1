@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from "react";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomActivityIndicator from "../Components/CustomActivityIndicator";
+import ChatMain from "../Screen/Chat/ChatMain";
 
 const TabNavigator = lazy(() => import("./TabNavigator"));
 const ComplaintRegister = lazy(() =>
@@ -56,7 +57,7 @@ const HomeStack = () => {
       <Stack.Screen name="OnHold" component={FlashListOnHold} />
       <Stack.Screen name="Verify" component={FlashListVerify} />
       <Stack.Screen name="Completed" component={FlashListCompleted} />
-      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Profile" component={ChatMain} />
       <Stack.Screen name="notAssign" component={FalshlistNotAssign} />
       <Stack.Screen name="SuperVerify" component={SuperVerify} />
       <Stack.Screen

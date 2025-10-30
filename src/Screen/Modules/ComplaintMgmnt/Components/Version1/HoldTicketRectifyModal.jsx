@@ -1,17 +1,6 @@
-import {
-  View,
-  Text,
-  Modal,
-  TouchableOpacity,
-  useWindowDimensions,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { View, Text, useWindowDimensions, ScrollView } from "react-native";
 import React, { memo, useCallback, useMemo, useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import Feather from "react-native-vector-icons/Feather";
-import { TextInput, useTheme } from "react-native-paper";
+import { Portal, TextInput, useTheme, Modal } from "react-native-paper";
 import { format } from "date-fns";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LiveCmpTimeDiffrenceClock from "../Modals/LiveCmpTimeDiffrenceClock";
@@ -40,6 +29,8 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
   const [selectedEmpNos, setSelectedEmpNos] = useState([]);
   const [holdReason, setHoldReason] = useState(1);
 
+  const [loading, setLoading] = useState(false);
+
   const complaint_slno = useMemo(() => data.complaint_slno, [data]);
 
   const handleRemarkChange = (text) => {
@@ -54,7 +45,7 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
     // console.log("clicked");
     if (selectedEmpNos.length === 0) {
       Toast.show({
-        type: "info",
+        type: "infoToast",
         text1: "Warning",
         text2: "Please select employee",
         visibilityTime: 2000,
@@ -62,32 +53,31 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
       return;
     }
 
-    if (rectifyType === 2) {
-      if (remark === "") {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Remark is mandatory",
-          visibilityTime: 2000,
-        });
-        return;
-      }
-    }
+    // if (rectifyType === 2) {
+    //   if (remark === "") {
+    //     Toast.show({
+    //       type: "error",
+    //       text1: "Error",
+    //       text2: "Remark is mandatory",
+    //       visibilityTime: 2000,
+    //     });
+    //     return;
+    //   }
+    // }
 
-    if (rectifyType === 1) {
-      if (remark === "") {
-        Toast.show({
-          type: "error",
-          text1: "Error",
-          text2: "Remark is mandatory",
-          visibilityTime: 2000,
-        });
-        return;
-      }
+    if (remark === "") {
+      Toast.show({
+        type: "errorToast",
+        text1: "Error",
+        text2: "Remark is mandatory",
+        visibilityTime: 2000,
+      });
+      return;
     }
 
     // RECTIFY THE COMPLAINT TYPE AS RECTIFY
     if (rectifyType === 2) {
+      setLoading(true);
       // RECTIFY THE COMPLAINT
       const postData = selectedEmpNos?.map((val) => {
         return {
@@ -114,15 +104,14 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
 
       const { success, message } = await response.data;
 
-      console.log(success);
-
       if (success === 2) {
         Toast.show({
-          type: "success",
+          type: "successToast",
           text1: "Success",
           text2: message,
           visibilityTime: 2000,
           onHide: () => {
+            setLoading(false);
             queryClient.invalidateQueries({
               queryKey: ["empHoldTicketList"],
               //   exact: true,
@@ -136,8 +125,9 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
           },
         });
       } else {
+        setLoading(false);
         Toast.show({
-          type: "error",
+          type: "errorToast",
           text1: "Error",
           text2: message,
           visibilityTime: 2000,
@@ -150,6 +140,7 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
 
     //RECTIFY THE COMPLAINT TYPE AS HOLD
     if (rectifyType === 1) {
+      setLoading(true);
       // HOLD THE COMPLAINT
       const postDataOnHold = {
         compalint_status: 1,
@@ -171,11 +162,12 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
 
       if (success === 1) {
         Toast.show({
-          type: "success",
+          type: "successToast",
           text1: "Success",
           text2: message,
           visibilityTime: 2000,
           onHide: () => {
+            setLoading(false);
             queryClient.invalidateQueries({
               queryKey: ["empHoldTicketList"],
               //   exact: true,
@@ -190,8 +182,9 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
           },
         });
       } else {
+        setLoading(false);
         Toast.show({
-          type: "error",
+          type: "errorToast",
           text1: "Error",
           text2: message,
           visibilityTime: 2000,
@@ -206,28 +199,57 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
   }, [selectedEmpNos, holdReason, rectifyType, remark, emId, complaint_slno]);
 
   return (
-    <SafeAreaProvider>
-      <SafeAreaView
-        style={{ flex: 1 }}
-        mode="margin"
-        edges={["top", "bottom"]}
-        animated
+    // <SafeAreaView
+    //   style={{ flex: 1 }}
+    //   mode="margin"
+    //   edges={["top", "bottom"]}
+    //   animated
+    // >
+    <Portal>
+      <Modal
+        visible={openState}
+        onDismiss={handleModalClose}
+        contentContainerStyle={{
+          flexGrow: 1,
+          backgroundColor: theme.colors.statusBarCol ?? "#f0f0f0",
+        }}
+        dismissableBackButton={true}
+        dismissable={true}
+
+        // style={
+        //   {
+        //     flexGrow: 1,
+        //     borderRadius: 15,
+        //       height: height * 0.8,
+        //     paddingHorizontal: 10,
+        //     paddingTop: 20,
+        //       paddingBottom: 50,
+        //   }
+        // }
+        // dismissableBackButton={true}
       >
-        <Modal
-          animationType="slide"
-          transparent={false}
-          visible={openState}
-          onRequestClose={() => {
-            setModalVisible(false);
+        {/* <Modal
+        animationType="slide"
+        // transparent={true}
+        visible={openState}
+        onRequestClose={() => {
+          setModalVisible(false);
+        }}
+        // statusBarTranslucent
+        // presentationStyle="fullScreen"
+      > */}
+        {/* {loading && <CustomActivityIndicator />} */}
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "green",
           }}
-          statusBarTranslucent
-          presentationStyle="overFullScreen"
         >
           {/* outer layer */}
           <ScrollView
             style={{
               flex: 1,
-              backgroundColor: theme.colors.statusBarCol,
+              backgroundColor: theme.colors.statusBarCol ?? "#f0f0f0",
             }}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="always"
@@ -237,7 +259,7 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
             <View
               style={{
                 flex: 1,
-                backgroundColor: theme.colors.statusBarCol,
+                backgroundColor: theme.colors.statusBarCol ?? "#f0f0f0",
                 overflow: "hidden",
                 paddingTop: (height * 6) / 100,
               }}
@@ -645,9 +667,11 @@ const HoldTicketRectifyModal = ({ openState, setModalVisible, data }) => {
           </ScrollView>
           {/* Floating button component */}
           <FloatingButton hangleOnPress={handleModalClose} />
-        </Modal>
-      </SafeAreaView>
-    </SafeAreaProvider>
+        </View>
+      </Modal>
+    </Portal>
+    // {/* </Modal> */}
+    // {/* </SafeAreaView> */}
   );
 };
 

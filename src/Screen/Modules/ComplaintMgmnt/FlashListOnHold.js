@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView,
   useWindowDimensions,
 } from "react-native";
-import { ActivityIndicator, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { useSelector } from "react-redux";
 import HearderSecondary from "../../../Components/HearderSecondary";
 import { UsegetEmpHoldTicketList } from "../../../api/TicketsUtilities";
@@ -73,29 +73,25 @@ const FlashListOnHold = ({ navigation }) => {
   // }, [data, isLoading, isSuccess, isError]);
 
   return (
-    // <KeyboardAvoidingView enabled behavior="height">
-    <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
-      {/* Header  */}
-      <HearderSecondary navigation={navigation} name="Hold tickets" />
-      <View
-        style={{
-          height: headerHeightWithStatusBar,
-          width: width,
-          paddingHorizontal: 15,
-        }}
-      >
-        <Suspense fallback={<CustomActivityIndicator />}>
-          <FlashListOnholdListCmp
-            onHooldTickets={isLoading ? [] : onHoldTickt ?? []}
-          />
-          {/* <FlashListCmp
-            // FlashRenderCmp={OnHoldCmp}
-            // onHooldTickets={isLoading ? [] : onHoldTickt ?? []}
-          /> */}
-        </Suspense>
-      </View>
-    </SafeAreaView>
-    // </KeyboardAvoidingView>
+    <KeyboardAvoidingView enabled behavior="height">
+      <SafeAreaView style={{ backgroundColor: theme.colors.appBgInside }}>
+        {/* Header  */}
+        <HearderSecondary navigation={navigation} name="Hold tickets" />
+        <View
+          style={{
+            height: headerHeightWithStatusBar,
+            width: width,
+            paddingHorizontal: 15,
+          }}
+        >
+          <Suspense fallback={<CustomActivityIndicator />}>
+            <FlashListOnholdListCmp
+              onHooldTickets={isLoading ? [] : onHoldTickt ?? []}
+            />
+          </Suspense>
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 

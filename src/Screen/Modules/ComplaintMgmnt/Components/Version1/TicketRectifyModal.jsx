@@ -54,7 +54,7 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
     // console.log("clicked");
     if (selectedEmpNos.length === 0) {
       Toast.show({
-        type: "info",
+        type: "infoToast",
         text1: "Warning",
         text2: "Please select employee",
         visibilityTime: 2000,
@@ -65,7 +65,7 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
     if (rectifyType === 2) {
       if (remark === "") {
         Toast.show({
-          type: "error",
+          type: "errorToast",
           text1: "Error",
           text2: "Remark is mandatory",
           visibilityTime: 2000,
@@ -77,7 +77,7 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
     if (rectifyType === 1) {
       if (remark === "") {
         Toast.show({
-          type: "error",
+          type: "errorToast",
           text1: "Error",
           text2: "Remark is mandatory",
           visibilityTime: 2000,
@@ -114,11 +114,9 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
 
       const { success, message } = await response.data;
 
-      console.log(success);
-
       if (success === 2) {
         Toast.show({
-          type: "success",
+          type: "successToast",
           text1: "Success",
           text2: message,
           visibilityTime: 2000,
@@ -137,7 +135,7 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
         });
       } else {
         Toast.show({
-          type: "error",
+          type: "errorToast",
           text1: "Error",
           text2: message,
           visibilityTime: 2000,
@@ -171,7 +169,7 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
 
       if (success === 1) {
         Toast.show({
-          type: "success",
+          type: "successToast",
           text1: "Success",
           text2: message,
           visibilityTime: 2000,
@@ -191,7 +189,7 @@ const TicketRectifyModal = ({ openState, setModalVisible, data }) => {
         });
       } else {
         Toast.show({
-          type: "error",
+          type: "errorToast",
           text1: "Error",
           text2: message,
           visibilityTime: 2000,

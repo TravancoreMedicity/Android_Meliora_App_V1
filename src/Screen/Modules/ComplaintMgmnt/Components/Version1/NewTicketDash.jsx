@@ -83,7 +83,11 @@ const NewTicketDash = () => {
               textAlign: "center",
             }}
           >
-            {isLoading === true ? <SkeletonExpo /> : pendingTicketCount}
+            {isLoading === true ? (
+              <SkeletonExpo height={110} />
+            ) : (
+              pendingTicketCount
+            )}
           </Text>
           <Ionicons
             name="chevron-forward"

@@ -65,19 +65,19 @@ const DetailedAssignedTicket = ({ visible, data, handleDetaledHideDialog }) => {
     // e.preventDefault();
     if (selectedEmp.length === 0) {
       Toast.show({
-        type: "warn",
+        type: "warnToast",
         text1: "Warning",
         text2: "Please Select the Employee",
       });
     } else if (priorityVal.length === 0) {
       Toast.show({
-        type: "warn",
+        type: "warnToast",
         text1: "Warning",
         text2: "Please Select the Priority",
       });
     } else if (remark === null || remark === "" || remark === undefined) {
       Toast.show({
-        type: "warn",
+        type: "warnToast",
         text1: "Warning",
         text2: "Please Enter the Remark",
       });
@@ -109,7 +109,7 @@ const DetailedAssignedTicket = ({ visible, data, handleDetaledHideDialog }) => {
       if (success === 1) {
         handleDetaledHideDialog();
         Toast.show({
-          type: "success",
+          type: "successToast",
           text1: "Success",
           text2: message,
           visibilityTime: 2000,

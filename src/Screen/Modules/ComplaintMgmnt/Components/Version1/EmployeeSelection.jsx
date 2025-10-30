@@ -1,6 +1,5 @@
 import { View, Text } from "react-native";
 import React, { memo, useState } from "react";
-import { Picker } from "@react-native-picker/picker";
 import { useSelector } from "react-redux";
 import { getLogiEmpDEPT } from "../../../../../Redux/ReduxSlice/LoginSLice";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";

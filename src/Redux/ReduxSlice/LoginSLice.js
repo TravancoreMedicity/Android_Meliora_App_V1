@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSelector, createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loginInfo: {
@@ -39,14 +39,25 @@ export const loginFuntion = createSlice({
   },
 });
 
-export const selectLoginInform = (state) =>
-  state.loginFuntion.loginInfo.loginDetl;
-export const getLogiEmployeeID = (state) =>
-  state.loginFuntion.loginInfo.loginDetl?.emp_id;
-export const getLogiEmpDEPT = (state) =>
-  state.loginFuntion.loginInfo.loginDetl?.emp_dept;
-export const getSuperVisor = (state) =>
-  state.loginFuntion.loginInfo.loginDetl?.supervisor;
+export const selectLoginInform = createSelector(
+  [(state) => state.loginFuntion.loginInfo.loginDetl],
+  (loginDetl) => loginDetl
+);
+
+export const getLogiEmployeeID = createSelector(
+  [(state) => state.loginFuntion.loginInfo.loginDetl?.emp_id],
+  (emp_id) => emp_id
+);
+
+export const getLogiEmpDEPT = createSelector(
+  [(state) => state.loginFuntion.loginInfo.loginDetl?.emp_dept],
+  (emp_dept) => emp_dept
+);
+
+export const getSuperVisor = createSelector(
+  [(state) => state.loginFuntion.loginInfo.loginDetl?.supervisor],
+  (supervisor) => supervisor
+);
 
 export const {
   loggedInfomration,

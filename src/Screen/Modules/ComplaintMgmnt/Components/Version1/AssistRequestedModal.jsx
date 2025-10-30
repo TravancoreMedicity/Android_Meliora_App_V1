@@ -88,7 +88,7 @@ const AssistRequestedModal = ({
   const handledSubmitAssistRequest = useCallback(async () => {
     if (postAssistData?.length === 0) {
       Toast.show({
-        type: "warn",
+        type: "warnToast",
         text1: "Warning",
         text2: "Please select at least one employee",
       });
@@ -104,7 +104,7 @@ const AssistRequestedModal = ({
 
       if (success === 1) {
         Toast.show({
-          type: "success",
+          type: "successToast",
           text1: "Success",
           text2: message,
           onHide: () => {
@@ -415,7 +415,7 @@ const AssistRequestedModal = ({
                         Assistance Status
                       </Text>
                       {loading === true ? (
-                        <SkeletonExpo />
+                        <SkeletonExpo height={110} />
                       ) : (
                         <View style={{ marginVertical: 10, rowGap: 5 }}>
                           {searchDataList?.map((item, index) => {

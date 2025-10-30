@@ -16,7 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 const AssistanceCmp = ({ data }) => {
   const theme = useTheme();
   const queryClient = useQueryClient();
-
+  const isMounted = useRef(false);
   const compDetlData = useMemo(() => data, [data]);
 
   const emp_id = useSelector(getLogiEmployeeID);
@@ -64,8 +64,8 @@ const AssistanceCmp = ({ data }) => {
   //  ACCEPT THE TICKETS
 
   const acceptTheTicket = useCallback(async () => {
+    if (!isMounted.current) return;
     setVisible(false);
-
     const postData = {
       assigned_date: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
       assist_receive: 1,
@@ -73,53 +73,66 @@ const AssistanceCmp = ({ data }) => {
       assigned_emp: emp_id,
     };
 
-    const response = await axiosApi.patch(
-      "/complaintassign/assistant/recieved",
-      postData
-    );
+    try {
+      const response = await axiosApi.patch(
+        "/complaintassign/assistant/recieved",
+        postData
+      );
 
-    const { success } = await response.data;
-    if (success === 1) {
-      Toast.show({
-        type: "success",
-        text1: "Ticket Accepted",
-        text2: "Ticket Accepted Successfully !",
-        onHide: () => {
-          // PENDING assitance TICKET LIST
-          queryClient.invalidateQueries({
-            queryKey: ["assitedRequestList", emp_id],
-            refetchType: "active",
-          });
+      const { success } = await response.data;
+      if (success === 1) {
+        Toast.show({
+          type: "successToast",
+          text1: "Ticket Accepted",
+          text2: "Ticket Accepted Successfully !",
+          onHide: () => {
+            if (isMounted.current) {
+              // PENDING assitance TICKET LIST
+              queryClient.invalidateQueries({
+                queryKey: ["assitedRequestList", emp_id],
+                refetchType: "active",
+              });
 
-          queryClient.invalidateQueries({
-            queryKey: ["assitedRequestCount", emp_id],
-            refetchType: "active",
+              queryClient.invalidateQueries({
+                queryKey: ["assitedRequestCount", emp_id],
+                refetchType: "active",
+              });
+            }
+          },
+        });
+      } else {
+        if (isMounted.current) {
+          Toast.show({
+            type: "errorToast",
+            text1: "Error",
+            text2: "Something went wrong !",
+            visibilityTime: 2000,
+            onHide: () => setVisible(false),
           });
-        },
-      });
-    } else {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Something went wrong !",
-        visibilityTime: 2000,
-        onHide: () => {
-          // PENDING assitance TICKET LIST
-          setVisible(false);
-        },
-      });
+        }
+      }
+    } catch (error) {
+      if (isMounted.current) {
+        Toast.show({
+          type: "errorToast",
+          text1: "Error",
+          text2: "Something went wrong !",
+          visibilityTime: 2000,
+          onHide: () => setVisible(false),
+        });
+      }
     }
     // Alert.alert("Accept the Ticket");
   }, [complaint_slno, emp_id]);
 
   // REJECT THE TICKETS
 
+  // Reject the Ticket
   const rejectTheTicket = useCallback(async () => {
-    setVisible(true);
-
-    if (visible === true && remark.length === 0) {
+    if (!isMounted.current) return; // Prevent update if unmounted
+    if (remark.length === 0) {
       Toast.show({
-        type: "error",
+        type: "errorToast",
         text1: "Warning",
         text2: "Please Enter the Reason",
         visibilityTime: 2000,
@@ -130,68 +143,69 @@ const AssistanceCmp = ({ data }) => {
     const postData = {
       assist_flag: 2,
       assist_req_reject_reason: remark,
-      complaint_slno: complaint_slno,
+      complaint_slno,
       assigned_emp: emp_id,
     };
 
-    if (remark.length === 0) {
-      Toast.show({
-        type: "error",
-        text1: "Warning",
-        text2: "Please Enter the Reason",
-        visibilityTime: 2000,
-      });
-      return;
-    } else {
+    try {
       const response = await axiosApi.patch(
         "/complaintassign/assistant/reject",
         postData
       );
-
-      const { success } = await response.data;
+      const { success } = response.data;
       if (success === 1) {
         Toast.show({
-          type: "success",
+          type: "successToast",
           text1: "Ticket Rejected",
           text2: "Ticket Rejected Successfully !",
           visibilityTime: 2000,
           onHide: () => {
-            // PENDING assitance TICKET LIST
-            setRemark("");
-            setVisible(false);
-            queryClient.invalidateQueries({
-              queryKey: ["assitedRequestList", emp_id],
-              refetchType: "active",
-            });
-
-            queryClient.invalidateQueries({
-              queryKey: ["assitedRequestCount", emp_id],
-              refetchType: "active",
-            });
+            if (isMounted.current) {
+              setRemark("");
+              setVisible(false);
+              queryClient.invalidateQueries({
+                queryKey: ["assitedRequestList", emp_id],
+                refetchType: "active",
+              });
+              queryClient.invalidateQueries({
+                queryKey: ["assitedRequestCount", emp_id],
+                refetchType: "active",
+              });
+            }
           },
         });
       } else {
+        if (isMounted.current) {
+          Toast.show({
+            type: "errorToast",
+            text1: "Error",
+            text2: "Something went wrong !",
+            visibilityTime: 2000,
+            onHide: () => setVisible(false),
+          });
+        }
+      }
+    } catch (error) {
+      if (isMounted.current) {
         Toast.show({
-          type: "error",
+          type: "errorToast",
           text1: "Error",
-          text2: "Something went wrong !",
+          text2: "Network issue or server error!",
           visibilityTime: 2000,
-          onHide: () => {
-            // PENDING assitance TICKET LIST
-            setVisible(false);
-          },
+          onHide: () => setVisible(false),
         });
       }
     }
-
-    // Alert.alert("Reject the Ticket");
-  }, [emp_id, complaint_slno, remark, visible]);
+  }, [emp_id, complaint_slno, remark]);
 
   // UPDATION ON UNMOUNT
 
+  // Effect for cleanup
   useEffect(() => {
+    isMounted.current = true; // Set mounted on mount
     return () => {
-      setRemark("");
+      isMounted.current = false; // Reset on unmount
+      setRemark(""); // Cleanup state
       setVisible(false);
     };
   }, []);
@@ -201,7 +215,6 @@ const AssistanceCmp = ({ data }) => {
       style={{
         minHeight: 150,
         flexGrow: 1,
-        // marginBottom: 20,
         borderRadius: 20,
         overflow: "hidden",
         paddingVertical: 5,

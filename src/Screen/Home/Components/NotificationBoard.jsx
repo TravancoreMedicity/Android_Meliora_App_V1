@@ -48,7 +48,7 @@ const NotificationBoard = () => {
   // if (isError) return;
 
   return visible ? (
-    <SkeletonExpo />
+    <SkeletonExpo height={110} />
   ) : (
     <View
       style={{
