@@ -1,6 +1,8 @@
 //import liraries
 import React, {
+  lazy,
   memo,
+  Suspense,
   useCallback,
   useEffect,
   useState,
@@ -58,11 +60,19 @@ import MyTicketDash from "../Modules/ComplaintMgmnt/Components/MyTicketDash";
 import { getExpoPushToken } from "../../Redux/ReduxSlice/pushTokenSlice";
 import DeptStatistic from "../Dashboard/DeptStatistic";
 import DepartmentStat from "../Dashboard/DepartmentStat";
+import { useTheme } from "react-native-paper";
+import CustomActivityIndicator from "../../Components/CustomActivityIndicator";
+
+// lazy loading componets
+const PersonalinfoCard = lazy(() => import("./Components/PersonalinfoCard"));
+const ModuleMenus = lazy(() => import("./Components/ModuleMenus"));
+const NotificationBoard = lazy(() => import("./Components/NotificationBoard"));
 
 // create a component
 const HomeScreen = ({ navigation }) => {
-
   const dispatch = useDispatch();
+  const theme = useTheme();
+
   const [expoPushToken, setExpoPushToken] = useState();
   const [loding, setLoading] = useState(true);
 
@@ -88,20 +98,36 @@ const HomeScreen = ({ navigation }) => {
       }
 
       const pushTokenData = await Notifications.getExpoPushTokenAsync();
+
+      // console.log("pushTokenData", pushTokenData);
       // dispatch({ type: FETCH_PUSH_TOKEN, payload: pushTokenData })
 
-      dispatch(getExpoPushToken(pushTokenData))
+      dispatch(getExpoPushToken(pushTokenData));
       // setExpoPushToken(pushTokenData);
-      // console.log(pushTokenData);
 
       if (Platform.OS === "android") {
-        Notifications.setNotificationChannelAsync("default", {
-          name: "default",
+        Notifications.setNotificationChannelAsync("custom-sound-channel", {
+          name: "Custom Sound Channel",
           importance: Notifications.AndroidImportance.MAX,
           vibrationPattern: [0, 250, 250, 250],
           lightColor: "#FF231F7C",
-          sound: './assets/notification-sound.wav',
+          sound: "pop_sound.wav",
+          enableVibrate: true,
+          showBadge: true,
         });
+
+        Notifications.setNotificationChannelAsync(
+          "custom-sound-channel-warning",
+          {
+            name: "Custom Sound Channel two",
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: "#FF231F7C",
+            sound: "warning.wav",
+            enableVibrate: true,
+            showBadge: true,
+          }
+        );
       }
     };
 
@@ -129,13 +155,11 @@ const HomeScreen = ({ navigation }) => {
       subscription1.remove();
       subscription2.remove();
     };
-
-
   }, []);
 
   setTimeout(() => {
-    setLoading(false)
-  }, 2000)
+    setLoading(false);
+  }, 2000);
 
   let [fontsLoaded] = useFonts({
     Roboto_100Thin,
@@ -212,56 +236,83 @@ const HomeScreen = ({ navigation }) => {
   // };
 
   return (
-    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.appBgInside,
+      }}
+      onLayout={onLayoutRootView}
+    >
       {/* Header Component */}
       <HeaderMain navigation={navigation} name="Meliora" />
-      <View className="flex" >
-        <View>
-          <ScrollView
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}
-            fadingEdgeLength={10}
-            className="flex"
-          >
-            {
-              DATA.map((val) => {
-                return <AvatarMenu
-                  mainTitle={val.title}
-                  icon={val.icon}
-                  iconColor={colorTheme.iconColor}
-                  avatarColor={colorTheme.secondaryBgColor}
-                  key={val.id}
-                  navigation={navigation}
-                  routeName={val.routeName}
-                />
-              })
-            }
-          </ScrollView>
-        </View>
-
-        <ScrollView className="flex" >
-          <View className="flex p-2" >
-            {/* <MyTicketDash /> */}
-            {/* <DeptStatistic /> */}
-            <DepartmentStat />
+      <ScrollView
+        style={{
+          flex: 1,
+          // paddingHorizontal: 13,
+          paddingTop: 5,
+          // marginBottom: 200,
+        }}
+      >
+        <Suspense fallback={<CustomActivityIndicator />}>
+          {/* Profile information Start*/}
+          <View style={{ height: 140, paddingHorizontal: 13 }}>
+            <PersonalinfoCard />
           </View>
-        </ScrollView>
-      </View>
+          {/* Profile information End*/}
+
+          {/* Notification Section Start */}
+          <View
+            style={{
+              flexGrow: 1,
+              // backgroundColor: "red",
+            }}
+          >
+            <NotificationBoard />
+          </View>
+          {/* Notification Section End */}
+
+          {/* Module Selection information Start Here  */}
+          <View
+            style={{
+              flexGrow: 1,
+              margin: 10,
+              paddingHorizontal: 13,
+              flexDirection: "row",
+              flexWrap: "wrap",
+              justifyContent: "space-between",
+            }}
+          >
+            {DATA.map((val) => (
+              <ModuleMenus
+                icon={val.icon}
+                key={val.id}
+                name={val.title}
+                routeName={val.routeName}
+              />
+            ))}
+          </View>
+          {/* Module Selection information End Here  */}
+        </Suspense>
+        <View style={{ height: 100 }}></View>
+        {/* <ScrollView className="flex px-4"> */}
+        {/* <View className="flex"> */}
+        {/* <MyTicketDash /> */}
+        {/* <DeptStatistic /> */}
+        {/* <DepartmentStat /> */}
+        {/* </View> */}
+        {/* </ScrollView> */}
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 // define your styles
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: colorTheme.mainBgColor,
-    flex: 1
-  },
   textCardFont: {
-    fontFamily: 'Roboto_500Medium',
+    fontFamily: "Roboto_500Medium",
     fontSize: 15,
     margin: 5,
-    color: fontColor.inActiveFont
+    color: fontColor.inActiveFont,
   },
   menuContainer: {
     // flexDirection: 'row',
@@ -271,21 +322,21 @@ const styles = StyleSheet.create({
   textStyle: {
     fontFamily: "Roboto_500Medium",
     fontSize: 10,
-    fontWeight: '400',
-    color: bgColor.statusbar
+    fontWeight: "400",
+    color: bgColor.statusbar,
   },
   avatar: {
-    backgroundColor: bgColor.cardBg
+    backgroundColor: bgColor.cardBg,
   },
   loading: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
 //make this component available to the app

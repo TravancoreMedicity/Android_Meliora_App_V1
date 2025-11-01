@@ -2,27 +2,39 @@
   "expo": {
     "name": "Meliora",
     "slug": "Meliora",
-    "version": "2.0.0",
+    "version": "5.10.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "cover"
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/c950e698-575e-4c32-a62d-6ed415f3c5ee"
     },
     "assetBundlePatterns": [
-      "**/*"
+      "assets/*"
     ],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "newArchEnabled": true,
     "ios": {
       "buildNumber": "1.0.0",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ajithajeesh.Meliora",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "versionCode": 1,
+      "userInterfaceStyle": "automatic",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#c9e265"
@@ -31,14 +43,52 @@
       "googleServicesFile": "./google-services.json"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "notification": {
+      "icon": "./assets/Notificon2.png",
+      "color": "#D94B9B",
+      "androidMode": "default",
+      "androidCollapsedTitle": "Meliora"
     },
     "plugins": [
       [
         "expo-notifications",
         {
           "icon": "./assets/Notificon2.png",
-          "color": "#edf2eb"
+          "color": "#00AA00",
+          "sounds": [
+            "./assets/pop_sound.wav",
+            "./assets/warning.wav"
+          ],
+          "enableBackgroundRemoteNotifications": true,
+          "notificationChannels": [
+            {
+              "name": "custom-sound-channel",
+              "importance": "max",
+              "sound": "pop_sound.wav",
+              "vibrationPattern": [
+                0,
+                250,
+                250,
+                250
+              ],
+              "lightColor": "#FF231F7C"
+            },
+            {
+              "name": "custom-sound-channel-warning",
+              "importance": "max",
+              "sound": "warning.wav",
+              "vibrationPattern": [
+                0,
+                250,
+                250,
+                250
+              ],
+              "lightColor": "#FF231F7C"
+            }
+          ]
         }
       ],
       "expo-font"

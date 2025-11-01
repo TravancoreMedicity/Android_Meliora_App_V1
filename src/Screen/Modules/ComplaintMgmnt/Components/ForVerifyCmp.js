@@ -1,206 +1,276 @@
 //import liraries
-import React, { memo, useCallback, useMemo, useState, } from 'react';
-import { View, Text, Pressable } from 'react-native';
-import { bgColor, colorTheme, fontColor } from '../../../../Constant/Colors';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { styles } from '../Style/Style';
-import { useDispatch } from 'react-redux'
-import _ from 'underscore';
-import VerifyModal from './Modals/VerifyModal';
+import React, { memo, useMemo } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useTheme } from "react-native-paper";
+import { format } from "date-fns";
 
 // create a component
 const ForVerifyCmp = ({ data }) => {
-    const dispatch = useDispatch();
+  const theme = useTheme();
+  const compDetlData = useMemo(() => data, [data]);
 
-    const [openState, openModelState] = useState('')
-    const compDetlData = useMemo(() => data, [data])
-    const {
-        complaint_slno, //complaint slno
-        compalint_date, //complaint date
-        complaint_dept_name, //complaint register department
-        req_type_name, // request complaint type - complaint,new requirement , modification
-        complaint_type_name, // comolaint type name hardware ,software ,etc
-        sec_name, // complaint register user section name
-        location, // location name in detail
-        comp_reg_emp, //  register employee name-complaint
-        empdept, // registerd department 
-        hic_policy_name,
-        priority,
-        complaint_desc,
-        compalint_priority,
-        compalint_status,
-        assigned_date,
-        cm_rectify_time,
-        em_name,
-        dept_sec,
-        complaint_hicslno,
-        rectify_pending_hold_remarks
-    } = compDetlData;
+  const {
+    cm_rectify_time,
+    comp_reg_emp,
+    compalint_date,
+    complaint_desc,
+    complaint_slno,
+    sec_name,
+    assigned_employees,
+  } = compDetlData;
 
-    const onRectifyModal = useCallback(async () => {
-        openModelState(!openState)
-    }, [complaint_slno])
+  const year = format(new Date(compalint_date), "yyyy");
 
+  const locationName = useMemo(() => {
+    const location =
+      compDetlData.rm_roomtype_name ||
+      compDetlData.rm_insidebuildblock_name ||
+      compDetlData.rm_floor_name
+        ? `(${compDetlData.rm_roomtype_name || ""}${
+            compDetlData.rm_roomtype_name &&
+            compDetlData.rm_insidebuildblock_name
+              ? " - "
+              : ""
+          }${compDetlData.rm_insidebuildblock_name || ""}${
+            compDetlData.rm_insidebuildblock_name && compDetlData.rm_floor_name
+              ? " - "
+              : ""
+          }${compDetlData.rm_floor_name || ""})`
+        : compDetlData.cm_complaint_location || null;
 
-    return (
-        <View style={{ ...styles.FLCP_container, borderRadius: 10, borderWidth: 0.2, borderColor: colorTheme.switchTrack, marginHorizontal: 5, marginVertical: 4, padding: 8 }}>
-            <VerifyModal
-                openState={openState}
-                openModelState={openModelState}
-                data={complaint_slno}
-            />
-            {/* name and department section */}
-            <View style={{
-                flexDirection: 'row',
-                paddingVertical: 5
-            }} >
-                <View style={{
-                    flexDirection: 'row',
-                    alignContent: 'center',
-                    alignItems: 'center'
-                }} >
-                    <Text style={styles.FLCP_captionStyle} >{em_name}</Text>
-                    <Text style={{ color: bgColor.statusbar }}>@</Text>
-                    <Text style={{ ...styles.FLCP_captionStyle, fontStyle: 'italic' }} >{dept_sec}</Text>
-                </View>
-                <View className='flex grow' style={{
-                    flexDirection: 'row',
-                    alignContent: 'center',
-                    justifyContent: 'flex-end',
+    return `${compDetlData.rm_room_name} ${location}`;
+  }, [compDetlData]);
 
-                }} >
-                    {
-                        compalint_priority === 1 && <View className='flex justify-center px-2 rounded-md' style={{ borderWidth: 0.2, borderColor: 'red' }} >
-                            <Text style={{ fontFamily: 'Roboto_500Medium', fontSize: 12 }}
-                                className='antialiased text-red-600'>Priority ticket</Text>
-                        </View>
-                    }
+  return (
+    <View
+      style={{
+        // minHeight: 150,
+        flexGrow: 1,
+        flexDirection: "row",
+        // marginBottom: 20,
+        borderRadius: 20,
+        overflow: "hidden",
+        // paddingVertical: 5,
+        borderWidth: 3,
+        borderColor: "rgba(124,81,161,0.8)",
+      }}
+    >
+      <View
+        style={{
+          flex: 1,
+          padding: 5,
+          //   backgroundColor: "green",
+        }}
+      >
+        <View
+          style={{
+            marginBottom: 3,
+          }}
+        >
+          <View
+            style={{
+              height: 40,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 5,
+              }}
+            >
+              <Ionicons name="checkmark-done-sharp" size={30} color="green" />
+            </View>
+            <View
+              style={{
+                marginLeft: 2,
+                flex: 1,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: "Roboto_500Medium",
+                      fontWeight: "800",
+                      color: theme.colors.lightBlueFont,
+                    }}
+                  >
+                    #{complaint_slno}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: "Roboto_500Medium",
+                      fontWeight: "800",
+                      color: theme.colors.lightBlueFont,
+                    }}
+                  >
+                    /{year}
+                  </Text>
                 </View>
-            </View>
-            {/* register time and numeber section */}
-            <View>
-                <View style={{
-                    flexGrow: 1,
-                    flexDirection: 'row',
-                    borderColor: fontColor.inActiveFont,
-                    justifyContent: 'space-between'
-                }} >
-                    <View style={{
-                        flexGrow: 1,
-                        flexDirection: 'row',
-                        alignContent: 'center',
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                        // textTransform: 'capitalize'
-                    }} >
-                        {/* <Text style={styles.cardTitle} >Register Time :</Text> */}
-                        <Text style={styles.FLCP_cardTitle} >{compalint_date}</Text>
-                    </View>
-                    <View style={{
-                        flexGrow: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                        // paddingHorizontal: 5
-                    }} >
-                        {/* <Text style={styles.cardTitle} >complaint description :</Text> */}
-                        <Text style={styles.FLCP_cardTitle} >{`#${complaint_slno}/2023`}</Text>
-                    </View>
-                </View>
-            </View>
-            {/* request type and complaint type */}
-            <View>
-                <View style={{
-                    flexGrow: 1,
-                    flexDirection: 'row',
-                    borderColor: fontColor.inActiveFont,
-                    justifyContent: 'space-between'
-                }} >
-                    <View style={{
-                        flexGrow: 1,
-                        flexDirection: 'row',
-                        alignContent: 'center',
-                        alignItems: 'center',
-                        justifyContent: 'flex-start',
-                        // textTransform: 'capitalize'
-                    }} >
-                        <Text style={styles.FLCP_headStyle} >request Type :</Text>
-                        <Text style={styles.FLCP_cardTitle} >{req_type_name}</Text>
-                    </View>
-                    <View style={{
-                        flexGrow: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'flex-end',
-                        // paddingHorizontal: 5
-                    }} >
-                        {/* <Text style={styles.cardTitle} >complaint description :</Text> */}
-                        <Text style={styles.FLCP_cardTitle} >{complaint_type_name}</Text>
-                    </View>
-                </View>
-            </View>
-            <View style={{ marginTop: 5 }} >
-                <View>
-                    <Text style={styles.FLCP_headStyle} >complaint description :
-                        <Text style={styles.FLCP_cardTitle}> {` ${complaint_desc}`}</Text>
-                    </Text>
-                </View>
-            </View>
-            <View style={{
-                // flex: 1,
-                flexDirection: 'row'
-            }} >
-                <Text style={styles.FLCP_headStyle}>Location :</Text>
-                <Text style={styles.FLCP_cardTitle} >{location}</Text>
-            </View>
-            {
-                complaint_hicslno === 1 &&
-                <View style={{
-                    // flex: 1,
-                    flexDirection: 'row'
-                }} >
-                    <Text style={styles.FLCP_headStyle}>ICRA Recommentation :</Text>
-                    <Text style={styles.FLCP_cardTitle} >{hic_policy_name}</Text>
-                </View>
-            }
-            <View style={{
-                // flex: 1,
-                flexDirection: 'row'
-            }} >
-                <Text style={styles.FLCP_headStyle}>Assigned Date :</Text>
-                <Text style={styles.FLCP_cardTitle} >{assigned_date}</Text>
-            </View>
-            <View style={{
-                // flex: 1,
-                flexDirection: 'row'
-            }} >
-                <Text style={styles.FLCP_headStyle}>Rectified Time :</Text>
-                <Text style={{
-                    ...styles.FLCP_cardTitle,
-                    fontWeight: '700'
-                }} >{cm_rectify_time}</Text>
-            </View>
-            <View style={{
-                // flex: 1,
-                flexDirection: 'row'
-            }} >
-                <Text style={styles.FLCP_headStyle}>Remarks :</Text>
-                <Text style={{
-                    ...styles.FLCP_cardTitle,
-                    fontWeight: '700'
-                }} >{rectify_pending_hold_remarks}</Text>
-            </View>
-            <View className='py-1' >
-                <Pressable
-                    onPress={onRectifyModal}
-                    className='flex'
-                    style={{ borderWidth: 0.3, borderRadius: 10, marginHorizontal: 25, height: 30, justifyContent: 'center', backgroundColor: colorTheme.switchTrack }}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
                 >
-                    <Text className='text-center text-white'>Press to Verify / Not Verify</Text>
-                </Pressable>
+                  <Ionicons
+                    name="calendar-outline"
+                    color={theme.colors.logoCol1}
+                  />
+                  <Text
+                    style={{
+                      paddingLeft: 2,
+                      fontSize: 12,
+                      fontFamily: "Roboto_500Medium",
+                      fontWeight: "800",
+                      color: theme.colors.lightBlueFont,
+                      paddingRight: 5,
+                    }}
+                  >
+                    {compalint_date}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  // flexGrow: 1,
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 11,
+                    fontFamily: "Roboto_500Medium",
+                    fontWeight: "800",
+                    color: theme.colors.lightBlueFont,
+                  }}
+                  numberOfLines={2}
+                >
+                  {`${comp_reg_emp} - `} {sec_name}
+                </Text>
+              </View>
             </View>
-        </View>
+          </View>
 
-        // </View>
-    );
+          <View
+            style={{
+              flexGrow: 1,
+              paddingLeft: 15,
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
+            }}
+          >
+            <View>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Roboto_500Medium",
+                  fontWeight: "800",
+                  color: theme.colors.inactiveFont,
+                }}
+              >
+                Ticket Description :
+              </Text>
+            </View>
+            <View
+              style={{
+                flexGrow: 1,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Roboto_500Medium",
+                  fontWeight: "800",
+                  color: theme.colors.lightBlueFont,
+                }}
+                textBreakStrategy="highQuality"
+                numberOfLines={2}
+              >
+                {complaint_desc ?? "N/A"}
+              </Text>
+            </View>
+
+            <View style={{ flexDirection: "row" }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Roboto_500Medium",
+                  fontWeight: "800",
+                  paddingRight: 5,
+                  color: theme.colors.inactiveFont,
+                }}
+              >
+                Ticket rectify Date :
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Roboto_500Medium",
+                  fontWeight: "900",
+                  color: theme.colors.lightBlueFont,
+                }}
+              >
+                {cm_rectify_time}
+              </Text>
+            </View>
+
+            <View style={{ flexGrow: 1 }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Roboto_500Medium",
+                  fontWeight: "800",
+                  paddingRight: 5,
+                  color: theme.colors.inactiveFont,
+                }}
+              >
+                Rectified By :
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontFamily: "Roboto_500Medium",
+                  fontWeight: "900",
+                  color: theme.colors.lightBlueFont,
+                }}
+                textBreakStrategy="highQuality"
+                numberOfLines={2}
+                // lineBreakMode="middle"
+              >
+                {assigned_employees}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      {/* hide for temporary */}
+      {/* <View style={{ backgroundColor: "rgba(124,81,161,0.8)" }}>
+        <TouchableOpacity
+          onPress={() => {}}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            flexGrow: 1,
+          }}
+        >
+          <Ionicons name="chevron-forward-outline" size={50} color="white" />
+        </TouchableOpacity>
+      </View> */}
+    </View>
+  );
 };
 
 //make this component available to the app

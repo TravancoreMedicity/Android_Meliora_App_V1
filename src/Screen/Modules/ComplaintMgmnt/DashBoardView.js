@@ -1,83 +1,146 @@
 //import liraries
-import React, { memo, useState, lazy, useMemo, useEffect } from 'react';
-import { ScrollView } from 'react-native';
-import { useSelector } from 'react-redux'
-import _ from 'underscore';
-import { getNotAssignedCount, getTicketCount } from '../../../Redux/ReduxSlice/ticketMagmntSlice';
-import { styles } from './Style/Style';
-import { secondLevelCount } from '../../../Redux/ReduxSlice/ticketMagmentDeptSlice';
-import { getSuperVisor } from '../../../Redux/ReduxSlice/LoginSLice';
+import React, { memo, useState, lazy, useMemo, useEffect } from "react";
+import { View } from "react-native";
+import { useSelector } from "react-redux";
+import {
+  getLogiEmpDEPT,
+  getLogiEmployeeID,
+} from "../../../Redux/ReduxSlice/LoginSLice";
+import { useTheme } from "react-native-paper";
+import {
+  UsegetEmpAssignedTicket,
+  UsegetEmpRectifyTodayTicket,
+  UsegetEmpVerifiedTodayTicket,
+  UsegetgetEmpHoldTicket,
+  UseGetPendingAssistTicketCount,
+  UseGetPendingTicketsCount,
+  UsegetEmplWiseTicketVerifiedCount,
+  UsegetDeptWiseVerifiedCount,
+} from "../../../api/TicketsUtilities";
 
-const DashCountTile = lazy(() => import('./DashCountTile'));
+const DashCountTile = lazy(() => import("./DashCountTile"));
 
 // create a component
 const DashBoardView = ({ navigation }) => {
+  const theme = useTheme();
 
-    const superId = useSelector(getSuperVisor)
-    const [newTicket, setNewTicket] = useState(0);
-    const [secondLvl, setSecondLvl] = useState(0);
-    const [ticktCount, setTicktCount] = useState({
-        assigned: 0,
-        assit: 0,
-        onHold: 0,
-        forVerify: 0,
-        completed: 0,
-        pending: 0,
-        superPending: 0
-    })
+  const [tickData, setTickData] = useState([
+    { id: 1, route: "notAssign", title: "New Tickets", count: 56 },
+    { id: 2, route: "AssignList", title: "Assigned", count: 10 },
+    { id: 3, route: "Assistance", title: "Assist Request", count: 25 },
+    { id: 4, route: "OnHold", title: "On Hold", count: 456 },
+    { id: 5, route: "Verify", title: "Rectified", count: 5 },
+    { id: 6, route: "Completed", title: "Verified", count: 121 },
+  ]);
 
-    const tickectCount = useSelector(getTicketCount)
-    const notAssignedCount = useSelector(getNotAssignedCount)
-    const secondListCount = useSelector(secondLevelCount)
+  const empID = useSelector((state) => getLogiEmployeeID(state));
+  const deptID = useSelector((state) => getLogiEmpDEPT(state));
 
-    //FOR ASSIGN THE NOT ASSIGNED TICKET COUNT
-    useEffect(() => {
-        setNewTicket(notAssignedCount)
-        setSecondLvl(secondListCount)
-    }, [notAssignedCount, secondListCount])
-    //FOT ASSIGN THE ALL TICKET COUNT OTHER THAN NOT ASSIGN
-    const tiktCountFrmDb = useMemo(() => tickectCount, [tickectCount])
+  // GET THE ASSIT REQUEST COUNT
+  const { data: assistCount, isLoading: assistLoading } =
+    UseGetPendingAssistTicketCount(empID);
 
-    useEffect(() => {
-        tiktCountFrmDb?.map((val) => {
-            if (val.countype === "AC")
-                setTicktCount({ ...ticktCount, ...ticktCount.assigned = val.total })
-            if (val.countype === "AA")
-                setTicktCount({ ...ticktCount, ...ticktCount.assit = val.total })
-            if (val.countype === 'HC')
-                setTicktCount({ ...ticktCount, ...ticktCount.onHold = val.total })
-            if (val.countype === 'PC')
-                setTicktCount({ ...ticktCount, ...ticktCount.pending = val.total })
-            if (val.countype === 'RC')
-                setTicktCount({ ...ticktCount, ...ticktCount.forVerify = val.total })
-            if (val.countype === 'CC')
-                setTicktCount({ ...ticktCount, ...ticktCount.completed = val.total })
-            if (val.countype === 'SP')
-                setTicktCount({ ...ticktCount, ...ticktCount.superPending = val.total })
-        })
+  // GET THE PENDING TICKET COUNT
+  const { data: pendingCount, isLoading: pendingLoading } =
+    UseGetPendingTicketsCount(deptID);
 
-    }, [tiktCountFrmDb])
+  // ASSIGNED TICKET COUNT
+  const { data: assignedCount, isLoading: assignedLoading } =
+    UsegetEmpAssignedTicket(empID);
 
-    const { assigned, assit, completed, forVerify, onHold, pending, superPending } = ticktCount
+  // HOLD TICKET COUNT
+  const { data: holdCount, isLoading: holdLoading } =
+    UsegetgetEmpHoldTicket(empID);
 
-    return (
-        <ScrollView
-            horizontal={true}
-            fadingEdgeLength={10}
-            showsHorizontalScrollIndicator={false}
-            style={styles.dbvContainer}
-        >
-            <DashCountTile navigation={navigation} escalated={0} id={1} name='New Ticket' count={newTicket} />
-            <DashCountTile navigation={navigation} escalated={0} id={2} name='Assigned' count={assigned} />
-            <DashCountTile navigation={navigation} escalated={0} id={3} name='Assistance' count={assit} />
-            <DashCountTile navigation={navigation} escalated={0} id={4} name='OnHold' count={onHold} />
-            {/* <DashCountTile navigation={navigation} escalated={0} id={5} name='Pending' count={pending} /> */}
-            {
-                superId === 1 && <DashCountTile navigation={navigation} escalated={0} id={5} name='For Verify' count={secondLvl} />
-            }
-            <DashCountTile navigation={navigation} escalated={0} id={6} name='On Progress' count={pending} />
-        </ScrollView>
-    );
+  // TICKET RECTIFIED COUNT
+  const { data: rectifiedCount, isLoading: rectifiedLoading } =
+    UsegetEmpRectifyTodayTicket(empID);
+
+  const { data: verifiedCount, isLoading: verifiedLoading } =
+    UsegetEmpVerifiedTodayTicket(empID);
+
+  useEffect(() => {
+    setTickData([
+      {
+        id: 1,
+        route: "notAssign",
+        title: "New Tickets",
+        count: pendingCount?.data[0]?.pending_ticket_count,
+        loading: pendingLoading,
+      },
+      {
+        id: 2,
+        route: "AssignList",
+        title: "Assigned",
+        count: assignedCount?.data[0]?.employee_ticket_assigned_count,
+        loading: assignedLoading,
+      },
+      {
+        id: 3,
+        route: "Assistance",
+        title: "Assist Request",
+        count: assistCount?.data[0]?.assist_req_count,
+        loading: assistLoading,
+      },
+      {
+        id: 4,
+        route: "OnHold",
+        title: "On Hold",
+        count: holdCount?.data[0]?.employee_ticket_hold_count,
+        loading: holdLoading,
+      },
+      {
+        id: 5,
+        route: "Verify",
+        title: "Rectified",
+        count: rectifiedCount?.data[0]?.employee_ticket_rectified_count,
+        loading: rectifiedLoading,
+      },
+      {
+        id: 6,
+        route: "Completed",
+        title: "Verified",
+        count: verifiedCount?.data[0]?.employee_ticket_verified_count,
+        loading: verifiedLoading,
+      },
+    ]);
+  }, [
+    assistCount,
+    pendingLoading,
+    assignedCount,
+    holdCount,
+    rectifiedCount,
+    verifiedCount,
+  ]);
+
+  const dashData = useMemo(() => tickData, [tickData]);
+
+  return (
+    <View
+      style={{
+        flexGrow: 1,
+        backgroundColor: theme.colors.cardBgSecond,
+        borderRadius: 13,
+        padding: 7,
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-between",
+      }}
+    >
+      {dashData?.map((val) => {
+        return (
+          <DashCountTile
+            key={val.id}
+            id={1}
+            name={val.title}
+            count={val.count}
+            route={val.route}
+            loading={val.loading}
+          />
+        );
+      })}
+    </View>
+  );
 };
 
 //make this component available to the app

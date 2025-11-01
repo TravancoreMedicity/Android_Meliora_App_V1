@@ -21,11 +21,11 @@ import {
   Roboto_900Black,
   Roboto_900Black_Italic,
 } from "@expo-google-fonts/roboto";
-import { colorTheme } from "../Constant/Colors";
 import SettingStack from "./SettingStack";
 import HomeStack from "./HomeStack";
 import NewTickets from "../Screen/Modules/ComplaintMgmnt/NewTickets";
 import DownloadsFile from "../Screen/Modules/DownLoads/DownloadsFile";
+import ChatMain from "../Screen/Chat/ChatMain";
 import {
   PencilSquareIcon,
   CalendarDaysIcon,
@@ -40,6 +40,8 @@ import {
   Cog6ToothIcon,
   CloudArrowDownIcon,
 } from "react-native-heroicons/outline";
+import { useTheme } from "react-native-paper";
+import { View } from "react-native";
 
 // create a component
 const AppStack = () => {
@@ -58,20 +60,29 @@ const AppStack = () => {
     Roboto_900Black_Italic,
   });
 
+  const theme = useTheme();
   return (
     <Drawer.Navigator
+      initialRouteName="Home"
       drawerContent={(props) => <CustomDrawer {...props} />}
-      // useLegacyImplementation={true}
       screenOptions={{
         headerShown: false,
-        drawerActiveBackgroundColor: colorTheme.mainColor,
-        drawerActiveTintColor: "#fff",
-        drawerInactiveTintColor: colorTheme.mainColor,
+        drawerActiveBackgroundColor: theme.colors.logoCol2,
+        drawerActiveTintColor: "#ccc",
+        drawerInactiveTintColor: theme.colors.fontColor1,
+        lazy: true,
         drawerLabelStyle: {
-          marginLeft: -25,
+          marginLeft: -10,
           fontFamily: "Roboto_500Medium",
-          fontSize: 15,
         },
+        drawerItemStyle: {
+          flex: 1,
+          borderRadius: 20,
+          marginHorizontal: 20,
+          marginVertical: 4,
+          paddingHorizontal: 10,
+        },
+        drawerStatusBarAnimation: "slide",
       }}
     >
       <Drawer.Screen
@@ -92,7 +103,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="My Tasks"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <CalendarDaysIcon name="person" size={22} color={color} />
@@ -101,7 +112,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="My Projects"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <ClipboardDocumentListIcon size={22} color={color} />
@@ -110,7 +121,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="My Attendance Info"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <DeviceTabletIcon size={22} color={color} />
@@ -119,7 +130,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="Messages"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <ChatBubbleLeftEllipsisIcon size={22} color={color} />
@@ -128,28 +139,28 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="Notifications"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => <BellIcon size={22} color={color} />,
         }}
       />
       <Drawer.Screen
         name="Escalations"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => <BellAlertIcon size={22} color={color} />,
         }}
       />
       <Drawer.Screen
         name="News & Events"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => <NewspaperIcon size={22} color={color} />,
         }}
       />
       <Drawer.Screen
         name="Downloads"
-        component={DownloadsFile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <CloudArrowDownIcon size={22} color={color} />
@@ -158,7 +169,7 @@ const AppStack = () => {
       />
       <Drawer.Screen
         name="Profile"
-        component={Profile}
+        component={ChatMain}
         options={{
           drawerIcon: ({ color }) => (
             <UserIcon name="person" size={22} color={color} />

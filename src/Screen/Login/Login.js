@@ -8,34 +8,36 @@ import {
   ScrollView,
   ActivityIndicator,
   StatusBar,
+  Dimensions,
+  useColorScheme,
 } from "react-native";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 import SvgLogo from "../../../assets/tmcsvg.svg";
 import CustomButtonL1 from "../../Components/CustomButtonL1";
 import CustomTextInput from "../../Components/CustomTextInput";
 import CustomTextInputWithLabel from "../../Components/CustomTextInputWithLabel";
 import { axiosApi } from "../../config/Axiox";
-import { colorTheme } from "../../Constant/Colors";
 import { useDispatch } from "react-redux";
 
-import CustomModal from "../../Components/CustomModal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import { loggedInfomration } from "../../Redux/ReduxSlice/LoginSLice"
+import { loggedInfomration } from "../../Redux/ReduxSlice/LoginSLice";
 import OverLayLoading from "../Modules/ComplaintMgmnt/Components/OverLayLoading";
+import { ShowToastMessage } from "../../Components/V1_Cmp/Toaster/ToasterMessages";
 
+const { height, width } = Dimensions.get("window");
 // create a component
 const Login = () => {
   const dispatch = useDispatch();
+  const colorScheme = useColorScheme();
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
   const [useCode, setUserCode] = useState("");
   const [passCode, setPassCode] = useState("");
   const [errorMesg, setErrorMesg] = useState(false);
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const IternalServerErr = () => {
     return (
@@ -48,33 +50,50 @@ const Login = () => {
     );
   };
 
-  const onSubmitFun = async (useCode, passCode) => {
-    setLoading(true)
+  const onSubmitFun = async () => {
+    // setLoading(true);
     try {
+      setLoading(true);
       setErrorMesg(false);
       const loginCred = {
-        emp_username: useCode,
-        emp_password: passCode,
+        userName: useCode,
+        passWord: passCode,
       };
 
-      const result = await axiosApi.post("/employee/login", loginCred);
-      const { success } = result.data;
-      if (success === 1) {
-        const token = await JSON.stringify(result.data.token);
-        const userInfo = await JSON.stringify(result.data);
-        AsyncStorage.setItem("@token:", token);
-        AsyncStorage.setItem("@userInfo:", userInfo);
-        // dispatch the login info 
-        dispatch(loggedInfomration(result.data))
-        setLoading(false)
+      // Alert.alert(JSON.stringify(loginCred));
+      // console.log(loginCred);
+      const result = await axiosApi.post("/user/checkUserCres", loginCred);
+
+      // console.log(result);
+      const { success, userInfo, message } = result.data;
+
+      if (success === 2) {
+        const userData = JSON.parse(userInfo);
+        const token = JSON.stringify(userData?.token);
+        const empdtl_slno = JSON.stringify(userData?.empdtl_slno);
+
+        await AsyncStorage.setItem("@token:", token);
+        await AsyncStorage.setItem("@auth_id:", empdtl_slno);
+        // AsyncStorage.setItem("@userInfo:", data);
+        // // dispatch the login info
+        dispatch(loggedInfomration(userData));
+        setLoading(false);
       } else {
-        setModalMessage("User Code Or Passcode is Wrong !!");
-        setModalVisible(true);
-        setLoading(false)
+        ShowToastMessage(
+          "warnToast",
+          "Warn",
+          message || "Invalid user code or passcode. Please try again."
+        );
+        setLoading(false);
       }
     } catch (error) {
-      console.log(error);
-      setErrorMesg(true);
+      setPassError(JSON.stringify(error));
+      ShowToastMessage(
+        "warnToast",
+        "Warn",
+        error.message || "Invalid user code or passcode. Please try again."
+      );
+      setLoading(false);
     }
   };
 
@@ -82,37 +101,42 @@ const Login = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar
         animated={true}
-        backgroundColor={colorTheme.mainBgColor}
-        barStyle='dark-content'
+        backgroundColor="#f0f1f5"
+        barStyle={colorScheme === "dark" ? "light-content" : "dark-content"}
       />
       {loading && <OverLayLoading />}
-      <ScrollView style={styles.rapperView} keyboardShouldPersistTaps="always">
-        <CustomModal
-          setModal={setModalVisible}
-          modalState={modalVisible}
-          modalMessage={modalMessage}
-        />
+      <ScrollView
+        style={styles.rapperView}
+        keyboardShouldPersistTaps="always"
+        contentContainerStyle={{
+          flex: 1,
+          justifyContent: "space-evenly",
+        }}
+      >
         <View
           style={{
-            display: "flex",
+            flex: 1,
             flexDirection: "column",
             justifyContent: "space-evenly",
           }}
         >
           <View style={styles.logoView}>
-            <SvgLogo height={300} width={300} />
+            <SvgLogo
+              height={height > 1000 ? 450 : 300}
+              width={height > 1000 ? 450 : 300}
+            />
           </View>
           {/* <ActivityIndicator /> */}
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.textStyle}>Login</Text>
             {/* user code feild */}
             <CustomTextInput
               Icon={
-                <MaterialIcons
-                  name="perm-identity"
-                  size={20}
-                  color={colorTheme.mainColor}
-                  style={{ marginRight: 5 }}
+                <FontAwesome
+                  name="user-o"
+                  size={19}
+                  color="rgb(124,81,161)"
+                  style={{ marginRight: 5, marginLeft: 3 }}
                 />
               }
               Placeholder="User Code"
@@ -124,10 +148,10 @@ const Login = () => {
             {/* passcode feild */}
             <CustomTextInputWithLabel
               Icon={
-                <MaterialIcons
-                  name="lock-outline"
-                  size={20}
-                  color={colorTheme.mainColor}
+                <Ionicons
+                  name="lock-closed-outline"
+                  size={21}
+                  color="rgb(124,81,161)"
                   style={{ marginRight: 5 }}
                 />
               }
@@ -140,12 +164,7 @@ const Login = () => {
             />
 
             {/* Login BUtton */}
-            <CustomButtonL1
-              label="Login"
-              buttonFuntion={() => {
-                onSubmitFun(useCode, passCode);
-              }}
-            />
+            <CustomButtonL1 label="Login" buttonFuntion={() => onSubmitFun()} />
 
             <Text style={styles.contactText}>
               For User Code Contact HR Department !!
@@ -162,31 +181,32 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: "#f0f1f5",
   },
   logoView: {
+    flex: 1,
     alignItems: "center",
   },
   textStyle: {
     fontFamily: "Roboto_500Medium",
     fontSize: 28,
-    color: colorTheme.mainColor,
+    color: "rgb(124,81,161)",
     marginBottom: 30,
   },
   rapperView: {
-    paddingHorizontal: 25,
+    paddingHorizontal: width > 450 ? 100 : 35,
   },
   contactText: {
     textAlign: "center",
     fontWeight: "900",
     fontSize: 10,
-    color: colorTheme.mainColor,
+    color: "rgb(124,81,161)",
   },
   ErrorText: {
     textAlign: "center",
     fontWeight: "900",
     fontSize: 12,
-    color: colorTheme.mainColor,
+    color: "rgb(124,81,161)",
   },
 });
 

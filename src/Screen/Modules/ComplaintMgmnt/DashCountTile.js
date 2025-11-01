@@ -1,108 +1,124 @@
 //import liraries
-import React, { memo, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableNativeFeedback } from 'react-native';
-import { colorTheme, fontColor } from '../../../Constant/Colors';
-import { windowHeight } from '../../../utils/Dimentions';
-import { MegaphoneIcon } from 'react-native-heroicons/outline'
+import React, { memo, useCallback } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableNativeFeedback,
+  useWindowDimensions,
+} from "react-native";
+import { colorTheme, fontColor } from "../../../Constant/Colors";
+import { windowHeight } from "../../../utils/Dimentions";
+import { MegaphoneIcon } from "react-native-heroicons/outline";
+import { useTheme } from "react-native-paper";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
 // create a component
-const DashCountTile = ({ navigation, name, count, id, escalated }) => {
-    //dashboard api call count    
-    const dashCountUpdation = useCallback(() => {
-        if (id === 2) {
-            navigation.navigate('AssignList')
-        } else if (id === 3) {
-            navigation.navigate('Assistance')
-        } else if (id === 4) {
-            navigation.navigate('OnHold')
-        } else if (id === 5) {
-            navigation.navigate('Verify')
-        } else if (id === 6) {
-            navigation.navigate('Completed')
-        } else if (id === 1) {
-            navigation.navigate('notAssign')
-        }
-    }, [navigation])
+const DashCountTile = ({ name, count, id, route, loading }) => {
+  const theme = useTheme();
+  const { width } = useWindowDimensions();
 
-    return (
-        <View className='overflow-hidden' >
-            <TouchableNativeFeedback
-                onPress={() => dashCountUpdation()}
-                useForeground={true}
-                style={{ backgroundColor: colorTheme.mainColor }}
+  const navigation = useNavigation();
+  //dashboard api call count
+  const dashCountUpdation = useCallback(() => {
+    if (id === 2) {
+      navigation.navigate("AssignList");
+    } else if (id === 3) {
+      navigation.navigate("Assistance");
+    } else if (id === 4) {
+      navigation.navigate("OnHold");
+    } else if (id === 5) {
+      navigation.navigate("Verify");
+    } else if (id === 6) {
+      navigation.navigate("Completed");
+    } else if (id === 1) {
+      navigation.navigate("notAssign");
+    }
+  }, [navigation]);
+
+  const tileWidth = width > 450 ? (width - 120) / 3 : (width - 60) / 2;
+
+  return (
+    <View
+      style={{
+        margin: 3,
+        width: tileWidth,
+        height: 70,
+        borderWidth: 2,
+        borderColor: theme.colors.cardBgColor,
+        borderRadius: 10,
+        overflow: "hidden",
+      }}
+    >
+      <TouchableNativeFeedback
+        onPress={() => navigation.navigate(route)}
+        useForeground={true}
+      >
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "column",
+          }}
+        >
+          <View
+            style={{
+              flex: 1,
+              paddingLeft: 10,
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+            }}
+          >
+            <Ionicons
+              size={20}
+              name="ticket"
+              style={{ color: theme.colors.logoCol1 }}
+            />
+            <Text
+              style={{
+                paddingLeft: 5,
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "900",
+                color: theme.colors.fontColor1,
+                // backgroundColor: "green",
+                flex: 1,
+                textAlign: "right",
+                paddingRight: 20,
+              }}
             >
-                <View style={styles.mainTile} className="flex-col overflow-hidden" >
-                    <View className='flex flex-1 p-2 pb-0 flex-row overflow-hidden'  >
-                        <View className='flex-1 basis-1/3 ' >
-                            <Text
-                                className='text-white'
-                                style={{ fontFamily: 'Roboto_500Medium' }}
-                            >{name}</Text>
-                        </View>
-                        <View className='flex justify-center items-center ' >
-                            <Text
-                                className='flex text-4xl text-white'
-                            >{count}</Text>
-                        </View>
-                    </View>
-                    <View className='flex flex-row h-7 pb-2 pl-2 items-center content-center overflow-hidden'>
-                        <MegaphoneIcon className='flex self-baseline' color={colorTheme.iconColor} height={15} width={15} />
-                        <Text className='flex pl-1'
-                            style={{ fontFamily: 'Roboto_300Light', color: colorTheme.iconColor }} >Escalated</Text>
-                        <Text className='flex pl-3 font-bold'
-                            style={{ fontFamily: 'Roboto_300Light', color: colorTheme.iconColor }} >{escalated}</Text>
-                    </View>
-                </View>
-            </TouchableNativeFeedback>
+              {loading ? (
+                <CustomActivityIndicator size={20} />
+              ) : (
+                (loading === false && count) || 0
+              )}
+            </Text>
+          </View>
+          <View
+            style={{
+              flex: 0.6,
+              paddingLeft: 10,
+              backgroundColor: theme.colors.cardBgColor,
+              justifyContent: "center",
+              alignItems: "flex-start",
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "900",
+                textTransform: "capitalize",
+                color: theme.colors.logoCol2,
+              }}
+            >
+              {name}
+            </Text>
+          </View>
         </View>
-    );
+      </TouchableNativeFeedback>
+    </View>
+  );
 };
-
-// define your styles
-const styles = StyleSheet.create({
-    mainTile: {
-        flex: 1,
-        height: (windowHeight * 12 / 100),
-        minWidth: (windowHeight * 23 / 100),
-        maxWidth: (windowHeight * 23 / 100),
-        borderWidth: 0.1,
-        borderRadius: 18,
-        borderColor: colorTheme.mainColor,
-        // overflow: 'hidden',
-        backgroundColor: colorTheme.mainColor,
-        elevation: 3,
-        shadowOpacity: 0,
-        shadowRadius: 30,
-        marginBottom: 10,
-        marginHorizontal: 3,
-    },
-    innerCountTile: {
-        flex: 6,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    innerCountTileFont: {
-        fontFamily: 'Roboto_100Thin',
-        fontSize: 30,
-        color: 'white'
-    },
-    innerTextTile: {
-        flex: 3,
-        paddingHorizontal: 6,
-        backgroundColor: colorTheme.deptColor5,
-        borderTopRightRadius: 10,
-        borderTopLeftRadius: 10,
-        borderBottomEndRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        elevation: 3
-    },
-    innerTextTileFont: {
-        fontFamily: 'Roboto_700Bold',
-        fontSize: 10,
-        color: fontColor.mainBlue,
-    },
-
-});
 
 //make this component available to the app
 export default memo(DashCountTile);

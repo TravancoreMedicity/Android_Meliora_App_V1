@@ -15,9 +15,9 @@ const CustomButtonL1 = ({ label, buttonFuntion }) => {
 // define your styles
 const styles = StyleSheet.create({
   LoginButton: {
-    backgroundColor: colorTheme.mainColor,
+    backgroundColor: "rgb(124,81,161)",
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 35,
     marginBottom: 30,
   },
   LoginButtonText: {

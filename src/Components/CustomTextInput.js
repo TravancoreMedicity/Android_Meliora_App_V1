@@ -28,7 +28,7 @@ const CustomTextInput = ({
 const styles = StyleSheet.create({
   textInputFeild: {
     flexDirection: "row",
-    borderBottomColor: "#ccc",
+    borderBottomColor: "rgb(124,81,161)",
     borderBottomWidth: 1,
     paddingBottom: 8,
     marginBottom: 25,

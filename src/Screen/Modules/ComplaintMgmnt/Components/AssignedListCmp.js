@@ -1,209 +1,465 @@
 //import liraries
-import React, { memo, useState, lazy, Suspense, useCallback, useMemo } from 'react';
-import { View, Text, Pressable } from 'react-native';
-import { bgColor, colorTheme, fontColor } from '../../../../Constant/Colors';
-import { styles } from '../Style/Style';
-import { useDispatch } from 'react-redux'
-import { getDayDiffrenceIncludeTheTime, getTimeDiffrenceForLiveClock } from '../func/UtilityFun';
-import LiveCmpTimeDiffrenceClock from './Modals/LiveCmpTimeDiffrenceClock';
-import RectifyTicketModal from './Modals/RectifyTicketModal';
-import { getActualTicketAssingedEmp } from '../../../../Redux/ReduxSlice/ticketMagmntSlice';
+import { memo, useState, useCallback, useMemo } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
+import LiveCmpTimeDiffrenceClock from "./Modals/LiveCmpTimeDiffrenceClock";
+import { useTheme } from "react-native-paper";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { format } from "date-fns";
+import Feather from "react-native-vector-icons/Feather";
+import TicketRectifyModal from "./Version1/TicketRectifyModal";
+import AssistRequestedModal from "./Version1/AssistRequestedModal";
+import {
+  getLogiEmployeeID,
+  getLogiEmpDEPT,
+} from "../../../../Redux/ReduxSlice/LoginSLice";
+import FadeColorBox from "./Version1/Common/FadeInOutCmp";
 
 // create a component
 const AssignedListCmp = ({ data }) => {
+  const theme = useTheme();
 
-    const [openState, openModelState] = useState('')
-    const dispatch = useDispatch();
-    const compDetlData = useMemo(() => data, [data])
-    const {
-        complaint_slno, //complaint slno
-        compalint_date, //complaint date
-        req_type_name, // request complaint type - complaint,new requirement , modification
-        complaint_type_name, // comolaint type name hardware ,software ,etc
-        location, // location name in detail
-        comp_reg_emp, //  register employee name-complaint
-        empdept, // registerd department 
-        hic_policy_name,
-        complaint_desc,
-        compalint_priority,
-        priority_check,
-        complaint_hicslno,
-        assigned_date,
-        create_employee,
-        sec_name
-    } = compDetlData;
+  const empId = useSelector((state) => getLogiEmployeeID(state));
+  const empDEPT = useSelector((state) => getLogiEmpDEPT(state));
 
-    //LIVE CLOCK FUNCTIONS
-    const newDates = getTimeDiffrenceForLiveClock(compalint_date);
-    const dayDiffrence = getDayDiffrenceIncludeTheTime(compalint_date);
+  const postDeptData = useMemo(() => {
+    return { em_id: empId, em_department: empDEPT };
+  }, []);
 
-    const cmpNewDate = useMemo(() => newDates, [newDates]);
-    const newDayDiffrence = useMemo(() => dayDiffrence, [dayDiffrence])
+  const assignTickData = useMemo(() => data, [data]);
+  const {
+    complaint_slno, //complaint slno
+    compalint_date, //complaint date
+    req_type_name, // request complaint type - complaint,new requirement , modification
+    complaint_type_name, // comolaint type name hardware ,software ,etc
+    location, // location name in detail
+    comp_reg_emp, //  register employee name-complaint
+    empdept, // registerd department
+    hic_policy_name,
+    complaint_desc,
+    compalint_priority,
+    priority_check,
+    complaint_hicslno,
+    assigned_date,
+    create_employee,
+    sec_name,
+    priority_reason,
+    rejected,
+    accepted,
+    pending,
+  } = assignTickData;
 
-    const onRectifyModal = useCallback(async () => {
-        // dispatch(getTheActualEmployee(complaint_slno))
-        dispatch(getActualTicketAssingedEmp(complaint_slno))
-        openModelState(!openState)
-    }, [complaint_slno])
+  const assisted = useMemo(() => {
+    return accepted > 0 || rejected > 0 || pending > 0 ? true : false;
+  }, [accepted, rejected, pending]);
 
-    return (
-        <View style={{ ...styles.FLCP_container, borderRadius: 10, borderWidth: 0.2, borderColor: colorTheme.switchTrack, marginHorizontal: 5, marginVertical: 2 }}>
-            <RectifyTicketModal
-                openState={openState}
-                openModelState={openModelState}
-                data={compDetlData}
-            />
+  const year = format(new Date(compalint_date), "yyyy");
 
-            <Suspense>
-                {/* <RectifyModal
-                    visible={visible}
-                    setVisible={setVisible}
-                    data={compDetlData}
-                    onProgress={1}
-                /> */}
-            </Suspense>
-            <View style={{ marginHorizontal: 5 }} >
-                {/* name and department section */}
-                <View style={{
-                    flexDirection: 'row',
-                    paddingVertical: 5
-                }} >
-                    <View style={{
-                        flexDirection: 'row',
-                        alignContent: 'center',
-                        alignItems: 'center'
-                    }} >
-                        <Text style={styles.FLCP_captionStyle} >{create_employee}</Text>
-                        <Text style={{ color: bgColor.statusbar }}>@</Text>
-                        <Text style={{ ...styles.FLCP_captionStyle, fontStyle: 'italic' }} >{sec_name}</Text>
-                    </View>
-                    <View className='flex grow' style={{
-                        flexDirection: 'row',
-                        alignContent: 'center',
-                        justifyContent: 'flex-end',
+  // location name mapping
+  const locationName = useMemo(() => {
+    const location =
+      assignTickData.rm_roomtype_name ||
+      assignTickData.rm_insidebuildblock_name ||
+      assignTickData.rm_floor_name
+        ? `(${assignTickData.rm_roomtype_name || ""}${
+            assignTickData.rm_roomtype_name &&
+            assignTickData.rm_insidebuildblock_name
+              ? " - "
+              : ""
+          }${assignTickData.rm_insidebuildblock_name || ""}${
+            assignTickData.rm_insidebuildblock_name &&
+            assignTickData.rm_floor_name
+              ? " - "
+              : ""
+          }${assignTickData.rm_floor_name || ""})`
+        : assignTickData.cm_complaint_location || null;
 
-                    }} >
-                        {
-                            compalint_priority === 1 && <View className='flex justify-center px-2 rounded-md' style={{ borderWidth: 0.2, borderColor: 'red' }} >
-                                <Text style={{ fontFamily: 'Roboto_500Medium', fontSize: 12 }}
-                                    className='antialiased text-red-600'>Priority ticket</Text>
-                            </View>
-                        }
-                    </View>
-                </View>
-                {/* register time and numeber section */}
-                <View>
-                    <View style={{
-                        flexGrow: 1,
-                        flexDirection: 'row',
-                        borderColor: fontColor.inActiveFont,
-                        justifyContent: 'space-between'
-                    }} >
-                        <View style={{
-                            flexGrow: 1,
-                            flexDirection: 'row',
-                            alignContent: 'center',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            // textTransform: 'capitalize'
-                        }} >
-                            {/* <Text style={styles.cardTitle} >Register Time :</Text> */}
-                            <Text style={styles.FLCP_cardTitle} >{compalint_date}</Text>
-                        </View>
-                        <View style={{
-                            flexGrow: 1,
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                            // paddingHorizontal: 5
-                        }} >
-                            {/* <Text style={styles.cardTitle} >complaint description :</Text> */}
-                            <Text style={styles.FLCP_cardTitle} >{`#${complaint_slno}/2023`}</Text>
-                        </View>
-                    </View>
-                </View>
-                {/* request type and complaint type */}
-                <View>
-                    <View style={{
-                        flexGrow: 1,
-                        flexDirection: 'row',
-                        borderColor: fontColor.inActiveFont,
-                        justifyContent: 'space-between'
-                    }} >
-                        <View style={{
-                            flexGrow: 1,
-                            flexDirection: 'row',
-                            alignContent: 'center',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                            // textTransform: 'capitalize'
-                        }} >
-                            <Text style={styles.FLCP_headStyle} >request Type :</Text>
-                            <Text style={styles.FLCP_cardTitle} >{req_type_name}</Text>
-                        </View>
-                        <View style={{
-                            flexGrow: 1,
-                            flexDirection: 'row',
-                            justifyContent: 'flex-end',
-                            // paddingHorizontal: 5
-                        }} >
-                            {/* <Text style={styles.cardTitle} >complaint description :</Text> */}
-                            <Text style={styles.FLCP_cardTitle} >{complaint_type_name}</Text>
-                        </View>
-                    </View>
-                </View>
-                <View style={{ marginTop: 5 }} >
-                    <View>
-                        <Text style={styles.FLCP_headStyle} >complaint description :
-                            <Text style={styles.FLCP_cardTitle}> {` ${complaint_desc}`}</Text>
-                        </Text>
-                    </View>
-                </View>
-                <View style={{
-                    // flex: 1,
-                    flexDirection: 'row'
-                }} >
-                    <Text style={styles.FLCP_headStyle}>Location :</Text>
-                    <Text style={styles.FLCP_cardTitle} >{location}</Text>
-                </View>
-                {
-                    complaint_hicslno === 1 &&
-                    <View style={{
-                        // flex: 1,
-                        flexDirection: 'row'
-                    }} >
-                        <Text style={styles.FLCP_headStyle}>ICRA Recommentation :</Text>
-                        <Text style={styles.FLCP_cardTitle} >{hic_policy_name}</Text>
-                    </View>
+    return `${assignTickData.rm_room_name} ${location}`;
+  }, [assignTickData]);
+
+  const [openState, openModelState] = useState(false);
+
+  const handleModal = useCallback(async () => {
+    openModelState(!openState);
+  }, []);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [assistModalVisible, setAssistModalVisible] = useState(false);
+
+  return (
+    <View>
+      <TicketRectifyModal
+        openState={modalVisible}
+        setModalVisible={setModalVisible}
+        data={{ ...assignTickData, locationName }}
+      />
+      {/* MOdal componet end here */}
+
+      {/* MOdal for assit request */}
+      <AssistRequestedModal
+        openState={assistModalVisible}
+        setModalVisible={setAssistModalVisible}
+        data={{ ...assignTickData, locationName }}
+        postData={postDeptData}
+      />
+
+      <View
+        style={{
+          minHeight: 150,
+          flexGrow: 1,
+          // marginBottom: 20,
+          borderRadius: 20,
+          overflow: "hidden",
+          paddingVertical: 5,
+          borderLeftWidth: 2,
+          borderColor:
+            priority_check === 1
+              ? theme.colors.logoCol1
+              : theme.colors.cardBgColor,
+        }}
+      >
+        <View
+          style={{
+            marginBottom: 3,
+          }}
+        >
+          <View
+            style={{
+              height: 40,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 5,
+              }}
+            >
+              <Ionicons
+                name="ticket"
+                size={30}
+                color={
+                  priority_check === 1
+                    ? theme.colors.logoCol1
+                    : theme.colors.cardBgColor
                 }
-                <View style={{
-                    // flex: 1,
-                    flexDirection: 'row'
-                }} >
-                    <Text style={styles.FLCP_headStyle}>Assigned Date :</Text>
-                    <Text style={styles.FLCP_cardTitle} >{assigned_date}</Text>
-                </View>
-                {/* display the live complant time diffrence  */}
-                <View className='flex ' style={{ borderWidth: 0, borderRadius: 0, justifyContent: 'center', alignItems: 'center', marginVertical: 5, marginHorizontal: 60 }} >
-                    <View className='flex' >
-                        <LiveCmpTimeDiffrenceClock
-                            dayDiffrence={newDayDiffrence}
-                            newDates={cmpNewDate}
-                        />
-                    </View>
-                </View>
+              />
             </View>
-            <View className='pb-1' >
-                <Pressable
-                    onPress={onRectifyModal}
-                    className='flex'
-                    style={{ borderWidth: 0.3, borderRadius: 10, marginHorizontal: 25, height: 30, justifyContent: 'center', backgroundColor: colorTheme.switchTrack }}
+            <View
+              style={{
+                marginLeft: 2,
+                flex: 1,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <View style={{ flexDirection: "row" }}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: "Roboto_500Medium",
+                      fontWeight: "800",
+                      color: theme.colors.lightBlueFont,
+                    }}
+                  >
+                    #{complaint_slno}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: "Roboto_500Medium",
+                      fontWeight: "800",
+                      color: theme.colors.lightBlueFont,
+                    }}
+                  >
+                    /{year}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
                 >
-                    <Text className='text-center text-white'>Rectify tickets</Text>
-                </Pressable>
+                  <Ionicons
+                    name="calendar-outline"
+                    color={theme.colors.logoCol1}
+                  />
+                  <Text
+                    style={{
+                      paddingLeft: 2,
+                      fontSize: 12,
+                      fontFamily: "Roboto_500Medium",
+                      fontWeight: "800",
+                      color: theme.colors.lightBlueFont,
+                      paddingRight: 5,
+                    }}
+                  >
+                    {compalint_date}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontFamily: "Roboto_500Medium",
+                    fontWeight: "800",
+                    color: theme.colors.lightBlueFont,
+                  }}
+                  numberOfLines={1}
+                >
+                  {comp_reg_emp}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontFamily: "Roboto_500Medium",
+                    fontWeight: "800",
+                    paddingHorizontal: 2,
+                    color: theme.colors.lightBlueFont,
+                  }}
+                >
+                  /
+                </Text>
+                <Text
+                  numberOfLines={1}
+                  style={{
+                    fontSize: 12,
+                    fontFamily: "Roboto_500Medium",
+                    fontWeight: "800",
+                    color: theme.colors.lightBlueFont,
+                  }}
+                >
+                  {sec_name}
+                </Text>
+              </View>
             </View>
+          </View>
+        </View>
+        {/* live clock */}
+        <View style={{ alignItems: "flex-end" }}>
+          <LiveCmpTimeDiffrenceClock compalint_date={compalint_date} />
         </View>
 
-    );
+        {/* Middle Components Start */}
+        <View
+          style={{
+            flexGrow: 1,
+            paddingLeft: 15,
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+          }}
+        >
+          <View>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "800",
+                color: theme.colors.inactiveFont,
+              }}
+            >
+              Ticket Description :
+            </Text>
+          </View>
+          <View
+            style={{
+              flexGrow: 1,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "800",
+                color: theme.colors.lightBlueFont,
+              }}
+              textBreakStrategy="highQuality"
+            >
+              {complaint_desc ?? "N/A"}
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "800",
+                color: theme.colors.inactiveFont,
+                paddingRight: 5,
+              }}
+            >
+              Location :
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "800",
+                color: theme.colors.lightBlueFont,
+              }}
+            >
+              {locationName}
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "800",
+                paddingRight: 5,
+                color: theme.colors.inactiveFont,
+              }}
+            >
+              Ticket Type :
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "800",
+                color: theme.colors.lightBlueFont,
+              }}
+            >
+              {complaint_type_name}
+            </Text>
+          </View>
+
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "800",
+                paddingRight: 5,
+                color: theme.colors.inactiveFont,
+              }}
+            >
+              Assigned Date :
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: "Roboto_500Medium",
+                fontWeight: "900",
+                color: theme.colors.lightBlueFont,
+              }}
+            >
+              {assigned_date}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            {priority_check === 1 ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontFamily: "Roboto_500Medium",
+                    fontWeight: "800",
+                    color: theme.colors.logoCol1,
+                  }}
+                >
+                  Priority Reason : {priority_reason}
+                </Text>
+              </View>
+            ) : null}
+          </View>
+
+          <View
+            style={{
+              paddingVertical: 8,
+              // backgroundColor: "#4CAF50",
+              width: "100%",
+              alignItems: "flex-start",
+              flexDirection: "row",
+            }}
+          >
+            <View>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: theme.colors.logoCol2, // green
+                  padding: 12,
+                  borderRadius: 50, // circular
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowColor: "#000",
+                  opacity: 0.8,
+                  shadowOffset: { width: 0, height: 2 }, // iOS shadow
+                  shadowOpacity: 0.2,
+                  shadowRadius: 3,
+                  elevation: 4, // Android shadow
+                }}
+                onPressIn={() => setModalVisible(true)}
+                activeOpacity={0.7}
+              >
+                <Feather name="thumbs-up" size={22} color="white" />
+              </TouchableOpacity>
+            </View>
+            <View style={{ paddingLeft: 20 }}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: theme.colors.logoCol3, // green
+                  padding: 12,
+                  borderRadius: 50, // circular
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowColor: "#000",
+                  opacity: 0.8,
+                  shadowOffset: { width: 0, height: 2 }, // iOS shadow
+                  shadowOpacity: 0.2,
+                  shadowRadius: 3,
+                  elevation: 4, // Android shadow
+                }}
+                onPressIn={() => setAssistModalVisible(true)}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="headset-outline" size={22} color="white" />
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "flex-end",
+                flex: 1,
+                // backgroundColor: "green",
+                padding: 12,
+                // borderRadius: 50,
+              }}
+            >
+              {assisted && <FadeColorBox />}
+            </View>
+          </View>
+        </View>
+        {/* Middle Components  End*/}
+      </View>
+    </View>
+  );
 };
 
 //make this component available to the app

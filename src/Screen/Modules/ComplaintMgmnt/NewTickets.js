@@ -1,215 +1,284 @@
-import { View, Text, KeyboardAvoidingView, ScrollView, Pressable, TouchableOpacity, Alert } from 'react-native'
-import React, { memo, useCallback, useEffect, useState } from 'react'
-import BaseRadioButton from '../../../Components/BaseRadioButton'
-import { useDispatch, useSelector } from 'react-redux'
-import { getCmpSlno, getComplaintDept, getComplaintDeptList, getComplaintSlno, getComplaintType, getComplaintTypeList, getLocationVal, updateLocationValue } from '../../../Redux/ReduxSlice/newTicketSlice'
-import CustomActivityIndicator from '../../../Components/CustomActivityIndicator'
-import LocationDropDown from '../../../Components/LocationDropDown'
-import BaseCheckBoxOne from '../../../Components/BaseCheckBoxOne'
-import MutlilineTextInput from '../../../Components/MutlilineTextInput'
-import { colorTheme } from '../../../Constant/Colors'
-import { ChevronDoubleRightIcon } from 'react-native-heroicons/outline'
-import { getLogiEmpDEPT, getLogiEmployeeID, selectLoginInform } from '../../../Redux/ReduxSlice/LoginSLice'
-import { axiosApi } from '../../../config/Axiox'
-import { useNavigation } from '@react-navigation/native'
-import { XCircleIcon } from 'react-native-heroicons/outline'
-import ModalLoding from './Components/Modals/ModalLoding'
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
+import React, { memo, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getCmpSlno,
+  getComplaintSlno,
+  getSelectedComplaintType,
+  getSelectedDepartmentSectionId,
+  getSelectedDept,
+  getSelectedLocationId,
+  setSelectedComplaintType,
+  setSelectedDepartmentLocation,
+  setSelectedDepartmentSectionId,
+  setSelectedDept,
+} from "../../../Redux/ReduxSlice/newTicketSlice";
+import CustomActivityIndicator from "../../../Components/CustomActivityIndicator";
+import {
+  getLogiEmpDEPT,
+  getLogiEmployeeID,
+} from "../../../Redux/ReduxSlice/LoginSLice";
+import { useNavigation } from "@react-navigation/native";
+import { Switch, TextInput, useTheme } from "react-native-paper";
+import HeaderForm from "../../../Components/HeaderForm";
+import CompDeptSelection from "./Components/Version1/Common/CompDeptSelection";
+import ComTypeSelection from "./Components/Version1/Common/ComTypeSelection";
+import DepartmentSection from "./Components/Version1/Common/DepartmentSection";
+import DepartmentLocation from "./Components/Version1/Common/DepartmentLocation";
+import CenteredButton from "./Components/Version1/Common/CenteredButton";
+import { axiosApi } from "../../../config/Axiox";
+import { ShowToastMessage } from "../../../Components/V1_Cmp/Toaster/ToasterMessages";
 
 const NewTickets = () => {
+  //  custom hooks
+  const dispatch = useDispatch();
+  const theme = useTheme();
+  const navigation = useNavigation();
 
-    const dispatch = useDispatch();
-    const navigation = useNavigation()
-    const [cmpDept, setCmpDept] = useState(0)
-    const [type, setType] = useState([])
-    const [selectedtype, setSelectedType] = useState(0)
-    const [icra, setIcra] = useState(false)
-    const [priority, setPriority] = useState(false)
-    const [priorityRemark, setPriorityRemark] = useState('')
-    const [desc, setDesc] = useState('')
+  // Redux State
+  const cmpDept = useSelector(getSelectedDept);
+  const complaintType = useSelector(getSelectedComplaintType);
+  const departmentSectionID = useSelector(getSelectedDepartmentSectionId);
+  const departmentLocation = useSelector(getSelectedLocationId);
+  const compSlno = useSelector(getComplaintSlno);
+  const emp_ID = useSelector(getLogiEmployeeID);
+  const emp_dept = useSelector(getLogiEmpDEPT);
 
-    const [visible, setVisible] = useState(false)
+  //  local state
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const [ticketDesc, setTicketDesc] = useState("");
+  const [ticketPriority, setTicketPriority] = useState("");
+  const [secondaryLocation, setSecondaryLocation] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        dispatch(getComplaintDept())
-        dispatch(getComplaintType())
-        dispatch(getCmpSlno())
-    }, [])
+  //  Fetch complaint serial number
+  useEffect(() => {
+    dispatch(getCmpSlno());
+  }, [dispatch]); // Run once on mount
 
-    const complaintDept = useSelector(getComplaintDeptList)
-    const complaintType = useSelector(getComplaintTypeList)
-    const compSlno = useSelector(getComplaintSlno)
-    const location = useSelector(getLocationVal)
-    const emp_ID = useSelector(getLogiEmployeeID)
-    const emp_dept = useSelector(getLogiEmpDEPT)
+  // Reset state function
+  const resetState = () => {
+    dispatch(setSelectedDept(null));
+    dispatch(setSelectedComplaintType(null));
+    dispatch(setSelectedDepartmentLocation(null));
+    dispatch(setSelectedDepartmentSectionId(null));
+    setIsSwitchOn(false);
+    setTicketDesc("");
+    setTicketPriority("");
+    setSecondaryLocation("");
+  };
 
-    useEffect(() => {
-        let type = complaintType?.filter((e) => e.complaint_dept_slno === cmpDept)
-            .map((e) => {
-                return { id: e.complaint_type_slno, value: e.complaint_type_slno, label: e.complaint_type_name }
-            })
-        setType(type)
-    }, [cmpDept, complaintType])
+  //  handle functions
+  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
-    const registerTicket = useCallback(async () => {
-        dispatch(getCmpSlno())
-        const postData = {
-            complaint_slno: compSlno,
-            complaint_desc: desc,
-            complaint_dept_secslno: emp_dept,
-            complaint_request_slno: 1,
-            complaint_deptslno: cmpDept,
-            complaint_typeslno: selectedtype,
-            priority_check: priority === true ? 1 : 0,
-            complaint_hicslno: icra === true ? 1 : 0,
-            compalint_status: 0,
-            cm_location: location?.sec_id,
-            create_user: emp_ID,
-            priority_reason: priority === true ? priorityRemark : null,
-            priority: priority === true ? 'Priority Ticket' : "Normal Ticket",
-            locationName: location.sec_name
-        }
-        if (compSlno === undefined) {
-            Alert.alert("complaint slno is undefined")
-        } else if (desc === "") {
-            Alert.alert("Description is null")
-        } else if (cmpDept === 0) {
-            Alert.alert("Complaint is null")
-        } else if (selectedtype === 0) {
-            Alert.alert("Complaint type is null")
-        } else if (priority === true && priorityRemark === "") {
-            Alert.alert("Priority remarks is mandatory ")
-        } else if (location === 0) {
-            Alert.alert("Location is mandatory ")
-        } else {
-            setVisible(true)
-            const result = await axiosApi.post('/complaintreg', postData);
-            const { message, success } = await result.data;
-            if (success === 1) {
-                setCmpDept(0)
-                setDesc("")
-                setSelectedType(0)
-                setPriority(false)
-                setPriorityRemark("")
-                dispatch(getCmpSlno())
-                dispatch(updateLocationValue(0))
-                Alert.alert(message)
-                setVisible(false)
-                navigation.goBack()
-            } else {
-                Alert.alert("Ticket not registerd- contact IT")
-                setVisible(false)
-                navigation.goBack()
-            }
-        }
+  const handleSubmitFunction = async () => {
+    setIsLoading(true);
 
-    }, [compSlno, desc, emp_dept, cmpDept, selectedtype, priority, icra, location, emp_ID, priorityRemark, navigation])
+    if (
+      !ticketDesc ||
+      !departmentSectionID ||
+      (departmentLocation === null && secondaryLocation === "")
+    ) {
+      ShowToastMessage("warnToast", "Warn", "Please fill all the fields");
+      setIsLoading(false);
+      return;
+    }
 
-    return (
-        <KeyboardAvoidingView enabled behavior='height' keyboardVerticalOffset={0}  >
-            <ModalLoding visible={visible} />
-            <View
-                style={{
-                    pb: 0.5,
-                    height: 50,
-                    display: 'flex',
-                    justifyContent: 'center',
-                    borderBottomWidth: 1,
-                    borderBottomColor: colorTheme.iconColor
-                }}
-            >
-                <Text style={{ fontFamily: 'Roboto_300Light', fontSize: 18, textAlign: 'center' }} >New Ticket Registration</Text>
-                <TouchableOpacity
-                    onPress={useCallback(() => navigation.goBack())}
-                    className='flex rounded-full bg-gray-300 absolute top-2 right-2'
-                >
-                    <XCircleIcon color={colorTheme.switchThumb} height={35} width={35} />
-                </TouchableOpacity>
+    if (isSwitchOn && !ticketPriority) {
+      ShowToastMessage("warnToast", "Warn", "Please fill the priority reason");
+      setIsLoading(false);
+      return;
+    }
+
+    if (compSlno === null) {
+      ShowToastMessage("warnToast", "Warn", "NULL Serial Number, retrying...");
+      dispatch(getCmpSlno());
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const postRegisterData = {
+        complaint_slno: compSlno,
+        complaint_desc: ticketDesc,
+        complaint_dept_secslno: departmentSectionID,
+        complaint_request_slno: 1,
+        complaint_deptslno: cmpDept,
+        complaint_typeslno: complaintType,
+        priority_check: isSwitchOn ? 1 : 0, // 0 - Normal 1 - Priority
+        complaint_hicslno: 0, // icra
+        compalint_status: 0,
+        cm_location: departmentSectionID, //
+        create_user: emp_ID, // login user id
+        priority_reason: isSwitchOn === true ? ticketPriority : null,
+        priority: isSwitchOn ? "Priority Ticket" : "Normal Ticket",
+        rm_room_slno: departmentLocation === null ? null : departmentLocation,
+        cm_asset_status: 0, // if asset tagged then 1
+        cm_complaint_location: secondaryLocation,
+      };
+
+      const registerTicket = await axiosApi.post(
+        "/complaintreg",
+        postRegisterData
+      );
+      const { message, success } = registerTicket.data;
+
+      if (success === 1) {
+        ShowToastMessage("successToast", "Success", message);
+        resetState();
+        dispatch(getCmpSlno());
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "Home" }],
+        });
+        setIsLoading(false);
+      } else {
+        ShowToastMessage("errorToast", "Error", message);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      ShowToastMessage(
+        "errorToast",
+        "Error",
+        error.message || "Error in ticket registration"
+      );
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      resetState();
+    };
+  }, [dispatch]);
+
+  return (
+    <KeyboardAvoidingView
+      enabled
+      behavior="height"
+      keyboardVerticalOffset={0}
+      style={{ flex: 1, backgroundColor: theme.colors.appBgInside || "#fff" }}
+    >
+      <HeaderForm name={"Ticket Registration"} />
+      {isLoading && <CustomActivityIndicator />}
+      <ScrollView
+        style={styles(theme).scrollViewContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles(theme).formContainer}>
+          {/* Complaint department Selection */}
+          <Text style={styles(theme).headerText}>
+            Confirm the ticket department
+          </Text>
+          <CompDeptSelection />
+          {cmpDept && (
+            <View style={{ rowGap: 5 }}>
+              <Text style={styles(theme).headerText}>
+                Confirm the ticket Type
+              </Text>
+              <ComTypeSelection selectedComplaintDepartment={cmpDept} />
             </View>
-            <ScrollView className='px-2 pt-1 bg-white'>
+          )}
+          <Text style={styles(theme).headerText}>
+            Confirm the Department Section
+          </Text>
+          <DepartmentSection />
+          <Text style={styles(theme).headerText}>
+            Confirm the Location / Rooms
+          </Text>
+          <DepartmentLocation />
+          <View style={styles(theme).orContainer}>
+            <View style={{ width: "100%", alignItems: "center" }}>
+              <Text style={styles(theme).headerText}>OR</Text>
+            </View>
+            <View style={{ paddingHorizontal: 3 }}>
+              <TextInput
+                multiline={true}
+                numberOfLines={1}
+                value={secondaryLocation}
+                onChangeText={(text) => setSecondaryLocation(text)}
+                dense={true}
+                textColor={theme.colors.logoCol2 || "#fff"}
+                accessibilityLabel="Secondary Location"
+              />
+            </View>
+          </View>
+          <View>
+            <Text style={styles(theme).headerText}>Ticket Description</Text>
+            <TextInput
+              // label="Ticket Description"
+              multiline={true}
+              numberOfLines={3}
+              value={ticketDesc}
+              onChangeText={(text) => setTicketDesc(text)}
+              accessibilityLabel="Ticket Description"
+            />
+          </View>
+          <View>
+            <View style={styles(theme).prioritySwitchContainer}>
+              <Text style={styles(theme).headerText}>
+                Is this a Priority Ticket (Yes/No){" "}
+              </Text>
+              <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
+            </View>
+            <View>
+              {isSwitchOn && (
+                <TextInput
+                  label="Priority Remarks"
+                  multiline={false}
+                  numberOfLines={1}
+                  value={ticketPriority}
+                  onChangeText={(text) => setTicketPriority(text)}
+                  accessibilityLabel="Priority Remarks"
+                />
+              )}
+            </View>
+          </View>
+          <View>
+            <CenteredButton
+              hangleOnPress={handleSubmitFunction}
+              label="Register Ticket"
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
+};
 
-                {/* <View className='px-2 pt-1' > */}
-                <View className='p-0' >
-                    <View style={{}}  >
-                        <Text style={{ fontFamily: 'Roboto_100Thin', }} >Complaint Department</Text>
-                    </View>
-                    <View className='pt-1'>
-                        {
-                            complaintDept?.length === 0 && <CustomActivityIndicator />
-                        }
-                        <BaseRadioButton data={complaintDept} selectedId={cmpDept} setSelectedId={setCmpDept} />
-                    </View>
-                </View>
-                {
-                    cmpDept !== 0 &&
-                    <View className='p-0' >
-                        <View style={{}}  >
-                            <Text style={{ fontFamily: 'Roboto_100Thin' }} >Complaint Type</Text>
-                        </View>
-                        <View className='pt-1'>
-                            {
-                                type?.length === 0 && <CustomActivityIndicator />
-                            }
-                            <BaseRadioButton data={type} selectedId={selectedtype} setSelectedId={setSelectedType} />
-                        </View>
-                    </View>
-                }
-                <View className='p-0' >
-                    <View style={{}}  >
-                        <Text style={{ fontFamily: 'Roboto_100Thin' }} >Location</Text>
-                    </View>
-                    <View className='pt-1'>
-                        <LocationDropDown />
-                    </View>
-                </View>
-                <View className='p-2 pb-1' >
-                    <BaseCheckBoxOne
-                        name={'Infection Control Risk Assessment (ICRA)'}
-                        setCheckVal={setIcra}
-                        checkvalue={icra}
-                        style={{ backgroundColor: colorTheme.iconColor }}
-                    />
-                </View>
-                <View className='p-2' >
-                    <BaseCheckBoxOne
-                        name={'Ticket Priority'}
-                        setCheckVal={setPriority}
-                        checkvalue={priority}
-                        style={{ backgroundColor: '#eb4034' }}
-                    />
-                </View>
-                <View className='p-0 pb-2' >
-                    {
-                        priority && <MutlilineTextInput
-                            value={priorityRemark}
-                            onChange={setPriorityRemark}
-                            placeholder="Priority Remarks"
-                        />
-                    }
-                </View>
-                <View className='p-0' >
-                    <MutlilineTextInput
-                        value={desc}
-                        onChange={setDesc}
-                        placeholder="Ticket Description"
-                    />
-                </View>
-                <View className='flex pt-2 items-center' >
-                    <Pressable
-                        className='w-3/4 flex-row items-center h-10 justify-center rounded-lg'
-                        style={{ borderColor: colorTheme.switchThumb, borderWidth: 0.5 }}
-                        onPress={registerTicket}
-                    >
-                        <ChevronDoubleRightIcon width={30} height={30} color={colorTheme.iconColor} />
-                        <View style={{ paddingLeft: 10 }} >
-                            <Text>Press to register the ticket</Text>
-                        </View>
-                    </Pressable>
-                </View>
-                {/* </View> */}
-                <View style={{ paddingBottom: 100 }} ></View>
-            </ScrollView>
-        </KeyboardAvoidingView>
-    )
-}
+const styles = (theme) =>
+  StyleSheet.create({
+    scrollViewContainer: {
+      backgroundColor: theme.colors.statusBarCol || "#fff",
+      padding: 13,
+    },
+    formContainer: {
+      backgroundColor: theme.colors.appBgInside || "#fff",
+      gap: 5,
+    },
+    prioritySwitchContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
+    headerText: {
+      fontFamily: "Roboto_500Medium",
+      fontWeight: "800",
+      fontSize: 13,
+      paddingHorizontal: 5,
+      color: theme.colors.logoCol2 || "#fff",
+    },
+    orContainer: {
+      flexDirection: "column",
+      justifyContent: "center",
+      // alignItems: "center",
+      gap: 5,
+    },
+  });
 
-export default memo(NewTickets)
+export default memo(NewTickets);
