@@ -15,12 +15,22 @@
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/c950e698-575e-4c32-a62d-6ed415f3c5ee"
     },
-    "assetBundlePatterns": ["assets/*"],
-    "platforms": ["ios", "android", "web"],
+    "assetBundlePatterns": [
+      "assets/*"
+    ],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "newArchEnabled": true,
     "ios": {
       "buildNumber": "1.0.0",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ajithajeesh.Meliora",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "versionCode": 1,
@@ -48,21 +58,34 @@
         {
           "icon": "./assets/Notificon2.png",
           "color": "#00AA00",
-          "sounds": ["./assets/pop_sound.wav", "./assets/warning.wav"],
+          "sounds": [
+            "./assets/pop_sound.wav",
+            "./assets/warning.wav"
+          ],
           "enableBackgroundRemoteNotifications": true,
           "notificationChannels": [
             {
               "name": "custom-sound-channel",
               "importance": "max",
               "sound": "pop_sound.wav",
-              "vibrationPattern": [0, 250, 250, 250],
+              "vibrationPattern": [
+                0,
+                250,
+                250,
+                250
+              ],
               "lightColor": "#FF231F7C"
             },
             {
               "name": "custom-sound-channel-warning",
               "importance": "max",
               "sound": "warning.wav",
-              "vibrationPattern": [0, 250, 250, 250],
+              "vibrationPattern": [
+                0,
+                250,
+                250,
+                250
+              ],
               "lightColor": "#FF231F7C"
             }
           ]
